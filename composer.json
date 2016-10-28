@@ -18,5 +18,6 @@
 		"psr-4": {
 		    "Zilf\\": "src/Zilf"
 		}
-	}
+	},
+	"minimum-stability": "dev"
 }
