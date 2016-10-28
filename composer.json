@@ -1,8 +1,5 @@
 {
-	"name": "zilf/zilf",
-        "replace":{
-            "txj123/zilf":"dev-master"
-         },
+	"name": "txj123/zilf",
 	"description": "Zilf PHP Framework",
 	"license": "MIT",
 	"authors": [
