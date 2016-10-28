@@ -1,0 +1,22 @@
+{
+	"name": "zilf/zilf",
+	"description": "Zilf PHP Framework",
+	"license": "MIT",
+	"authors": [
+		{
+		    "name": "lilei",
+		    "email": "597196313@qq.com"
+		}
+	],
+	"require": {
+		"php": ">=5.5.9"
+	},
+	"autoload": {
+		"files":[
+		    "src/Zilf/DataCrawler/PhpQuery/phpQuery.php"
+		],
+		"psr-4": {
+		    "Zilf\\": "src/Zilf"
+		}
+	}
+}

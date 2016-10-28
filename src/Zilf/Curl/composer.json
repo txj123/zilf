@@ -1,0 +1,19 @@
+{
+	"name": "zilf/curl",
+	"type": "library",
+    "description": "Zilf Curl Component",
+    "license": "MIT",
+	"authors": [
+		{
+			"name":"lilei",
+			"email":"597196313@qq.com"
+		}
+	],
+    "require": {
+		"php": ">=5.3.0",
+		"ext-curl": "*"
+	},
+	"autoload": {
+        "psr-4": {"Zilf\\": ""}
+    }
+}
