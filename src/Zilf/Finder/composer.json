@@ -1,33 +1,22 @@
 {
-    "name": "symfony/finder",
+    "name": "zilf/finder",
     "type": "library",
-    "description": "Symfony Finder Component",
+    "description": "Finder Component",
     "keywords": [],
-    "homepage": "https://symfony.com",
     "license": "MIT",
     "authors": [
         {
-            "name": "Fabien Potencier",
-            "email": "fabien@symfony.com"
-        },
-        {
-            "name": "Symfony Community",
-            "homepage": "https://symfony.com/contributors"
+            "name": "lilei",
+            "email": "597196313@qq.com"
         }
     ],
     "require": {
         "php": ">=5.5.9"
     },
     "autoload": {
-        "psr-4": { "Zilf\\\Finder\\": "" },
+        "psr-4": { "Zilf\\Finder\\": "" },
         "exclude-from-classmap": [
             "/Tests/"
         ]
-    },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.1-dev"
-        }
     }
 }
