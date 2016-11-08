@@ -9,11 +9,7 @@
 		}
 	],
 	"require": {
-		"php": ">=5.5.9",
-		"psr/cache": "~1.0",
-        "psr/log": "~1.0",
-        "monolog/monolog": "~1.21",
-        "zilf/polyfill-mbstring": "~1.0"
+		"php": ">=5.5.9"
 	},
 	"autoload": {
 		"files":[
