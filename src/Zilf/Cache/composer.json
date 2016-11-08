@@ -1,18 +1,12 @@
 {
-    "name": "symfony/cache",
+    "name": "zilf/cache",
     "type": "library",
-    "description": "Symfony implementation of PSR-6",
     "keywords": ["caching", "psr6"],
-    "homepage": "https://symfony.com",
     "license": "MIT",
     "authors": [
         {
-            "name": "Nicolas Grekas",
-            "email": "p@tchwork.com"
-        },
-        {
-            "name": "Symfony Community",
-            "homepage": "https://symfony.com/contributors"
+            "name": "lilei",
+            "email": "597196313@qq.com"
         }
     ],
     "provide": {
@@ -23,24 +17,10 @@
         "psr/cache": "~1.0",
         "psr/log": "~1.0"
     },
-    "require-dev": {
-        "cache/integration-tests": "dev-master",
-        "doctrine/cache": "~1.6",
-        "predis/predis": "~1.0"
-    },
-    "suggest": {
-        "symfony/polyfill-apcu": "For using ApcuAdapter on HHVM"
-    },
     "autoload": {
-        "psr-4": { "Zilf\\\Cache\\": "" },
+        "psr-4": { "Zilf\\Cache\\": "" },
         "exclude-from-classmap": [
             "/Tests/"
         ]
-    },
-    "minimum-stability": "dev",
-    "extra": {
-        "branch-alias": {
-            "dev-master": "3.1-dev"
-        }
     }
 }
