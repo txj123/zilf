@@ -18,7 +18,7 @@ class Application
     public $charset = 'UTF-8';
 
 
-    public $bundle = 'App';
+    public $bundle = 'Http';
     public $controller = 'Index';
     public $action = 'index';
 
