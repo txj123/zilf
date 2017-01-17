@@ -35,6 +35,8 @@ abstract class Controller
      */
     public $config;
 
+    public $theme = '';
+
     /**
      * Controller constructor.
      */
@@ -46,54 +48,23 @@ abstract class Controller
     }
 
     /**
-     * @return \Zilf\Di\Container
-     * 获取容器
-     */
-    public function getContainer()
-    {
-        return Zilf::$container;
-    }
-
-    /**
-     * 获取数据库的对象
-     *
-     * @param string $default
-     * @return Connection
-     */
-    public function getDb($default=''){
-        $object = $this->container->get('db');
-
-        if(!empty($default)){
-            try{
-                $properties = $this->config->get('db.'.$default);
-                foreach ($properties as $name => $value) {
-                    $object->$name = $value;
-                }
-            }catch (\Exception $e){
-                exit('数据库配置异常,【'.$default.'】配置错误！');
-            }
-        }
-
-        return $object;
-    }
-
-    /**
      * 获取数据库的对象
      *
      * @param string $default
      * @return Query
      */
-    public function getQuery($default=''){
+    public function getQuery($default = '')
+    {
         $object = $this->container->get('query');
 
-        if(!empty($default)){
-            try{
-                $properties = $this->config->get('query.'.$default);
+        if (!empty($default)) {
+            try {
+                $properties = $this->config->get('query.' . $default);
                 foreach ($properties as $name => $value) {
                     $object->$name = $value;
                 }
-            }catch (\Exception $e){
-                exit('数据库配置异常,【'.$default.'】配置错误！');
+            } catch (\Exception $e) {
+                exit('数据库配置异常,【' . $default . '】配置错误！');
             }
         }
 
@@ -137,14 +108,6 @@ abstract class Controller
      */
     public function json($data, $status = 200, $headers = array(), $context = array())
     {
-        if ($this->container->has('serializer')) {
-            $json = $this->container->get('serializer')->serialize($data, 'json', array_merge(array(
-                'json_encode_options' => JsonResponse::DEFAULT_ENCODING_OPTIONS,
-            ), $context));
-
-            return (new JsonResponse($json, $status, $headers, true))->send();
-        }
-
         return (new JsonResponse($data, $status, $headers))->send();
     }
 
@@ -154,45 +117,77 @@ abstract class Controller
      * @param string $view
      * @param array $parameters
      * @param Response|null $response
-     * @param bool $return
-     * @return string
+     * @return Response
      * @throws \Exception
      */
-    public function render($view = '', array $parameters = array(), Response $response = null, $return = false)
+    public function render($view = '', $parameters = [], Response $response = null)
     {
-        $suffix = $this->getParameter('framework.view_suffix');
-        $suffix = $suffix ? $suffix : '.php';
-
-        $path = Zilf::$container->getClassFilePath(get_called_class());
-
-        if (empty($view)) {
-            $view = Zilf::$app->controller . '/' . Zilf::$app->action . $suffix;
-        } else {
-            $view = $view . $suffix;
-        }
-
-        $file = dirname(dirname($path)) . '/Views/' . $view;
-        if (!file_exists($file)) {
-            throw new \Exception("视图文件" . $file . '没有找到');
-        }
+        $file = $this->getViewFile($view, $parameters);
 
         //显示页面模板内容
         ob_start();
         ob_implicit_flush(false);
+        if($parameters){
+            extract($parameters, EXTR_OVERWRITE);
+        }
+        include($file);
+        $buffer = ob_get_clean();
+
+        if (null === $response) {
+            $response = new Response();
+        }
+
+        return $response->setContent($buffer);
+    }
+
+    /**
+     * 渲染包含的页面
+     */
+    public function view($view = '', array $parameters = [])
+    {
+        $file = $this->getViewFile($view, $parameters);
+
+        //显示页面模板内容
+        ob_start();
+        //ob_implicit_flush(false);
         extract($parameters, EXTR_OVERWRITE);
         include($file);
         $buffer = ob_get_clean();
 
-        if ($return) {
-            return $buffer;
-        } else {
-            if (null === $response) {
-                $response = new Response();
-            }
+        echo $buffer;
+    }
 
-            $response->setContent($buffer);
-            $response->send();
+    private function getViewFile($view, $parameters = [])
+    {
+        //优化，如果view有后缀名称，则直接按照后缀寻找视图文件，不会添加默认后缀
+        if (stripos($view, '.')) {
+            $suffix = '';
+        } else {
+            $suffix = $this->getParameter('framework.view_suffix');
+            $suffix = $suffix ? $suffix : '.php';
         }
+
+        //直接去视图根目录寻找文件
+        if (stripos($view, '@') === 0) {
+            $view = ltrim($view, '@');
+            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
+            $theme = '';
+        } else {
+            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . strtolower(Zilf::$app->bundle) . DIRECTORY_SEPARATOR;
+            $theme = $this->theme ? $this->theme . DIRECTORY_SEPARATOR : '';
+        }
+
+        //为空，则自动寻找规则下的视图文件
+        if (empty($view)) {
+            $view = strtolower(Zilf::$app->controller) . DIRECTORY_SEPARATOR . Zilf::$app->action;
+        }
+
+        $file = $path . 'views' . DIRECTORY_SEPARATOR . $theme . $view . $suffix;
+        if (!file_exists($file)) {
+            throw new \Exception("视图文件" . $file . '不存在');
+        }
+
+        return $file;
     }
 
     /**
@@ -229,11 +224,12 @@ abstract class Controller
     /**
      * 获取url的参数
      */
-    public function getSegment($n=''){
+    public function getSegment($n = '')
+    {
         $segments = Zilf::$app->segments;
-        if($n){
+        if ($n) {
             return isset($segments[$n]) ? $segments[$n] : '';
-        }else{
+        } else {
             return $segments;
         }
     }
@@ -247,5 +243,4 @@ abstract class Controller
     {
         return $this->container->getShare('log');
     }
-
 }
