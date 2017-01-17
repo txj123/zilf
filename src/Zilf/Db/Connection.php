@@ -930,7 +930,8 @@ class Connection extends Component
             $sharedConfig['class'] = get_class($this);
         }
 
-        $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
+//        $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
+        $cache = is_string($this->serverStatusCache) ?  $this->serverStatusCache : $this->serverStatusCache;
 
         shuffle($pool);
 
@@ -947,7 +948,8 @@ class Connection extends Component
             }
 
             /* @var $db Connection */
-            $db = Yii::createObject($config);
+            $db = Zilf::$container->get('db',$config);
+//          $db = Yii::createObject($config);
 
             try {
                 $db->open();
