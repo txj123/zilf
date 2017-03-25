@@ -44,6 +44,9 @@ class CurlResponse
      */
     private $_response_header;
 
+    /**
+     * @var Curl
+     */
     public $curl;
 
     public $end_time;
@@ -212,7 +215,7 @@ class CurlResponse
      */
     function get_request_headers()
     {
-        return $this->_curl_getinfo['request_header'];
+        return isset($this->_curl_getinfo['request_header']) ? $this->_curl_getinfo['request_header'] : [];
     }
 
     /**
@@ -230,8 +233,8 @@ class CurlResponse
     function get_all()
     {
         return array(
-            'url' => $this->curl->get_curl_url(),
-            'method' => $this->curl->get_method(),
+            'url' => $this->curl->_url,
+            'method' => $this->curl->_method,
             'time' => ($this->end_time - $this->curl->start_time),
             'curl_error_code' => $this->get_curl_error_code(),
             'curl_error_message' => $this->get_curl_error_message(),

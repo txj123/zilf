@@ -6,7 +6,7 @@ namespace Zilf\Config;
  * Class Config
  * @package Zilf\Config
  */
-class Config extends Repository
+class Loadconfig extends Repository
 {
     public $configs = array();
 

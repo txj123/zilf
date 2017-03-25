@@ -9,6 +9,7 @@
 namespace Zilf\System;
 
 
+use Zilf\Config\Config;
 use Zilf\Di\Container;
 
 class Zilf
@@ -18,13 +19,12 @@ class Zilf
      */
     public static $app;
 
+    public static $version = '1.0';
 
     /**
-     * @var Container
+     * @var Container 容器类
      */
     public static $container;
-
-    public static $config;
 
     /**
      * @return string
@@ -32,31 +32,18 @@ class Zilf
      */
     public static function getVersion()
     {
-        return '0.0.2';
+        return self::$version;
     }
 
     /**
      * @return string
-     * 获取开发环境  废弃
+     * 获取开发环境
      */
     public static function getEnvironment()
     {
-        return 'production';
-    }
-
-    /**
-     * 获取 web 根目录
-     */
-    public static function getRootDir(){
-        return ROOT_PATH;
-    }
-
-    /**
-     * @return string
-     * 获取程序运行目录
-     */
-    public static function getAppDir(){
-        return dirname(static::getRootDir());
+        //pro 生产环境  dev 开发环境 test 测试环境
+        $env = self::$container->getShare('config')->get('environment');
+        return $env ? strtolower($env) : 'pro';
     }
 
 
