@@ -13,25 +13,30 @@ namespace Zilf\Cache\Adapter;
 
 use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Zilf\Cache\CacheItem;
+use Zilf\Cache\Exception\InvalidArgumentException;
+use Zilf\Cache\Traits\AbstractTrait;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
 abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
 {
-    use LoggerAwareTrait;
+    use AbstractTrait;
 
-    private $namespace;
-    private $deferred = array();
+    private static $apcuSupported;
+    private static $phpFilesSupported;
+
     private $createCacheItem;
     private $mergeByLifetime;
 
     protected function __construct($namespace = '', $defaultLifetime = 0)
     {
-        $this->namespace = '' === $namespace ? '' : $this->getId($namespace);
+        $this->namespace = '' === $namespace ? '' : $this->getId($namespace).':';
+        if (null !== $this->maxIdLength && strlen($namespace) > $this->maxIdLength - 24) {
+            throw new InvalidArgumentException(sprintf('Namespace must be %d chars max, %d given ("%s")', $this->maxIdLength - 24, strlen($namespace), $namespace));
+        }
         $this->createCacheItem = \Closure::bind(
             function ($key, $value, $isHit) use ($defaultLifetime) {
                 $item = new CacheItem();
@@ -70,15 +75,32 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
 
     public static function createSystemCache($namespace, $defaultLifetime, $version, $directory, LoggerInterface $logger = null)
     {
+        if (null === self::$apcuSupported) {
+            self::$apcuSupported = ApcuAdapter::isSupported();
+        }
+
+        if (!self::$apcuSupported && null === self::$phpFilesSupported) {
+            self::$phpFilesSupported = PhpFilesAdapter::isSupported();
+        }
+
+        if (self::$phpFilesSupported) {
+            $opcache = new PhpFilesAdapter($namespace, $defaultLifetime, $directory);
+            if (null !== $logger) {
+                $opcache->setLogger($logger);
+            }
+
+            return $opcache;
+        }
+
         $fs = new FilesystemAdapter($namespace, $defaultLifetime, $directory);
         if (null !== $logger) {
             $fs->setLogger($logger);
         }
-        if (!ApcuAdapter::isSupported()) {
+        if (!self::$apcuSupported) {
             return $fs;
         }
 
-        $apcu = new ApcuAdapter($namespace, $defaultLifetime / 5, $version);
+        $apcu = new ApcuAdapter($namespace, (int) $defaultLifetime / 5, $version);
         if (null !== $logger) {
             $apcu->setLogger($logger);
         }
@@ -86,51 +108,20 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
         return new ChainAdapter(array($apcu, $fs));
     }
 
-    /**
-     * Fetches several cache items.
-     *
-     * @param array $ids The cache identifiers to fetch
-     *
-     * @return array|\Traversable The corresponding values found in the cache
-     */
-    abstract protected function doFetch(array $ids);
+    public static function createConnection($dsn, array $options = array())
+    {
+        if (!is_string($dsn)) {
+            throw new InvalidArgumentException(sprintf('The %s() method expect argument #1 to be string, %s given.', __METHOD__, gettype($dsn)));
+        }
+        if (0 === strpos($dsn, 'redis://')) {
+            return RedisAdapter::createConnection($dsn, $options);
+        }
+        if (0 === strpos($dsn, 'memcached://')) {
+            return MemcachedAdapter::createConnection($dsn, $options);
+        }
 
-    /**
-     * Confirms if the cache contains specified cache item.
-     *
-     * @param string $id The identifier for which to check existence
-     *
-     * @return bool True if item exists in the cache, false otherwise
-     */
-    abstract protected function doHave($id);
-
-    /**
-     * Deletes all items in the pool.
-     *
-     * @param string The prefix used for all identifiers managed by this pool
-     *
-     * @return bool True if the pool was successfully cleared, false otherwise
-     */
-    abstract protected function doClear($namespace);
-
-    /**
-     * Removes multiple items from the pool.
-     *
-     * @param array $ids An array of identifiers that should be removed from the pool
-     *
-     * @return bool True if the items were successfully removed, false otherwise
-     */
-    abstract protected function doDelete(array $ids);
-
-    /**
-     * Persists several cache items immediately.
-     *
-     * @param array $values   The values to cache, indexed by their cache identifier
-     * @param int   $lifetime The lifetime of the cached values, 0 for persisting until manual cleaning
-     *
-     * @return array|bool The identifiers that failed to be cached or a boolean stating if caching succeeded or not
-     */
-    abstract protected function doSave(array $values, $lifetime);
+        throw new InvalidArgumentException(sprintf('Unsupported DSN: %s.', $dsn));
+    }
 
     /**
      * {@inheritdoc}
@@ -184,94 +175,10 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function hasItem($key)
-    {
-        $id = $this->getId($key);
-
-        if (isset($this->deferred[$key])) {
-            $this->commit();
-        }
-
-        try {
-            return $this->doHave($id);
-        } catch (\Exception $e) {
-            CacheItem::log($this->logger, 'Failed to check if key "{key}" is cached', array('key' => $key, 'exception' => $e));
-
-            return false;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $this->deferred = array();
-
-        try {
-            return $this->doClear($this->namespace);
-        } catch (\Exception $e) {
-            CacheItem::log($this->logger, 'Failed to clear the cache', array('exception' => $e));
-
-            return false;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteItem($key)
-    {
-        return $this->deleteItems(array($key));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteItems(array $keys)
-    {
-        $ids = array();
-
-        foreach ($keys as $key) {
-            $ids[$key] = $this->getId($key);
-            unset($this->deferred[$key]);
-        }
-
-        try {
-            if ($this->doDelete($ids)) {
-                return true;
-            }
-        } catch (\Exception $e) {
-        }
-
-        $ok = true;
-
-        // When bulk-delete failed, retry each item individually
-        foreach ($ids as $key => $id) {
-            try {
-                $e = null;
-                if ($this->doDelete(array($id))) {
-                    continue;
-                }
-            } catch (\Exception $e) {
-            }
-            CacheItem::log($this->logger, 'Failed to delete key "{key}"', array('key' => $key, 'exception' => $e));
-            $ok = false;
-        }
-
-        return $ok;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function save(CacheItemInterface $item)
     {
         if (!$item instanceof CacheItem) {
             return false;
-        }
-        if ($this->deferred) {
-            $this->commit();
         }
         $this->deferred[$item->getKey()] = $item;
 
@@ -353,20 +260,18 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
         }
     }
 
-    private function getId($key)
-    {
-        CacheItem::validateKey($key);
-
-        return $this->namespace.$key;
-    }
-
     private function generateItems($items, &$keys)
     {
         $f = $this->createCacheItem;
 
-        foreach ($items as $id => $value) {
-            yield $keys[$id] => $f($keys[$id], $value, true);
-            unset($keys[$id]);
+        try {
+            foreach ($items as $id => $value) {
+                $key = $keys[$id];
+                unset($keys[$id]);
+                yield $key => $f($key, $value, true);
+            }
+        } catch (\Exception $e) {
+            CacheItem::log($this->logger, 'Failed to fetch requested items', array('keys' => array_values($keys), 'exception' => $e));
         }
 
         foreach ($keys as $key) {
