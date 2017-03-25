@@ -120,7 +120,7 @@ abstract class Controller
      * @return Response
      * @throws \Exception
      */
-    public function render($view = '', $parameters = [], Response $response = null)
+    public function render($view, $parameters = [], Response $response = null)
     {
         $file = $this->getViewFile($view, $parameters);
 
@@ -171,18 +171,18 @@ abstract class Controller
         if (stripos($view, '@') === 0) {
             $view = ltrim($view, '@');
             $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
-            $theme = '';
         } else {
-            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . strtolower(Zilf::$app->bundle) . DIRECTORY_SEPARATOR;
+            $bundle_arr = explode('\\',get_called_class());
+            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . strtolower($bundle_arr[0]) . DIRECTORY_SEPARATOR;
             $theme = $this->theme ? $this->theme . DIRECTORY_SEPARATOR : '';
         }
 
         //为空，则自动寻找规则下的视图文件
         if (empty($view)) {
-            $view = strtolower(Zilf::$app->controller) . DIRECTORY_SEPARATOR . Zilf::$app->action;
+            //$view = strtolower(Zilf::$app->controller) . DIRECTORY_SEPARATOR . Zilf::$app->action;
         }
 
-        $file = $path . 'views' . DIRECTORY_SEPARATOR . $theme . $view . $suffix;
+        $file = $path . $view . $suffix;
         if (!file_exists($file)) {
             throw new \Exception("视图文件" . $file . '不存在');
         }

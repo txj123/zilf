@@ -14,56 +14,56 @@ class Curl
      * 请求的url网址
      * @var string
      */
-    private $_url;
+    public $_url;
 
     /**
      * @var string
      */
-    private $_referer;
+    public $_referer;
 
     /**
      * 请求的cookie信息
      * @var string
      */
-    private $_cookies;
+    public $_cookies;
 
     /**
      * 存储cookie的路径
      *
      * @var string
      **/
-    private $_cookie_file;
+    public $_cookie_file;
 
 
     /**
      * 请求的方式
      * @var string
      */
-    private $_method;
+    public $_method;
 
     /**
      * 请求的头信息
      * @var array
      */
-    private $_headers = [];
+    public $_headers = [];
 
     /**
      * 发送请求的配置参数
      * @var array
      */
-    private $_options = [];
+    public $_options = [];
 
     /**
      * 请求的数据
      * @var array
      */
-    private $_parameters = [];
+    public $_parameters = [];
 
     /**
      * 请求的响应时间
      * @var int
      */
-    private $_timeout = 20;
+    public $_timeout = 20;
 
 
     /**
@@ -71,18 +71,18 @@ class Curl
      *
      * @var string
      **/
-    private $_user_agent = 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.htm)';
+    public $_user_agent = 'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.htm)';
 
     /**
      * curl请求的句柄
      */
-    private $_curl_obj;
+    public $_curl_obj;
 
     /**
      * @var bool
      * 是否上传文件
      */
-    private $_is_upload = false;
+    public $_is_upload = false;
 
     /**
      * 请求后返回内容

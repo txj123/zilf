@@ -54,15 +54,13 @@ class Container implements ArrayAccess, ContainerInterface
      * @return $this
      * @throws \Exception
      */
-    public function get(string $id = '', array $params = [])
+    public function get(string $id, array $params = [])
     {
-        if (!empty($id)) {
-            $this->_id = $id;
-        }
-
-        if (empty($this->_id)) {
+        if (empty($id)) {
             throw new \Exception('参数 id 不能为空');
         }
+        $id = strtolower($id);
+        $this->_id = $id;
 
         //别名
         if ($this->hasAlias($this->_id)) {
@@ -123,7 +121,8 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function getShare(string $id, array $params = [])
     {
-        if (isset($this->_objects[$id])) {
+        $id = strtolower($id);
+        if (isset($this->_objects[$id]) && !empty($this->_objects[$id])) {
             return $this->_objects[$id];
         } elseif (!isset($this->_definitions[$id])) {
             throw new \Exception('You have requested a non-existent id: ' . $id);
@@ -163,6 +162,9 @@ class Container implements ArrayAccess, ContainerInterface
     public function register(string $id, $definition, $params = [])
     {
         $this->_id = strtolower($id);
+
+        //清除已经存在的对象信息
+        unset($this->_objects[$id]);
 
         if (isset($this->_alias[$this->_id])) {  //别名存在
             //如果$definition是数组，则作为参数传递
@@ -365,7 +367,7 @@ class Container implements ArrayAccess, ContainerInterface
      * @return mixed
      * @throws \Exception
      */
-    private function build($definition, array $params)
+    public function build($definition, array $params)
     {
         /**
          * @var $reflection (new \Reflection)

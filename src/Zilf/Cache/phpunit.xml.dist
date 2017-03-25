@@ -8,6 +8,8 @@
 >
     <php>
         <ini name="error_reporting" value="-1" />
+        <env name="REDIS_HOST" value="localhost" />
+        <env name="MEMCACHED_HOST" value="localhost" />
     </php>
 
     <testsuites>
@@ -27,11 +29,13 @@
     </filter>
 
     <listeners>
-        <listener class="Zilf\Bridge\PhpUnit\SymfonyTestsListener">
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener">
             <arguments>
                 <array>
                     <element><string>Cache\IntegrationTests</string></element>
                     <element><string>Doctrine\Common\Cache</string></element>
+                    <element><string>Zilf\Cache</string></element>
+                    <element><string>Zilf\Cache\Traits</string></element>
                 </array>
             </arguments>
         </listener>

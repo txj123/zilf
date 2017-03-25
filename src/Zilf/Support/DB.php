@@ -20,11 +20,11 @@ class DB
      * @param string $db_config
      * @return Connection
      */
-    public static function connection($db_config=''){
+    public static function connection($db_config){
         if(is_array($db_config)){
-             Zilf::$container->set('db',$db_config);
+             Zilf::$container->register('db','Zilf\Db\Connection',$db_config);
         }elseif(!empty($db_config)){
-             Zilf::$container->set('db',Zilf::$container->get('config')->get($db_config));
+             Zilf::$container->register('db','Zilf\Db\Connection',Zilf::$container->get('config')->get($db_config));
         }
         return Zilf::$container->getShare('db');
     }

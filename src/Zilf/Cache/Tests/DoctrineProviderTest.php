@@ -12,10 +12,11 @@
 namespace Zilf\Cache\Tests;
 
 use Doctrine\Common\Cache\CacheProvider;
+use PHPUnit\Framework\TestCase;
 use Zilf\Cache\Adapter\ArrayAdapter;
 use Zilf\Cache\DoctrineProvider;
 
-class DoctrineProviderTest extends \PHPUnit_Framework_TestCase
+class DoctrineProviderTest extends TestCase
 {
     public function testProvider()
     {
