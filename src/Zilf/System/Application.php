@@ -21,7 +21,6 @@ class Application
 {
     public $charset = 'UTF-8';
 
-
     public $bundle = 'Http';      //http请求的bundle的名称
     public $controller = 'Index'; //http请求的类的名称
     public $action = 'index';    //http请求的类的方法名称
@@ -93,8 +92,7 @@ class Application
     function run()
     {
         $this->class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
-
-        $object = Zilf::$container->register($this->class, $this->class)->get();
+        $object = Zilf::$container->build($this->class,[]);
         if (method_exists($object, $this->action)) {
             //class 必须是controller的子类
             /*  if (!is_subclass_of($this->class, 'Zilf\System\Controller')) {
@@ -276,7 +274,7 @@ class Application
     public function getAliasClass()
     {
         return [
-            'config' => 'Zilf\Config\Config',
+            'config' => 'Zilf\Config\Loadconfig',
             'curl' => 'Zilf\Curl\Curl',
             'route' => 'Zilf\Routing\Route',
 //            'view',

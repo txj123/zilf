@@ -13,19 +13,16 @@ namespace Zilf\Cache\Adapter;
 
 use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerAwareTrait;
 use Zilf\Cache\CacheItem;
+use Zilf\Cache\Traits\ArrayTrait;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
 class ArrayAdapter implements AdapterInterface, LoggerAwareInterface
 {
-    use LoggerAwareTrait;
+    use ArrayTrait;
 
-    private $storeSerialized;
-    private $values = array();
-    private $expiries = array();
     private $createCacheItem;
 
     /**
@@ -55,12 +52,22 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface
      */
     public function getItem($key)
     {
-        if (!$isHit = $this->hasItem($key)) {
-            $value = null;
-        } elseif ($this->storeSerialized) {
-            $value = unserialize($this->values[$key]);
-        } else {
-            $value = $this->values[$key];
+        $isHit = $this->hasItem($key);
+        try {
+            if (!$isHit) {
+                $this->values[$key] = $value = null;
+            } elseif (!$this->storeSerialized) {
+                $value = $this->values[$key];
+            } elseif ('b:0;' === $value = $this->values[$key]) {
+                $value = false;
+            } elseif (false === $value = unserialize($value)) {
+                $this->values[$key] = $value = null;
+                $isHit = false;
+            }
+        } catch (\Exception $e) {
+            CacheItem::log($this->logger, 'Failed to unserialize key "{key}"', array('key' => $key, 'exception' => $e));
+            $this->values[$key] = $value = null;
+            $isHit = false;
         }
         $f = $this->createCacheItem;
 
@@ -76,39 +83,7 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface
             CacheItem::validateKey($key);
         }
 
-        return $this->generateItems($keys, time());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasItem($key)
-    {
-        CacheItem::validateKey($key);
-
-        return isset($this->expiries[$key]) && ($this->expiries[$key] >= time() || !$this->deleteItem($key));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clear()
-    {
-        $this->values = $this->expiries = array();
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function deleteItem($key)
-    {
-        CacheItem::validateKey($key);
-
-        unset($this->values[$key], $this->expiries[$key]);
-
-        return true;
+        return $this->generateItems($keys, time(), $this->createCacheItem);
     }
 
     /**
@@ -175,22 +150,5 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface
     public function commit()
     {
         return true;
-    }
-
-    private function generateItems(array $keys, $now)
-    {
-        $f = $this->createCacheItem;
-
-        foreach ($keys as $key) {
-            if (!$isHit = isset($this->expiries[$key]) && ($this->expiries[$key] >= $now || !$this->deleteItem($key))) {
-                $value = null;
-            } elseif ($this->storeSerialized) {
-                $value = unserialize($this->values[$key]);
-            } else {
-                $value = $this->values[$key];
-            }
-
-            yield $key => $f($key, $value, $isHit);
-        }
     }
 }

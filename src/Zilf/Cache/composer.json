@@ -1,6 +1,7 @@
 {
     "name": "zilf/cache",
     "type": "library",
+    "description": "Zilf Cache component with PSR-6, PSR-16, and tags",
     "keywords": ["caching", "psr6"],
     "license": "MIT",
     "authors": [
@@ -10,12 +11,14 @@
         }
     ],
     "provide": {
-        "psr/cache-implementation": "1.0"
+        "psr/cache-implementation": "1.0",
+        "psr/simple-cache-implementation": "1.0"
     },
     "require": {
         "php": ">=5.5.9",
         "psr/cache": "~1.0",
-        "psr/log": "~1.0"
+        "psr/log": "~1.0",
+        "psr/simple-cache": "^1.0"
     },
     "autoload": {
         "psr-4": { "Zilf\\Cache\\": "" },
