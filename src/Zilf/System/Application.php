@@ -39,7 +39,7 @@ class Application
      */
     public $route;
 
-    private $database = 'default';
+    public $database = 'default';
 
     /**
      * Application constructor.
@@ -74,8 +74,8 @@ class Application
             $this->setRoute(isset($argv[1]) ? $argv[1] : '');
 
             $argc = $_SERVER['argc'];
-            if($argc > 2){
-                $this->params = array_slice($argv,2);
+            if ($argc > 2) {
+                $this->params = array_slice($argv, 2);
             }
             unset($argc);
             unset($argv);
@@ -83,7 +83,7 @@ class Application
 
         //初始化数据库
         $params = Zilf::$container->getShare('config')->get('db');
-        foreach ($params as $key=>$row){
+        foreach ($params as $key => $row) {
             Zilf::$container->register($key, 'Zilf\Db\Connection', $row);
         }
     }
@@ -96,7 +96,7 @@ class Application
     function run()
     {
         $this->class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
-        $object = Zilf::$container->build($this->class,[]);
+        $object = Zilf::$container->build($this->class, []);
         if (method_exists($object, $this->action)) {
             //class 必须是controller的子类
             /*  if (!is_subclass_of($this->class, 'Zilf\System\Controller')) {
@@ -251,10 +251,11 @@ class Application
      * 支持db，获取数据库对象
      * @return Connection
      */
-    public function getDb($databaseName='')
+    public function getDb($databaseName = '')
     {
         return Zilf::$container->get($this->database);
     }
+
     public function setDb($databaseName)
     {
         $this->database = $databaseName;
@@ -289,7 +290,7 @@ class Application
 //            'Cache',
 //            'DB',
 //            'File',
-//            'Log',
+            'log' => 'Zilf\Log\Writer',
 //            'Mail',
 //            'Redis',
 //            'Request',
