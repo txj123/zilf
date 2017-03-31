@@ -39,6 +39,8 @@ class Application
      */
     public $route;
 
+    private $database = 'default';
+
     /**
      * Application constructor.
      * @param $config //配置文件
@@ -80,8 +82,10 @@ class Application
         }
 
         //初始化数据库
-        $params = Zilf::$container->getShare('config')->get('db.default');
-        Zilf::$container->register('db', 'Zilf\Db\Connection', $params);
+        $params = Zilf::$container->getShare('config')->get('db');
+        foreach ($params as $key=>$row){
+            Zilf::$container->register($key, 'Zilf\Db\Connection', $row);
+        }
     }
 
     /**
@@ -247,9 +251,13 @@ class Application
      * 支持db，获取数据库对象
      * @return Connection
      */
-    public function getDb()
+    public function getDb($databaseName='')
     {
-        return Zilf::$container->get('db');
+        return Zilf::$container->get($this->database);
+    }
+    public function setDb($databaseName)
+    {
+        $this->database = $databaseName;
     }
 
 
