@@ -16,17 +16,16 @@ use Zilf\System\Zilf;
 
 class DB
 {
+    public static $database = 'default';
+
     /**
      * @param string $db_config
      * @return Connection
      */
-    public static function connection($db_config){
-        if(is_array($db_config)){
-             Zilf::$container->register('db','Zilf\Db\Connection',$db_config);
-        }elseif(!empty($db_config)){
-             Zilf::$container->register('db','Zilf\Db\Connection',Zilf::$container->get('config')->get($db_config));
-        }
-        return Zilf::$container->getShare('db');
+    public static function connection($databaseName=''){
+        self::$database = $databaseName ? $databaseName : self::$database;
+        Zilf::$app->setDb(self::$database);
+        return Zilf::$container->getShare(self::$database);
     }
 
     /**
@@ -35,7 +34,7 @@ class DB
      * @return Command the DB command
      */
     public static function  createCommand($sql = null, $params = []){
-        return Zilf::$container->getShare('db')->createCommand($sql,$params);
+        return Zilf::$container->getShare(self::$database)->createCommand($sql,$params);
     }
 
     /**

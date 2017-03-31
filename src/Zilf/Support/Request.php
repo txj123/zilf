@@ -12,6 +12,9 @@ use Zilf\System\Zilf;
 
 class Request extends \Zilf\HttpFoundation\Request
 {
+    /**
+     * @return \Zilf\HttpFoundation\Request
+     */
     public static function getInstance()
     {
         return Zilf::$container->getShare('request');
