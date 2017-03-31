@@ -163,7 +163,7 @@ abstract class Controller
         if (stripos($view, '.')) {
             $suffix = '';
         } else {
-            $suffix = $this->getParameter('framework.view_suffix');
+            $suffix = config_helper('framework.view_suffix');
             $suffix = $suffix ? $suffix : '.php';
         }
 
@@ -209,16 +209,6 @@ abstract class Controller
     public function getRequest()
     {
         return $this->request;
-    }
-
-    /**
-     * @param $name
-     * @return Config
-     */
-    public function getParameter($name)
-    {
-        $config = $this->container->getShare('config');
-        return $config->get($name);
     }
 
     /**
