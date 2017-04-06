@@ -7,6 +7,7 @@
 
 namespace Zilf\Db;
 
+use Zilf\Support\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\Exception\Component;
 use Zilf\Db\Exception\NotSupportedException;
@@ -832,6 +833,7 @@ class Command extends Component
         $rawSql = $this->getRawSql();
 
 //        Yii::info($rawSql, __METHOD__);
+        Log::info($rawSql, [__METHOD__]);
 
         if ($sql == '') {
             return 0;
@@ -871,6 +873,7 @@ class Command extends Component
         $rawSql = $this->getRawSql();
 
 //        Yii::info($rawSql, 'Zilf\Db\Command::query');
+        Log::info($rawSql, ['Zilf\Db\Command::query']);
 
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);

@@ -39,6 +39,8 @@ class Application
      */
     public $route;
 
+    public $database = 'default';
+
     /**
      * Application constructor.
      * @param $config //配置文件
@@ -72,16 +74,18 @@ class Application
             $this->setRoute(isset($argv[1]) ? $argv[1] : '');
 
             $argc = $_SERVER['argc'];
-            if($argc > 2){
-                $this->params = array_slice($argv,2);
+            if ($argc > 2) {
+                $this->params = array_slice($argv, 2);
             }
             unset($argc);
             unset($argv);
         }
 
         //初始化数据库
-        $params = Zilf::$container->getShare('config')->get('db.default');
-        Zilf::$container->register('db', 'Zilf\Db\Connection', $params);
+        $params = Zilf::$container->getShare('config')->get('db');
+        foreach ($params as $key => $row) {
+            Zilf::$container->register($key, 'Zilf\Db\Connection', $row);
+        }
     }
 
     /**
@@ -92,7 +96,7 @@ class Application
     function run()
     {
         $this->class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
-        $object = Zilf::$container->build($this->class,[]);
+        $object = Zilf::$container->build($this->class, []);
         if (method_exists($object, $this->action)) {
             //class 必须是controller的子类
             /*  if (!is_subclass_of($this->class, 'Zilf\System\Controller')) {
@@ -247,9 +251,14 @@ class Application
      * 支持db，获取数据库对象
      * @return Connection
      */
-    public function getDb()
+    public function getDb($databaseName = '')
     {
-        return Zilf::$container->get('db');
+        return Zilf::$container->get($this->database);
+    }
+
+    public function setDb($databaseName)
+    {
+        $this->database = $databaseName;
     }
 
 
@@ -281,7 +290,11 @@ class Application
 //            'Cache',
 //            'DB',
 //            'File',
-//            'Log',
+            'log' => 'Zilf\Log\Writer',
+            'hashing' => 'Zilf\Security\Hashing\PasswordHashing',
+            'crypt' => 'Zilf\Security\Encrypt\Crypt',
+            'hashids' => 'Zilf\Security\Hashids\Hashids',
+            'validator' => 'Zilf\Validation\Factory',
 //            'Mail',
 //            'Redis',
 //            'Request',

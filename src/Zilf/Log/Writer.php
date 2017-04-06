@@ -53,7 +53,7 @@ class Writer
         $dir = Zilf::$app->getRuntime().'/logs/';
         $filename = date('Y-m-d').'_'.Zilf::getEnvironment().'.log';
 
-        $logger = Zilf::$container->get('logger');
+        $logger = new Logger('logger'); //Zilf::$container->get('logger');
         foreach ($handlers as $row){
             $handler = isset($row['type']) ? $row['type'] : 'StreamHandler';
             $level = isset($row['level']) ? $row['level'] : 'debug';

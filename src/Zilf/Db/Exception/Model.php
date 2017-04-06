@@ -689,7 +689,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @see safeAttributes()
      * @see attributes()
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = false)
     {
         if (is_array($values)) {
             $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
@@ -712,9 +712,9 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function onUnsafeAttribute($name, $value)
     {
-        if (YII_DEBUG) {
+//        if (YII_DEBUG) {
             // Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
-        }
+//        }
     }
 
     /**
