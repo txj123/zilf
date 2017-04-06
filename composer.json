@@ -17,7 +17,8 @@
 	},
 	"autoload": {
 		"files":[
-		    "src/Zilf/DataCrawler/PhpQuery/phpQuery.php"
+		    "src/Zilf/DataCrawler/PhpQuery/phpQuery.php",
+		    "src/Zilf/Validation/helpers.php"
 		],
 		"psr-4": {
 		    "Zilf\\": "src/Zilf"
