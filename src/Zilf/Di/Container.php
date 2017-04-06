@@ -75,11 +75,10 @@ class Container implements ArrayAccess, ContainerInterface
 
         $object = null;
         if (!empty($params)) {
-            $definition['params'] = $params;
+            $definition['params'] = (array)$params;
         }
-
         $class = $definition['class'];
-        $params = (array)$definition['params'];
+        $params = empty($definition['params']) ? [] : $definition['params'];
         $type = $definition['type'];
 
         if ($type == self::TYPE_DEFINITION_CALLBACK) {
@@ -168,12 +167,12 @@ class Container implements ArrayAccess, ContainerInterface
 
         if (isset($this->_alias[$this->_id])) {  //别名存在
             //如果$definition是数组，则作为参数传递
-            if(!empty($definition) && is_array($definition)){
+            if (!empty($definition) && is_array($definition)) {
                 $this->_alias[$this->_id]['params'] = $definition;
             }
 
             //参数重新赋值
-            if(!empty($params)){
+            if (!empty($params)) {
                 $this->_alias[$this->_id]['params'] = $params;
             }
 
@@ -372,7 +371,7 @@ class Container implements ArrayAccess, ContainerInterface
         /**
          * @var $reflection (new \Reflection)
          */
-        list ($reflection, $dependencies, $defaultProperties) = $this->getDependencies($definition);
+        list ($reflection, $dependencies, $props) = $this->getDependencies($definition);
         $this->_reflections[$this->_id] = $reflection;
 
         //根绝$dependencies的参数位置，赋值参数
@@ -380,10 +379,11 @@ class Container implements ArrayAccess, ContainerInterface
         if (!empty($params)) {
             $index = 0;
             foreach ($dependencies as $key => $value) {
-                if (isset($params[$key]) && !empty($params[$key])) {
-                    $dependencies[$key] = $params[$key] ?? [];
-                } else {
-                    $dependencies[$key] = $params[$index] ?? [];
+                if (isset($params[$key])) {
+                    $dependencies[$key] = $params[$key];
+                } elseif (!empty($dependencies[$key])) {
+                } elseif (isset($params[$index])) {
+                    $dependencies[$key] = $params[$index];
                     $index++;
                 }
             }
@@ -397,8 +397,9 @@ class Container implements ArrayAccess, ContainerInterface
         $object = null === empty($dependencies) ? $reflection->newInstance() : $reflection->newInstanceArgs($dependencies);
 
         //初始化对象的属性
-        if (!empty($defaultProperties)) {
-            foreach ($defaultProperties as $key => $value) {
+        if (!empty($props)) {
+            foreach ($props as $prop) {
+                $key = $prop->getName();
                 if (isset($params[$key]) && !empty($params[$key])) {
                     $object->$key = $params[$key];
                 }
@@ -418,14 +419,14 @@ class Container implements ArrayAccess, ContainerInterface
     private function getDependencies($class)
     {
         if (isset($this->_reflections[$class])) {
-            return [$this->_reflections[$class], $this->_dependencies[$class],$this->_defaultProperties[$class]];
+            return [$this->_reflections[$class], $this->_dependencies[$class], $this->_defaultProperties[$class]];
         }
 
         $dependencies = [];
         $reflection = new \ReflectionClass($class);
 
-        //获取类的所有属性的值
-        $defaultProperties = $reflection->getDefaultProperties();
+        //获取类的公共public属性
+        $props = $reflection->getProperties(\ReflectionProperty::IS_PUBLIC);
 
         //获取构造器的参数
         $constructor = $reflection->getConstructor();
@@ -442,7 +443,7 @@ class Container implements ArrayAccess, ContainerInterface
 
         $this->_reflections[$class] = $reflection;
         $this->_dependencies[$class] = $dependencies;
-        $this->_defaultProperties[$class] = $defaultProperties;
+        $this->_defaultProperties[$class] = $props;
 
         unset($reflection);
         unset($defaultProperties);
