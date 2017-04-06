@@ -1,0 +1,26 @@
+{
+    "name": "zilf/validation",
+    "description": "Zilf Validation",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lilei",
+            "email": "597196313@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Zilf\\": ""
+        },
+        "files":["helpers.php"]
+    },
+
+    "minimum-stability": "dev",
+    "require-dev": {
+        "phpunit/phpunit": "^5.3"
+    }
+}
