@@ -17,7 +17,7 @@ use Zilf\System\Zilf;
 class DB
 {
     /**
-     * @param string $db_config
+     * @param string $databaseName
      * @return Connection
      */
     public static function connection($databaseName=''){
