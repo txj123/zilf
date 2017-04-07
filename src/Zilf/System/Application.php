@@ -103,6 +103,17 @@ class Application
                 throw new \Exception('控制器必须是继承Zilf\System\Controller类');
             }*/
 
+            //将参数追加到GET里面
+            if(!empty($this->params)){
+                foreach ($this->params as $key=>$row){
+                    if($row === ''){
+                    }else{
+                        $_GET['zget'.$key] = $row;
+                    }
+                }
+                Zilf::$container->get('request')->query->add($_GET);
+            }
+
             $response = call_user_func_array(array($object, $this->action), $this->params);
             if (!$response instanceof Response) {
                 $msg = sprintf('The controller must return a response (%s given).', $this->varToString($response));

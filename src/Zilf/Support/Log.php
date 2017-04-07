@@ -121,6 +121,8 @@ class Log
 
     protected static function writeLog($level, $message, $context)
     {
-        return self::gerInstance()->{$level}($message, $context);
+        if(config_helper('environment') != 'pro'){
+            return self::gerInstance()->{$level}($message, $context);
+        }
     }
 }
