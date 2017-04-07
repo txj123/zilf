@@ -51,14 +51,4 @@ class Request extends \Zilf\HttpFoundation\Request
     {
         return Zilf::$container->getShare('request')->server;
     }
-
-    /**
-     * @param $name
-     * @param $arguments
-     * @return mixed
-     */
-    function __callStatic($name, $arguments)
-    {
-        return Zilf::$container->getShare('request')->$name;
-    }
 }
