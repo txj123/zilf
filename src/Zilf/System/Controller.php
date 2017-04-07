@@ -108,7 +108,7 @@ abstract class Controller
      */
     public function json($data, $status = 200, $headers = array(), $context = array())
     {
-        return (new JsonResponse($data, $status, $headers))->send();
+        return (new JsonResponse($data, $status, $headers));
     }
 
     /**
@@ -213,15 +213,13 @@ abstract class Controller
 
     /**
      * 获取url的参数
+     *
+     * @param int $n
+     * @return array|string
      */
-    public function getSegment($n = '')
+    public function getSegment(int $n = 0)
     {
-        $segments = Zilf::$app->segments;
-        if ($n) {
-            return isset($segments[$n]) ? $segments[$n] : '';
-        } else {
-            return $segments;
-        }
+        getSegment($n);
     }
 
     /**
