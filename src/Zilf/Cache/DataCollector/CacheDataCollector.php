@@ -15,13 +15,12 @@ use Zilf\Cache\Adapter\TraceableAdapter;
 use Zilf\Cache\Adapter\TraceableAdapterEvent;
 use Zilf\HttpFoundation\Request;
 use Zilf\HttpFoundation\Response;
-use Zilf\HttpKernel\DataCollector\DataCollector;
 
 /**
  * @author Aaron Scherer <aequasi@gmail.com>
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
  */
-class CacheDataCollector extends DataCollector
+class CacheDataCollector implements LateDataCollectorInterface
 {
     /**
      * @var TraceableAdapter[]
@@ -50,7 +49,10 @@ class CacheDataCollector extends DataCollector
 
         $this->data['instances']['statistics'] = $this->calculateStatistics();
         $this->data['total']['statistics'] = $this->calculateTotalStatistics();
+    }
 
+    public function lateCollect()
+    {
         $this->data = $this->cloneVar($this->data);
     }
 
