@@ -65,6 +65,9 @@ class Application
         //设置时区
         $this->setTimeZone();
 
+        //设置开发环境
+        $this->setEnvironment();
+
         //加载路由库
         if (PHP_SAPI !== 'cli') {
             $pathInfo = Zilf::$container['request']->getPathInfo();
@@ -81,6 +84,12 @@ class Application
             unset($argv);
         }
 
+        //加载服务信息
+        $services = APP_PATH . '/config/services.php';
+        if (file_exists($services)) {
+            require_once($services);
+        }
+
         //初始化数据库
         $params = Zilf::$container->getShare('config')->get('db');
         foreach ($params as $key => $row) {
@@ -95,8 +104,12 @@ class Application
      */
     function run()
     {
-        $this->class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
-        $object = Zilf::$container->build($this->class, []);
+        $class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+        }
+
+        $object = Zilf::$container->build($class, []);
         if (method_exists($object, $this->action)) {
             //class 必须是controller的子类
             /*  if (!is_subclass_of($this->class, 'Zilf\System\Controller')) {
@@ -104,11 +117,11 @@ class Application
             }*/
 
             //将参数追加到GET里面
-            if(!empty($this->params)){
-                foreach ($this->params as $key=>$row){
-                    if($row === ''){
-                    }else{
-                        $_GET['zget'.$key] = $row;
+            if (!empty($this->params)) {
+                foreach ($this->params as $key => $row) {
+                    if ($row === '') {
+                    } else {
+                        $_GET['zget' . $key] = $row;
                     }
                 }
                 Zilf::$container->get('request')->query->add($_GET);
@@ -174,7 +187,7 @@ class Application
         $routes_config = APP_PATH . '/config/routes.php';
         if (file_exists($routes_config)) {
             //加载路由的配置文件
-            include $routes_config;
+            include_once $routes_config;
 
             $class_exec = $route->dispatch($pathInfo);
             if ($class_exec) {
@@ -387,5 +400,31 @@ class Application
     public function getTimeZone()
     {
         return date_default_timezone_get();
+    }
+
+
+    private function setEnvironment()
+    {
+        $env = Zilf::$container->get('config')->get('environment');
+        switch ($env) {
+            case 'dev':
+            case 'development':
+                error_reporting(-1);
+                ini_set('display_errors', 1);
+                break;
+
+            case 'testing':
+            case 'pro':
+            case 'production':
+                ini_set('display_errors', 0);
+                error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+                break;
+
+            default:
+                header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
+                echo 'The application environment is not set correctly.';
+                exit(1); // EXIT_ERROR
+        }
+        unset($env);
     }
 }
