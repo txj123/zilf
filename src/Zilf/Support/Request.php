@@ -51,4 +51,11 @@ class Request extends \Zilf\HttpFoundation\Request
     {
         return Zilf::$container->getShare('request')->server;
     }
+
+    /**
+     * @return mixed
+     */
+    public static function files(){
+        return Zilf::$container->getShare('request')->files;
+    }
 }
