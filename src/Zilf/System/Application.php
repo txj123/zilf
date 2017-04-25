@@ -84,6 +84,12 @@ class Application
             unset($argv);
         }
 
+        //加载服务信息
+        $services = APP_PATH . '/config/services.php';
+        if (file_exists($services)) {
+            require_once($services);
+        }
+
         //初始化数据库
         $params = Zilf::$container->getShare('config')->get('db');
         foreach ($params as $key => $row) {
@@ -181,7 +187,7 @@ class Application
         $routes_config = APP_PATH . '/config/routes.php';
         if (file_exists($routes_config)) {
             //加载路由的配置文件
-            include $routes_config;
+            include_once $routes_config;
 
             $class_exec = $route->dispatch($pathInfo);
             if ($class_exec) {
