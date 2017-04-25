@@ -319,6 +319,7 @@ class Application
             'crypt' => 'Zilf\Security\Encrypt\Crypt',
             'hashids' => 'Zilf\Security\Hashids\Hashids',
             'validator' => 'Zilf\Validation\Factory',
+            'files' => 'Zilf\Filesystem\Filesystem',
 //            'Mail',
 //            'Redis',
 //            'Request',
