@@ -42,6 +42,7 @@ abstract class Controller
      */
     function __construct()
     {
+        header('X-Powered-By:Zilf'); //标识
         $this->container = Zilf::$container;
         $this->config = $this->container->getShare('config');
         $this->request = $this->container->getShare('request');
