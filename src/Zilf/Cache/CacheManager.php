@@ -3,10 +3,9 @@
 namespace Zilf\Cache;
 
 use Closure;
+use Zilf\Di\Container;
 use Zilf\Support\Arr;
 use InvalidArgumentException;
-
-use Zilf\Contracts\Events\Dispatcher as DispatcherContract;
 use Zilf\System\Zilf;
 
 class CacheManager
@@ -14,7 +13,7 @@ class CacheManager
     /**
      * The application instance.
      *
-     * @var \Zilf\Foundation\Application
+     * @var Container
      */
     protected $app;
 
