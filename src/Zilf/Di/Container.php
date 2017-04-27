@@ -98,8 +98,6 @@ class Container implements ArrayAccess, ContainerInterface
             throw new \Exception('Unexpected object definition type: ' . gettype($class));
         }
 
-        $this->_objects[$this->_id] = $object;
-
         //清除变量 释放内存
         unset($definition);
         unset($class);

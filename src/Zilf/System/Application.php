@@ -195,7 +195,7 @@ class Application
             } else {
                 $pathInfo = trim($pathInfo, '/');
                 //获取默认的配置
-                $framework = Zilf::$container['config']->get('framework');
+                $framework = Zilf::$container->getShare('config')->get('framework');
                 if (!empty($framework)) {
                     foreach ($framework as $key => $value) {
                         if ($value) {
@@ -227,7 +227,7 @@ class Application
         $segment = strtolower($segment);
 
         if (!empty($segment)) {
-            $bundles = Zilf::$container['config']->get('bundles');
+            $bundles = Zilf::$container->getShare('config')->get('bundles');
             if (isset($bundles[$segment])) {
                 $this->bundle = ucfirst($segment);
                 //移除bundel
@@ -321,7 +321,7 @@ class Application
      */
     public function getRuntime()
     {
-        $runtime = Zilf::$container->get('config')->get('runtime');
+        $runtime = Zilf::$container->getShare('config')->get('runtime');
         if (empty($runtime)) {
             $runtime = APP_PATH . DIRECTORY_SEPARATOR . 'runtime';
         }
@@ -334,11 +334,11 @@ class Application
     public function setTimeZone()
     {
         //设置时区
-        $timezone = Zilf::$container->get('config')->get('timezone');
+        $timezone = Zilf::$container->getShare('config')->get('timezone');
 
         if (!empty($timezone)) {
             date_default_timezone_set($timezone);
-            Zilf::$container->get('config')->offsetUnset('timeZone');  //释放内存
+            Zilf::$container->getShare('config')->offsetUnset('timeZone');  //释放内存
         } elseif (!ini_get('date.timezone')) {
             date_default_timezone_set('UTC');
         }
