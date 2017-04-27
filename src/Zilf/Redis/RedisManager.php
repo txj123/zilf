@@ -78,7 +78,7 @@ class RedisManager
             return $this->resolveCluster($name);
         }
 
-        throw new InvalidArgumentException(
+        throw new \InvalidArgumentException(
             "Redis connection [{$name}] not configured."
         );
     }

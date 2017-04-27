@@ -7,7 +7,7 @@
 
 namespace Zilf\Db;
 
-use Zilf\Support\Log;
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\Exception\Component;
 use Zilf\Db\Exception\NotSupportedException;

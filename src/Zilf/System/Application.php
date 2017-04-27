@@ -34,6 +34,7 @@ class Application
     public $segments = [];
     public $request;
 
+    public $environment;  //开发环境
     /**
      * @var Route
      */
@@ -43,21 +44,16 @@ class Application
 
     /**
      * Application constructor.
-     * @param $config //配置文件
+     * @param $environment //配置文件
      */
-    public function __construct($config)
+    public function __construct($environment)
     {
         Zilf::$container = new Container();
         Zilf::$app = $this;
+        $this->environment = $environment;
 
-        //设置别名
-        Zilf::$container->setAlias($this->getAliasClass());
-
-        //注册类
-        Zilf::$container->register('config', array($config));  //配置类
-        Zilf::$container->register('request', function () {  //注册请求类
-            return Request::createFromGlobals();
-        });
+        //注册服务
+        new Services();
 
         //加载或缓存app目录下的类的列表
         $this->loadClassMap();
@@ -285,51 +281,6 @@ class Application
         $this->database = $databaseName;
     }
 
-
-    /**
-     * 初始化配置
-     */
-    function setAlias()
-    {
-        //设置别名
-        if ($classMap = $this->getAliasClass()) {
-            foreach ($classMap as $id => $item) {
-                $this->container->setAlias($id, $item);
-            }
-        }
-    }
-
-    /**
-     * 设置类的别名
-     *
-     * @return array
-     */
-    public function getAliasClass()
-    {
-        return [
-            'config' => 'Zilf\Config\Loadconfig',
-            'curl' => 'Zilf\Curl\Curl',
-            'route' => 'Zilf\Routing\Route',
-//            'view',
-//            'Cache',
-//            'DB',
-//            'File',
-            'log' => 'Zilf\Log\Writer',
-            'hashing' => 'Zilf\Security\Hashing\PasswordHashing',
-            'crypt' => 'Zilf\Security\Encrypt\Crypt',
-            'hashids' => 'Zilf\Security\Hashids\Hashids',
-            'validator' => 'Zilf\Validation\Factory',
-            'files' => 'Zilf\Filesystem\Filesystem',
-//            'Mail',
-//            'Redis',
-//            'Request',
-//            'Response',
-//            'Session',
-//            'Cookie',
-        ];
-    }
-
-
     /**
      * 加载app目录下面的类的文件，优化加载速度，提高效率
      * 开发模式下 class_map.php 每次都会重新生成
@@ -406,8 +357,7 @@ class Application
 
     private function setEnvironment()
     {
-        $env = Zilf::$container->get('config')->get('environment');
-        switch ($env) {
+        switch ($this->environment) {
             case 'dev':
             case 'development':
                 error_reporting(-1);
@@ -426,6 +376,12 @@ class Application
                 echo 'The application environment is not set correctly.';
                 exit(1); // EXIT_ERROR
         }
-        unset($env);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnvironment(){
+        return $this->environment;
     }
 }
