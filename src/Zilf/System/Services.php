@@ -51,7 +51,7 @@ class Services
          * 日志类
          */
         $this->register('log',function (){
-            return new Writer($this->container['config']['monolog'],$this->container['config']['runtime']);
+            return new Writer($this->container->getShare('config')->get('monolog'), $this->container->getShare('config')->get('runtime'));
         });
 
         /**
