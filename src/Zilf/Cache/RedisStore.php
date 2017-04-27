@@ -10,7 +10,7 @@ class RedisStore extends TaggableStore implements Store
     /**
      * The Redis factory implementation.
      *
-     * @var \Zilf\Contracts\Redis\Factory
+     * @var \Zilf\Redis\RedisManager
      */
     protected $redis;
 
@@ -34,7 +34,6 @@ class RedisStore extends TaggableStore implements Store
      * @param  \Zilf\Redis\RedisManager  $redis
      * @param  string  $prefix
      * @param  string  $connection
-     * @return void
      */
     public function __construct(Redis $redis, $prefix = '', $connection = 'default')
     {
@@ -225,7 +224,7 @@ class RedisStore extends TaggableStore implements Store
     /**
      * Get the Redis database instance.
      *
-     * @return \Zilf\Contracts\Redis\Factory
+     * @return \Zilf\Redis\RedisManager
      */
     public function getRedis()
     {
