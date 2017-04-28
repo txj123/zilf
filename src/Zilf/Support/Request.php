@@ -15,7 +15,7 @@ class Request extends \Zilf\HttpFoundation\Request
     /**
      * @return \Zilf\HttpFoundation\Request
      */
-    public static function getInstance()
+    public function getInstance()
     {
         return Zilf::$container->getShare('request');
     }
@@ -23,39 +23,64 @@ class Request extends \Zilf\HttpFoundation\Request
     /**
      * @return \Zilf\HttpFoundation\ParameterBag
      */
-    public static function request()
+    public function query()
     {
-        return Zilf::$container->getShare('request')->request;
+        return self::getInstance()->query;
     }
 
     /**
      * @return \Zilf\HttpFoundation\ParameterBag
      */
-    public static function query()
+    public function request()
     {
-        return Zilf::$container->getShare('request')->query;
+        return self::getInstance()->request;
     }
 
     /**
      * @return \Zilf\HttpFoundation\ParameterBag
      */
-    public static function cookie()
+    public function attributes()
     {
-        return Zilf::$container->getShare('request')->cookie;
+        return self::getInstance()->attributes;
+    }
+
+    /**
+     * @return \Zilf\HttpFoundation\ParameterBag
+     */
+    public function cookies()
+    {
+        return self::getInstance()->cookies;
+    }
+
+    /**
+     * @return \Zilf\HttpFoundation\FileBag
+     */
+    public function files()
+    {
+        return self::getInstance()->files;
     }
 
     /**
      * @return \Zilf\HttpFoundation\ServerBag
      */
-    public static function server()
+    public function server()
     {
-        return Zilf::$container->getShare('request')->server;
+        return self::getInstance()->server;
     }
 
     /**
-     * @return mixed
+     * @return \Zilf\HttpFoundation\HeaderBag
      */
-    public static function files(){
-        return Zilf::$container->getShare('request')->files;
+    public function headers()
+    {
+        return self::getInstance()->headers;
+    }
+
+    /**
+     * @return string
+     */
+    public function method()
+    {
+        return self::getInstance()->getMethod();
     }
 }
