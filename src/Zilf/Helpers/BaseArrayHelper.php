@@ -121,11 +121,7 @@ class BaseArrayHelper
         while (!empty($args)) {
             $next = array_shift($args);
             foreach ($next as $k => $v) {
-                if ($v instanceof UnsetArrayValue) {
-                    unset($res[$k]);
-                } elseif ($v instanceof ReplaceArrayValue) {
-                    $res[$k] = $v->value;
-                } elseif (is_int($k)) {
+               if (is_int($k)) {
                     if (isset($res[$k])) {
                         $res[] = $v;
                     } else {
