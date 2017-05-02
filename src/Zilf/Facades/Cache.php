@@ -61,7 +61,7 @@ namespace Zilf\Facades;
  */
 class Cache extends Facade
 {
-    public static function getFacadeAccessor()
+    protected static function getFacadeAccessor()
     {
         return 'cache';
     }
