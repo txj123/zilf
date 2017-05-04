@@ -36,18 +36,6 @@ class Zilf
     }
 
     /**
-     * @return string
-     * 获取开发环境
-     */
-    public static function getEnvironment()
-    {
-        //pro 生产环境  dev 开发环境 test 测试环境
-        $env = self::$container->getShare('config')->get('environment');
-        return $env ? strtolower($env) : 'pro';
-    }
-
-
-    /**
      * Creates a new object using the given configuration.
      *
      * You may view this method as an enhanced version of the `new` operator.

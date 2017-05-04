@@ -11,7 +11,6 @@ use Zilf;
 use Zilf\Db\Exception\InvalidConfigException;
 use Zilf\Helpers\ArrayHelper;
 use Zilf\Helpers\Inflector;
-use Zilf\Helpers\StringHelper;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -281,7 +280,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function tableName()
     {
-        return '{{%' . Inflector::camel2id(StringHelper::basename(get_called_class()), '_') . '}}';
+        return '{{%' . Inflector::camel2id(basename(get_called_class()), '_') . '}}';
     }
 
     /**
