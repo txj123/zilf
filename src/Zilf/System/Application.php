@@ -305,12 +305,12 @@ class Application
 
         //注册
         $file = $runtime . DIRECTORY_SEPARATOR . 'class_map.php';
-        if (!file_exists($file) || Zilf::getEnvironment() == 'dev' || Zilf::getEnvironment() == 'test') {
+        if (!file_exists($file) || Zilf::$app->getEnvironment() == 'dev' || Zilf::$app->getEnvironment() == 'test') {
             //写入类的地图信息
             ClassMapGenerator::dump(APP_PATH . DIRECTORY_SEPARATOR . 'app', $file);
         }
 
-        $mapping = include $file;
+        $mapping = require_once $file;
         $loader = new MapClassLoader($mapping);
         $loader->register();
     }
