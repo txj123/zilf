@@ -14,6 +14,7 @@ namespace Zilf\Filesystem;
 use FilesystemIterator;
 use Zilf\Filesystem\Exception\IOException;
 use Zilf\Filesystem\Exception\FileNotFoundException;
+use Zilf\Finder\Finder;
 
 /**
  * Provides basic utility to manipulate the file system.
