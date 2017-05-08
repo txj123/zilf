@@ -8,9 +8,7 @@
 namespace Zilf\Db\Exception;
 
 use Yii;
-use Zilf\Helpers\ArrayHelper;
-use Zilf\web\Link;
-use Zilf\web\Linkable;
+use Zilf\Helpers\Arr;
 
 /**
  * ArrayableTrait provides a common implementation of the [[Arrayable]] interface.
@@ -124,7 +122,7 @@ trait ArrayableTrait
             $data['_links'] = Link::serialize($this->getLinks());
         }
 
-        return $recursive ? ArrayHelper::toArray($data) : $data;
+        return $recursive ? Arr::toArray($data) : $data;
     }
 
     /**

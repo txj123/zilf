@@ -83,4 +83,28 @@ class Request extends \Zilf\HttpFoundation\Request
     {
         return self::getInstance()->getMethod();
     }
+
+    /**
+     * Get the URL (no query string) for the request.
+     *
+     * @return string
+     */
+    public function url()
+    {
+        return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/');
+    }
+
+    /**
+     * Get the full URL for the request.
+     *
+     * @return string
+     */
+    public function fullUrl()
+    {
+        $query = $this->getQueryString();
+
+        $question = $this->getBaseUrl().$this->getPathInfo() == '/' ? '/?' : '?';
+
+        return $query ? $this->url().$question.$query : $this->url();
+    }
 }

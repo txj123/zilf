@@ -19,6 +19,8 @@ namespace Zilf\Facades;
  * @method static \Zilf\HttpFoundation\ServerBag server()
  * @method static \Zilf\HttpFoundation\HeaderBag headers()
  * @method static string method()
+ * @method static string url()
+ * @method static string fullUrl()
  *
  * @method static \Zilf\HttpFoundation\Request createFromGlobals()
  * @method static \Zilf\HttpFoundation\Request create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)

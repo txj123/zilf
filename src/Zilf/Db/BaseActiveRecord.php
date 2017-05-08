@@ -8,14 +8,13 @@
 namespace Zilf\Db;
 
 use Zilf\Db\Exception\InvalidConfigException;
-use Zilf\Db\Exception\Event;
 use Zilf\Db\Exception\Model;
 use Zilf\Db\Exception\InvalidParamException;
 use Zilf\Db\Exception\ModelEvent;
 use Zilf\Db\Exception\NotSupportedException;
 use Zilf\Db\Exception\UnknownMethodException;
 use Zilf\Db\Exception\InvalidCallException;
-use Zilf\Helpers\ArrayHelper;
+use Zilf\Helpers\Arr;
 
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
@@ -128,7 +127,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!Arr::isAssociative($condition)) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
