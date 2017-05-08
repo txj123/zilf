@@ -9,7 +9,7 @@ namespace Zilf\Db;
 
 use Zilf\Db\Exception\InvalidParamException;
 use Zilf\Db\Exception\NotSupportedException;
-use Zilf\Helpers\ArrayHelper;
+use Zilf\Helpers\Arr;
 
 /**
  * QueryBuilder builds a SELECT SQL statement based on the specification given as a [[Query]] object.
@@ -1028,7 +1028,7 @@ class QueryBuilder extends \Zilf\Db\Exception\Object
     {
         $parts = [];
         foreach ($condition as $column => $value) {
-            if (ArrayHelper::isTraversable($value) || $value instanceof Query) {
+            if (Arr::isTraversable($value) || $value instanceof Query) {
                 // IN condition
                 $parts[] = $this->buildInCondition('IN', [$column, $value], $params);
             } else {

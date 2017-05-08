@@ -3,7 +3,7 @@
 namespace Zilf\Redis\Connectors;
 
 use Predis\Client;
-use Zilf\Support\Arr;
+use Zilf\Helpers\Arr;
 use Zilf\Redis\Connections\PredisConnection;
 use Zilf\Redis\Connections\PredisClusterConnection;
 
