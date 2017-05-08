@@ -20,6 +20,7 @@
 	},
 	"autoload": {
 		"files":[
+			"src/Zilf/Support/helpers.php",
 		    "src/Zilf/DataCrawler/PhpQuery/phpQuery.php",
 		    "src/Zilf/Validation/helpers.php"
 		],

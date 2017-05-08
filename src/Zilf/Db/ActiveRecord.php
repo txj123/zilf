@@ -9,7 +9,7 @@ namespace Zilf\Db;
 
 use Zilf;
 use Zilf\Db\Exception\InvalidConfigException;
-use Zilf\Helpers\ArrayHelper;
+use Zilf\Helpers\Arr;
 use Zilf\Helpers\Inflector;
 
 /**
@@ -170,7 +170,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!Arr::isAssociative($condition)) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
