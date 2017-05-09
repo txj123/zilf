@@ -1,6 +1,6 @@
 <?php
 
-if(!function_exists('cookie_helper')){
+if (!function_exists('cookie')) {
     /**
      * Cookie 设置、获取、删除
      * @param string $name cookie名称
@@ -8,16 +8,31 @@ if(!function_exists('cookie_helper')){
      * @param mixed $option cookie参数
      * @return mixed
      */
-    function cookie_helper($name='', $value='', $option=null) {
+    function cookie($name = '', $value = '', $option = null)
+    {
+        return cookie_helper($name,$value,$option);
+    }
+}
+
+if (!function_exists('cookie_helper')) {
+    /**
+     * Cookie 设置、获取、删除
+     * @param string $name cookie名称
+     * @param mixed $value cookie值
+     * @param mixed $option cookie参数
+     * @return mixed
+     */
+    function cookie_helper($name = '', $value = '', $option = null)
+    {
         // 默认设置
         $cookie = \Zilf\System\Zilf::$container->getShare('config')->get('cookie');
         $config = array(
-            'prefix'    =>  $cookie['cookie_prefix'], // cookie 名称前缀
-            'expire'    =>  $cookie['cookie_expire'], // cookie 保存时间
-            'path'      =>  $cookie['cookie_path'], // cookie 保存路径
-            'domain'    =>  $cookie['cookie_domain'], // cookie 有效域名
-            'secure'    =>  $cookie['cookie_secure'], //  cookie 启用安全传输
-            'httponly'  =>  $cookie['cookie_httponly'], // httponly设置
+            'prefix' => $cookie['cookie_prefix'], // cookie 名称前缀
+            'expire' => $cookie['cookie_expire'], // cookie 保存时间
+            'path' => $cookie['cookie_path'], // cookie 保存路径
+            'domain' => $cookie['cookie_domain'], // cookie 有效域名
+            'secure' => $cookie['cookie_secure'], //  cookie 启用安全传输
+            'httponly' => $cookie['cookie_httponly'], // httponly设置
         );
         // 参数设置(会覆盖黙认设置)
         if (!is_null($option)) {
@@ -25,9 +40,9 @@ if(!function_exists('cookie_helper')){
                 $option = array('expire' => $option);
             elseif (is_string($option))
                 parse_str($option, $option);
-            $config     = array_merge($config, array_change_key_case($option));
+            $config = array_merge($config, array_change_key_case($option));
         }
-        if(!empty($config['httponly'])){
+        if (!empty($config['httponly'])) {
             ini_set("session.cookie_httponly", 1);
         }
         // 清除指定前缀的所有cookie
@@ -39,40 +54,40 @@ if(!function_exists('cookie_helper')){
             if (!empty($prefix)) {// 如果前缀为空字符串将不作处理直接返回
                 foreach ($_COOKIE as $key => $val) {
                     if (0 === stripos($key, $prefix)) {
-                        setcookie($key, '', time() - 3600, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+                        setcookie($key, '', time() - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                         unset($_COOKIE[$key]);
                     }
                 }
             }
             return null;
-        }elseif('' === $name){
+        } elseif ('' === $name) {
             // 获取全部的cookie
             return $_COOKIE;
         }
         $name = $config['prefix'] . str_replace('.', '_', $name);
         if ('' === $value) {
-            if(isset($_COOKIE[$name])){
-                $value =    $_COOKIE[$name];
-                if(0===strpos($value,'think:')){
-                    $value  =   substr($value,6);
-                    return array_map('urldecode',json_decode(MAGIC_QUOTES_GPC?stripslashes($value):$value,true));
-                }else{
+            if (isset($_COOKIE[$name])) {
+                $value = $_COOKIE[$name];
+                if (0 === strpos($value, 'think:')) {
+                    $value = substr($value, 6);
+                    return array_map('urldecode', json_decode(MAGIC_QUOTES_GPC ? stripslashes($value) : $value, true));
+                } else {
                     return $value;
                 }
-            }else{
+            } else {
                 return null;
             }
         } else {
             if (is_null($value)) {
-                setcookie($name, '', time() - 3600, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+                setcookie($name, '', time() - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                 unset($_COOKIE[$name]); // 删除指定cookie
             } else {
                 // 设置cookie
-                if(is_array($value)){
-                    $value  = 'think:'.json_encode(array_map('urlencode',$value));
+                if (is_array($value)) {
+                    $value = 'think:' . json_encode(array_map('urlencode', $value));
                 }
                 $expire = !empty($config['expire']) ? time() + intval($config['expire']) : 0;
-                setcookie($name, $value, $expire, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+                setcookie($name, $value, $expire, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                 $_COOKIE[$name] = $value;
             }
         }
@@ -80,15 +95,31 @@ if(!function_exists('cookie_helper')){
     }
 }
 
-if(!function_exists('config_helper')){
+if (!function_exists('config_helper')) {
     /**
      * 获取配置信息
      *
      * @param $name
-     * @return $this
+     * @param null $default
+     * @return mixed
      */
-    function config_helper($name){
-        return \Zilf\System\Zilf::$container->getShare('config')->get($name);
+    function config_helper($name, $default = null)
+    {
+        return \Zilf\System\Zilf::$container->getShare('config')->get($name, $default);
+    }
+}
+
+if (!function_exists('config')) {
+    /**
+     * 获取配置信息
+     *
+     * @param $name
+     * @param null $default
+     * @return mixed
+     */
+    function config($name, $default = null)
+    {
+        return config_helper($name,$default);
     }
 }
 
@@ -100,13 +131,13 @@ if (!function_exists('current_url')) {
      */
     function current_url()
     {
-        return \Zilf\Facades\Request::fullUrl();
+        return \Zilf\Helpers\Url::current_url();
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-if(!function_exists('toRoute')){
+if (!function_exists('toRoute')) {
     /**
      * 例子
      * toRoute('path/show');  # http://www.xx.com/currentBundle/path/show
@@ -116,68 +147,36 @@ if(!function_exists('toRoute')){
      * @param bool $scheme
      * @return string
      */
-    function toRoute($url = '', $params = '',$scheme = true){
-        $bundle = \Zilf\System\Zilf::$app->bundle;
-
-        if (strncmp($url, '//', 2) === 0) {
-            // e.g. //hostname/path/to/resource
-            return is_string($scheme) ? "$scheme:$url" : $url;
-        }elseif (strncmp($url, '/', 1) === 0){
-            // e.g. /path/to/resource
-            $url = ltrim($url,'/');
-            $bundle = '';
-        }
-
-        if($scheme){
-            $host = \Zilf\Facades\Request::getSchemeAndHttpHost();
-        }else{
-            $host = '';
-        }
-
-        $url = $host.'/' . ($bundle ? strtolower($bundle) .'/' : '') . $url;
-        if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
-            $url = $scheme . substr($url, $pos);
-        }
-
-        $str_param = '';
-        if(is_array($params) && !empty($params)){
-            $str_param = '/'.implode('/',$params);
-        }elseif(!empty($params)){
-            $str_param = '/'.(string)$params;
-        }
-
-        return $url.$str_param;
+    function toRoute($url = '', $params = '', $scheme = true)
+    {
+        return \Zilf\Helpers\Url::toRoute($url, $params, $scheme);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-if (! function_exists('str_limit')) {
+if (!function_exists('str_limit')) {
     /**
      * Limit the number of characters in a string.
      *
-     * @param  string  $value
-     * @param  int     $limit
-     * @param  string  $end
+     * @param  string $value
+     * @param  int $limit
+     * @param  string $end
      * @return string
      */
     function str_limit($value, $limit = 100, $end = '...')
     {
-        if (mb_strwidth($value, 'UTF-8') <= $limit) {
-            return $value;
-        }
-
-        return rtrim(mb_strimwidth($value, 0, $limit, '', 'UTF-8')).$end;
+        \Zilf\Helpers\Str::limit($value, $limit, $end);
     }
 }
 
 
-if (! function_exists('tap')) {
+if (!function_exists('tap')) {
     /**
      * Call the given Closure with the given value then return the value.
      *
-     * @param  mixed  $value
-     * @param  callable  $callback
+     * @param  mixed $value
+     * @param  callable $callback
      * @return mixed
      */
     function tap($value, $callback)
@@ -189,11 +188,11 @@ if (! function_exists('tap')) {
 }
 
 
-if (! function_exists('value')) {
+if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return mixed
      */
     function value($value)
@@ -202,7 +201,7 @@ if (! function_exists('value')) {
     }
 }
 
-if (! function_exists('windows_os')) {
+if (!function_exists('windows_os')) {
     /**
      * Determine whether the current environment is Windows based.
      *
@@ -215,32 +214,32 @@ if (! function_exists('windows_os')) {
 }
 
 
-if (! function_exists('array_get')) {
+if (!function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  \ArrayAccess|array $array
+     * @param  string $key
+     * @param  mixed $default
      * @return mixed
      */
     function array_get($array, $key, $default = null)
     {
-        return \Zilf\Support\Arr::get($array, $key, $default);
+        return \Zilf\Helpers\Arr::get($array, $key, $default);
     }
 }
 
-if (! function_exists('array_has')) {
+if (!function_exists('array_has')) {
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string|array  $keys
+     * @param  \ArrayAccess|array $array
+     * @param  string|array $keys
      * @return bool
      */
     function array_has($array, $keys)
     {
-        return \Zilf\Support\Arr::has($array, $keys);
+        return \Zilf\Helpers\Arr::has($array, $keys);
     }
 }
 
@@ -273,11 +272,11 @@ if (!function_exists('hashids_decode')) {
         /**
          * @var $hashid \Zilf\Security\Hashids\Hashids
          */
-        $hashid = \Zilf\System\Zilf::$container->get('hashids');
-        $arr = $hashid->decode($hash);
-        if(!empty($arr)){
+        $hashId = \Zilf\System\Zilf::$container->get('hashids');
+        $arr = $hashId->decode($hash);
+        if (!empty($arr)) {
             return count($arr) == 1 ? $arr[0] : $arr;
-        }else{
+        } else {
             return null;
         }
     }
@@ -289,8 +288,8 @@ if (!function_exists('password_make')) {
     /**
      * Hash the given value.
      *
-     * @param  string  $value
-     * @param  array   $options
+     * @param  string $value
+     * @param  array $options
      * @return string
      *
      * @throws \RuntimeException
@@ -309,9 +308,9 @@ if (!function_exists('password_check')) {
     /**
      * Check the given plain value against a hash.
      *
-     * @param  string  $value
-     * @param  string  $hashedValue
-     * @param  array   $options
+     * @param  string $value
+     * @param  string $hashedValue
+     * @param  array $options
      * @return bool
      */
     function password_check($value, $hashedValue, array $options = [])
@@ -324,4 +323,97 @@ if (!function_exists('password_check')) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////
 
+if (!function_exists('html_encode')) {
+    /**
+     * @param $content
+     * @param bool $doubleEncode
+     * @return string
+     */
+    function html_encode($content, $doubleEncode = true){
+        return \Zilf\Helpers\Html::encode($content, $doubleEncode);
+    }
+}
+
+if (!function_exists('html_decode')) {
+    /**
+     * @param $content
+     * @return string
+     */
+    function html_decode($content){
+        return \Zilf\Helpers\Html::decode($content);
+    }
+}
+
+if (!function_exists('asset_link')) {
+    /**
+     * @param $url
+     * @param string $version
+     * @param string $urlName
+     * @return string
+     */
+    function asset_link($url, $version = '', $urlName = 'default'){
+        return \Zilf\Helpers\Url::assetUrl($url,$version,$urlName);
+    }
+}
+
+if (!function_exists('asset_css')) {
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    function asset_css($url, $options = [], $urlName = 'default'){
+        return \Zilf\Helpers\Html::assetCss($url, $options, $urlName);
+    }
+}
+
+if (!function_exists('asset_js')) {
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    function asset_js($url, $options = [], $urlName = 'default'){
+        return \Zilf\Helpers\Html::assetJs($url, $options, $urlName);
+    }
+}
+
+if (!function_exists('asset_img')) {
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    function asset_img($url, $options = [], $urlName = 'default'){
+        return \Zilf\Helpers\Html::assetImg($url, $options, $urlName);
+    }
+}
+
+if (!function_exists('asset_a')) {
+    /**
+     * @param $text
+     * @param null $url
+     * @param array $options
+     * @return string
+     */
+    function asset_a($text, $url = null, $options = []){
+        return \Zilf\Helpers\Html::a($text, $url, $options);
+    }
+}
+
+if (!function_exists('asset_mailto')) {
+    /**
+     * @param $text
+     * @param null $email
+     * @param array $options
+     * @return string
+     */
+    function asset_mailto($text, $email = null, $options = []){
+        return \Zilf\Helpers\Html::assetImg($text, $email, $options);
+    }
+}
