@@ -10,10 +10,10 @@ namespace Zilf\System;
 
 use Zilf\ClassLoader\ClassMapGenerator;
 use Zilf\ClassLoader\MapClassLoader;
-use Zilf\Curl\Curl;
 use Zilf\Db\Connection;
 use Zilf\Di\Container;
-use Zilf\HttpFoundation\Request;
+use Zilf\Exceptions\HandleExceptions;
+use Zilf\Exceptions\NotFoundHttpException;
 use Zilf\HttpFoundation\Response;
 use Zilf\Routing\Route;
 
@@ -61,8 +61,8 @@ class Application
         //设置时区
         $this->setTimeZone();
 
-        //设置开发环境
-        $this->setEnvironment();
+        //设置异常信息
+        $this->setHandler();
 
         //加载路由库
         if (PHP_SAPI !== 'cli') {
@@ -102,7 +102,12 @@ class Application
     {
         $class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
         if (!class_exists($class)) {
-            throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
+            $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
+
+            if ($referer = Zilf::$container['request']->headers->get('referer')) {
+                $message .= sprintf(' (from "%s")', $referer);
+            }
+            throw new NotFoundHttpException($message);
         }
 
         $object = Zilf::$container->build($class, []);
@@ -354,21 +359,25 @@ class Application
         return date_default_timezone_get();
     }
 
-
-    private function setEnvironment()
+    /**
+     *
+     */
+    private function setHandler()
     {
+        $handle = new HandleExceptions();
+        $handle->bootstrap();
+
         switch ($this->environment) {
             case 'dev':
             case 'development':
-                error_reporting(-1);
                 ini_set('display_errors', 1);
                 break;
 
             case 'testing':
             case 'pro':
+            case 'prod':
             case 'production':
                 ini_set('display_errors', 0);
-                error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
                 break;
 
             default:
@@ -376,6 +385,16 @@ class Application
                 echo 'The application environment is not set correctly.';
                 exit(1); // EXIT_ERROR
         }
+    }
+
+    /**
+     * Determine if we are running in the console.
+     *
+     * @return bool
+     */
+    public function runningInConsole()
+    {
+        return php_sapi_name() == 'cli' || php_sapi_name() == 'phpdbg';
     }
 
     /**
