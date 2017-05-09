@@ -11,7 +11,7 @@
 
 namespace Zilf\Debug\Exception;
 
-use Zilf\HttpKernel\Exception\HttpExceptionInterface;
+use Zilf\Exceptions\HttpExceptionInterface;
 
 /**
  * FlattenException wraps a PHP Exception to be able to serialize it.
