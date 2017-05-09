@@ -323,4 +323,97 @@ if (!function_exists('password_check')) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////
 
+if (!function_exists('html_encode')) {
+    /**
+     * @param $content
+     * @param bool $doubleEncode
+     * @return string
+     */
+    function html_encode($content, $doubleEncode = true){
+        return \Zilf\Helpers\Html::encode($content, $doubleEncode);
+    }
+}
+
+if (!function_exists('html_decode')) {
+    /**
+     * @param $content
+     * @return string
+     */
+    function html_decode($content){
+        return \Zilf\Helpers\Html::decode($content);
+    }
+}
+
+if (!function_exists('asset_link')) {
+    /**
+     * @param $url
+     * @param string $version
+     * @param string $urlName
+     * @return string
+     */
+    function asset_link($url, $version = '', $urlName = 'default'){
+        return \Zilf\Helpers\Url::assetUrl($url,$version,$urlName);
+    }
+}
+
+if (!function_exists('asset_css')) {
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    function asset_css($url, $options = [], $urlName = 'default'){
+        return \Zilf\Helpers\Html::assetCss($url, $options, $urlName);
+    }
+}
+
+if (!function_exists('asset_js')) {
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    function asset_js($url, $options = [], $urlName = 'default'){
+        return \Zilf\Helpers\Html::assetJs($url, $options, $urlName);
+    }
+}
+
+if (!function_exists('asset_img')) {
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    function asset_img($url, $options = [], $urlName = 'default'){
+        return \Zilf\Helpers\Html::assetImg($url, $options, $urlName);
+    }
+}
+
+if (!function_exists('asset_a')) {
+    /**
+     * @param $text
+     * @param null $url
+     * @param array $options
+     * @return string
+     */
+    function asset_a($text, $url = null, $options = []){
+        return \Zilf\Helpers\Html::a($text, $url, $options);
+    }
+}
+
+if (!function_exists('asset_mailto')) {
+    /**
+     * @param $text
+     * @param null $email
+     * @param array $options
+     * @return string
+     */
+    function asset_mailto($text, $email = null, $options = []){
+        return \Zilf\Helpers\Html::assetImg($text, $email, $options);
+    }
+}

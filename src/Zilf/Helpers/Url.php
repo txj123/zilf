@@ -8,15 +8,18 @@ use Zilf\System\Zilf;
 
 class Url
 {
-    /**
-     * @param string $url
-     * @param string $params
-     * @param bool $scheme
-     * @return string
-     */
-    public static function to($url = '', $params = '', $scheme = true)
+    public static function assetUrl($url, $version='', $urlName = 'default')
     {
-        return self::toRoute($url, $params, $scheme);
+        //获取设置的url信息，如果不存在，则使用当前默认地址
+        $staticUrl = config('assets.' . $urlName, Request::getSchemeAndHttpHost());
+
+        $strVersion = (stripos($url,'?') == 0) ? $version ? '?'.$version : '' : '&'.$version;
+
+        if (strncmp($url, '//', 2) === 0) {
+            return $url.$strVersion;
+        } else {
+            return $staticUrl . '/' . ltrim($url, '/').$strVersion;
+        }
     }
 
     /**
