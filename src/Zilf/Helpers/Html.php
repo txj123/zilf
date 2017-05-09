@@ -135,7 +135,7 @@ class Html
 
     /**
      * Generates a link tag that refers to an external CSS file.
-     * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::to()]].
+     * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::assetUrl()]].
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
@@ -146,31 +146,58 @@ class Html
      * The rest of the options will be rendered as the attributes of the resulting link tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @param string $urlName
      * @return string the generated link tag
-     * @see Url::to()
+     * @see Url::assetUrl()
      */
-    public static function cssFile($url, $options = [])
+    public static function assetCss($url, $options = [], $urlName = 'default')
+    {
+        $html = '';
+        if (is_array($url)) {
+            foreach ($url as $item) {
+                $html .= self::getCssHtml($item, $options, $urlName);
+            }
+        } else {
+            $html = self::getCssHtml($url, $options, $urlName);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param $url
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    private static function getCssHtml($url, $options = [], $urlName = 'default')
     {
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
-        $options['href'] = Url::to($url);
+
+        $version = $options['version'] ?? config('assets.css_version');
+        unset($options['version']);
+        $options['href'] = Url::assetUrl($url, $version, $urlName);
+        unset($version);
 
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
-            return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
+            $html = self::wrapIntoCondition(static::tag('link', '', $options), $condition);
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
-            return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
+            $html = '<noscript>' . static::tag('link', '', $options) . '</noscript>';
         } else {
-            return static::tag('link', '', $options);
+            $html = static::tag('link', '', $options);
         }
+
+        return $html;
     }
 
     /**
      * Generates a script tag that refers to an external JavaScript file.
-     * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::to()]].
+     * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::assetUrl()]].
      * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
@@ -180,12 +207,36 @@ class Html
      * The rest of the options will be rendered as the attributes of the resulting script tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @param string $urlName
      * @return string the generated script tag
-     * @see Url::to()
+     * @see Url::assetUrl()
      */
-    public static function jsFile($url, $options = [])
+    public static function assetJs($url, $options = [], $urlName = 'default')
     {
-        $options['src'] = Url::to($url);
+        $html = '';
+        if (is_array($url)) {
+            foreach ($url as $item) {
+                $html .= self::getJsHtml($item, $options, $urlName);
+            }
+        } else {
+            $html = self::getJsHtml($url, $options, $urlName);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param $url
+     * @param $options
+     * @param $urlName
+     * @return string
+     */
+    private static function getJsHtml($url, $options, $urlName= 'default')
+    {
+        $version = $options['version'] ?? config('assets.js_version');
+        unset($options['version']);
+        $options['src'] = Url::assetUrl($url, $version, $urlName);
+        unset($version);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
@@ -200,15 +251,15 @@ class Html
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
-     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[Url::to()]]
+     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[Url::toRoute()]]
      * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
      * will not be generated.
      *
-     * If you want to use an absolute url you can call [[Url::to()]] yourself, before passing the URL to this method,
+     * If you want to use an absolute url you can call [[Url::assetUrl()]] yourself, before passing the URL to this method,
      * like this:
      *
      * ```php
-     * Html::a('link text', Url::to($url, true))
+     * Html::a('link text', Url::toRoute($url, true))
      * ```
      *
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
@@ -216,12 +267,12 @@ class Html
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * @return string the generated hyperlink
-     * @see \Zilf\Helpers\Url::to()
+     * @see \Zilf\Helpers\Url::toRoute()
      */
     public static function a($text, $url = null, $options = [])
     {
         if ($url !== null) {
-            $options['href'] = Url::to($url);
+            $options['href'] = Url::toRoute($url);
         }
         return static::tag('a', $text, $options);
     }
@@ -247,16 +298,39 @@ class Html
 
     /**
      * Generates an image tag.
-     * @param array|string $src the image URL. This parameter will be processed by [[Url::to()]].
+     * @param array|string $src the image URL. This parameter will be processed by [[Url::toRoute()]].
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @param string $urlName
      * @return string the generated image tag
      */
-    public static function img($src, $options = [])
+    public static function assetImg($src, $options = [], $urlName= 'default')
     {
-        $options['src'] = Url::to($src);
+        $html = '';
+        if (is_array($src)) {
+            foreach ($src as $item) {
+                $html .= self::getImgHtml($item, $options,$urlName);
+            }
+        } else {
+            $html = self::getImgHtml($src, $options,$urlName);
+        }
+
+        return $html;
+    }
+
+    /**
+     * @param $src
+     * @param array $options
+     * @param string $urlName
+     * @return string
+     */
+    private static function getImgHtml($src, $options = [],$urlName= 'default')
+    {
+        $version = $options['version'] ?? config('assets.css_version');
+        unset($options['version']);
+        $options['src'] = Url::assetUrl($src,$version,$urlName);
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
@@ -331,5 +405,43 @@ class Html
         }
 
         return $html;
+    }
+
+    /**
+     * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
+     * @param string $content raw HTML content.
+     * @param string $condition condition string.
+     * @return string generated HTML.
+     */
+    private static function wrapIntoCondition($content, $condition)
+    {
+        if (strpos($condition, '!IE') !== false) {
+            return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
+        }
+        return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
+    }
+
+    /**
+     * Converts a CSS style array into a string representation.
+     *
+     * For example,
+     *
+     * ```php
+     * print_r(Html::cssStyleFromArray(['width' => '100px', 'height' => '200px']));
+     * // will display: 'width: 100px; height: 200px;'
+     * ```
+     *
+     * @param array $style the CSS style array. The array keys are the CSS property names,
+     * and the array values are the corresponding CSS property values.
+     * @return string the CSS style string. If the CSS style is empty, a null will be returned.
+     */
+    public static function cssStyleFromArray(array $style)
+    {
+        $result = '';
+        foreach ($style as $name => $value) {
+            $result .= "$name: $value; ";
+        }
+        // return null if empty to avoid rendering the "style" attribute
+        return $result === '' ? null : rtrim($result);
     }
 }
