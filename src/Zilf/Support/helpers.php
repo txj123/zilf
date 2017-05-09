@@ -100,7 +100,7 @@ if (!function_exists('current_url')) {
      */
     function current_url()
     {
-        return \Zilf\Facades\Request::fullUrl();
+        return \Zilf\Helpers\Url::current_url();
     }
 }
 
@@ -117,36 +117,7 @@ if(!function_exists('toRoute')){
      * @return string
      */
     function toRoute($url = '', $params = '',$scheme = true){
-        $bundle = \Zilf\System\Zilf::$app->bundle;
-
-        if (strncmp($url, '//', 2) === 0) {
-            // e.g. //hostname/path/to/resource
-            return is_string($scheme) ? "$scheme:$url" : $url;
-        }elseif (strncmp($url, '/', 1) === 0){
-            // e.g. /path/to/resource
-            $url = ltrim($url,'/');
-            $bundle = '';
-        }
-
-        if($scheme){
-            $host = \Zilf\Facades\Request::getSchemeAndHttpHost();
-        }else{
-            $host = '';
-        }
-
-        $url = $host.'/' . ($bundle ? strtolower($bundle) .'/' : '') . $url;
-        if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
-            $url = $scheme . substr($url, $pos);
-        }
-
-        $str_param = '';
-        if(is_array($params) && !empty($params)){
-            $str_param = '/'.implode('/',$params);
-        }elseif(!empty($params)){
-            $str_param = '/'.(string)$params;
-        }
-
-        return $url.$str_param;
+        return \Zilf\Helpers\Url::toRoute($url,$params,$scheme);
     }
 }
 
@@ -163,11 +134,7 @@ if (! function_exists('str_limit')) {
      */
     function str_limit($value, $limit = 100, $end = '...')
     {
-        if (mb_strwidth($value, 'UTF-8') <= $limit) {
-            return $value;
-        }
-
-        return rtrim(mb_strimwidth($value, 0, $limit, '', 'UTF-8')).$end;
+        \Zilf\Helpers\Str::limit($value,$limit,$end);
     }
 }
 
@@ -226,7 +193,7 @@ if (! function_exists('array_get')) {
      */
     function array_get($array, $key, $default = null)
     {
-        return \Zilf\Support\Arr::get($array, $key, $default);
+        return \Zilf\Helpers\Arr::get($array, $key, $default);
     }
 }
 
@@ -240,7 +207,7 @@ if (! function_exists('array_has')) {
      */
     function array_has($array, $keys)
     {
-        return \Zilf\Support\Arr::has($array, $keys);
+        return \Zilf\Helpers\Arr::has($array, $keys);
     }
 }
 
@@ -273,8 +240,8 @@ if (!function_exists('hashids_decode')) {
         /**
          * @var $hashid \Zilf\Security\Hashids\Hashids
          */
-        $hashid = \Zilf\System\Zilf::$container->get('hashids');
-        $arr = $hashid->decode($hash);
+        $hashId = \Zilf\System\Zilf::$container->get('hashids');
+        $arr = $hashId->decode($hash);
         if(!empty($arr)){
             return count($arr) == 1 ? $arr[0] : $arr;
         }else{
