@@ -13,34 +13,6 @@ namespace Zilf\Helpers;
 class Html
 {
     /**
-     * Encodes special characters into HTML entities.
-     * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
-     * @param string $content the content to be encoded
-     * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
-     * HTML entities in `$content` will not be further encoded.
-     * @return string the encoded content
-     * @see decode()
-     * @see http://www.php.net/manual/en/function.htmlspecialchars.php
-     */
-    public static function encode($content, $doubleEncode = true)
-    {
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE,  'UTF-8', $doubleEncode);
-    }
-
-    /**
-     * Decodes special HTML entities back to the corresponding characters.
-     * This is the opposite of [[encode()]].
-     * @param string $content the content to be decoded
-     * @return string the decoded content
-     * @see encode()
-     * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
-     */
-    public static function decode($content)
-    {
-        return htmlspecialchars_decode($content, ENT_QUOTES);
-    }
-
-    /**
      * @var array list of void elements (element name => 1)
      * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
      */
@@ -62,6 +34,7 @@ class Html
         'track' => 1,
         'wbr' => 1,
     ];
+
     /**
      * @var array the preferred order of attributes in a tag. This mainly affects the order of the attributes
      * that are rendered by [[renderTagAttributes()]].
@@ -96,6 +69,7 @@ class Html
         'rel',
         'media',
     ];
+
     /**
      * @var array list of tag attributes that should be specially handled when their values are of array type.
      * In particular, if the value of the `data` attribute is `['name' => 'xyz', 'age' => 13]`, two attributes
@@ -104,6 +78,33 @@ class Html
      */
     public static $dataAttributes = ['data', 'data-ng', 'ng'];
 
+    /**
+     * Encodes special characters into HTML entities.
+     * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
+     * @param string $content the content to be encoded
+     * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
+     * HTML entities in `$content` will not be further encoded.
+     * @return string the encoded content
+     * @see decode()
+     * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+     */
+    public static function encode($content, $doubleEncode = true)
+    {
+        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', $doubleEncode);
+    }
+
+    /**
+     * Decodes special HTML entities back to the corresponding characters.
+     * This is the opposite of [[encode()]].
+     * @param string $content the content to be decoded
+     * @return string the decoded content
+     * @see encode()
+     * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+     */
+    public static function decode($content)
+    {
+        return htmlspecialchars_decode($content, ENT_QUOTES);
+    }
 
     /**
      * Generates a complete HTML tag.
@@ -130,68 +131,6 @@ class Html
         }
         $html = "<$name" . static::renderTagAttributes($options) . '>';
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
-    }
-
-    /**
-     * Generates a start tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated start tag
-     * @see endTag()
-     * @see tag()
-     */
-    public static function beginTag($name, $options = [])
-    {
-        if ($name === null || $name === false) {
-            return '';
-        }
-        return "<$name" . static::renderTagAttributes($options) . '>';
-    }
-
-    /**
-     * Generates an end tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
-     * @return string the generated end tag
-     * @see beginTag()
-     * @see tag()
-     */
-    public static function endTag($name)
-    {
-        if ($name === null || $name === false) {
-            return '';
-        }
-        return "</$name>";
-    }
-
-    /**
-     * Generates a style tag.
-     * @param string $content the style content
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated style tag
-     */
-    public static function style($content, $options = [])
-    {
-        return static::tag('style', $content, $options);
-    }
-
-    /**
-     * Generates a script tag.
-     * @param string $content the script content
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated script tag
-     */
-    public static function script($content, $options = [])
-    {
-        return static::tag('script', $content, $options);
     }
 
     /**

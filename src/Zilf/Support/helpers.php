@@ -1,6 +1,6 @@
 <?php
 
-if(!function_exists('cookie_helper')){
+if (!function_exists('cookie')) {
     /**
      * Cookie 设置、获取、删除
      * @param string $name cookie名称
@@ -8,16 +8,31 @@ if(!function_exists('cookie_helper')){
      * @param mixed $option cookie参数
      * @return mixed
      */
-    function cookie_helper($name='', $value='', $option=null) {
+    function cookie($name = '', $value = '', $option = null)
+    {
+        return cookie_helper($name,$value,$option);
+    }
+}
+
+if (!function_exists('cookie_helper')) {
+    /**
+     * Cookie 设置、获取、删除
+     * @param string $name cookie名称
+     * @param mixed $value cookie值
+     * @param mixed $option cookie参数
+     * @return mixed
+     */
+    function cookie_helper($name = '', $value = '', $option = null)
+    {
         // 默认设置
         $cookie = \Zilf\System\Zilf::$container->getShare('config')->get('cookie');
         $config = array(
-            'prefix'    =>  $cookie['cookie_prefix'], // cookie 名称前缀
-            'expire'    =>  $cookie['cookie_expire'], // cookie 保存时间
-            'path'      =>  $cookie['cookie_path'], // cookie 保存路径
-            'domain'    =>  $cookie['cookie_domain'], // cookie 有效域名
-            'secure'    =>  $cookie['cookie_secure'], //  cookie 启用安全传输
-            'httponly'  =>  $cookie['cookie_httponly'], // httponly设置
+            'prefix' => $cookie['cookie_prefix'], // cookie 名称前缀
+            'expire' => $cookie['cookie_expire'], // cookie 保存时间
+            'path' => $cookie['cookie_path'], // cookie 保存路径
+            'domain' => $cookie['cookie_domain'], // cookie 有效域名
+            'secure' => $cookie['cookie_secure'], //  cookie 启用安全传输
+            'httponly' => $cookie['cookie_httponly'], // httponly设置
         );
         // 参数设置(会覆盖黙认设置)
         if (!is_null($option)) {
@@ -25,9 +40,9 @@ if(!function_exists('cookie_helper')){
                 $option = array('expire' => $option);
             elseif (is_string($option))
                 parse_str($option, $option);
-            $config     = array_merge($config, array_change_key_case($option));
+            $config = array_merge($config, array_change_key_case($option));
         }
-        if(!empty($config['httponly'])){
+        if (!empty($config['httponly'])) {
             ini_set("session.cookie_httponly", 1);
         }
         // 清除指定前缀的所有cookie
@@ -39,40 +54,40 @@ if(!function_exists('cookie_helper')){
             if (!empty($prefix)) {// 如果前缀为空字符串将不作处理直接返回
                 foreach ($_COOKIE as $key => $val) {
                     if (0 === stripos($key, $prefix)) {
-                        setcookie($key, '', time() - 3600, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+                        setcookie($key, '', time() - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                         unset($_COOKIE[$key]);
                     }
                 }
             }
             return null;
-        }elseif('' === $name){
+        } elseif ('' === $name) {
             // 获取全部的cookie
             return $_COOKIE;
         }
         $name = $config['prefix'] . str_replace('.', '_', $name);
         if ('' === $value) {
-            if(isset($_COOKIE[$name])){
-                $value =    $_COOKIE[$name];
-                if(0===strpos($value,'think:')){
-                    $value  =   substr($value,6);
-                    return array_map('urldecode',json_decode(MAGIC_QUOTES_GPC?stripslashes($value):$value,true));
-                }else{
+            if (isset($_COOKIE[$name])) {
+                $value = $_COOKIE[$name];
+                if (0 === strpos($value, 'think:')) {
+                    $value = substr($value, 6);
+                    return array_map('urldecode', json_decode(MAGIC_QUOTES_GPC ? stripslashes($value) : $value, true));
+                } else {
                     return $value;
                 }
-            }else{
+            } else {
                 return null;
             }
         } else {
             if (is_null($value)) {
-                setcookie($name, '', time() - 3600, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+                setcookie($name, '', time() - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                 unset($_COOKIE[$name]); // 删除指定cookie
             } else {
                 // 设置cookie
-                if(is_array($value)){
-                    $value  = 'think:'.json_encode(array_map('urlencode',$value));
+                if (is_array($value)) {
+                    $value = 'think:' . json_encode(array_map('urlencode', $value));
                 }
                 $expire = !empty($config['expire']) ? time() + intval($config['expire']) : 0;
-                setcookie($name, $value, $expire, $config['path'], $config['domain'],$config['secure'],$config['httponly']);
+                setcookie($name, $value, $expire, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                 $_COOKIE[$name] = $value;
             }
         }
@@ -80,15 +95,31 @@ if(!function_exists('cookie_helper')){
     }
 }
 
-if(!function_exists('config_helper')){
+if (!function_exists('config_helper')) {
     /**
      * 获取配置信息
      *
      * @param $name
-     * @return $this
+     * @param null $default
+     * @return mixed
      */
-    function config_helper($name){
-        return \Zilf\System\Zilf::$container->getShare('config')->get($name);
+    function config_helper($name, $default = null)
+    {
+        return \Zilf\System\Zilf::$container->getShare('config')->get($name, $default);
+    }
+}
+
+if (!function_exists('config')) {
+    /**
+     * 获取配置信息
+     *
+     * @param $name
+     * @param null $default
+     * @return mixed
+     */
+    function config($name, $default = null)
+    {
+        return config_helper($name,$default);
     }
 }
 
@@ -106,7 +137,7 @@ if (!function_exists('current_url')) {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-if(!function_exists('toRoute')){
+if (!function_exists('toRoute')) {
     /**
      * 例子
      * toRoute('path/show');  # http://www.xx.com/currentBundle/path/show
@@ -116,35 +147,36 @@ if(!function_exists('toRoute')){
      * @param bool $scheme
      * @return string
      */
-    function toRoute($url = '', $params = '',$scheme = true){
-        return \Zilf\Helpers\Url::toRoute($url,$params,$scheme);
+    function toRoute($url = '', $params = '', $scheme = true)
+    {
+        return \Zilf\Helpers\Url::toRoute($url, $params, $scheme);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-if (! function_exists('str_limit')) {
+if (!function_exists('str_limit')) {
     /**
      * Limit the number of characters in a string.
      *
-     * @param  string  $value
-     * @param  int     $limit
-     * @param  string  $end
+     * @param  string $value
+     * @param  int $limit
+     * @param  string $end
      * @return string
      */
     function str_limit($value, $limit = 100, $end = '...')
     {
-        \Zilf\Helpers\Str::limit($value,$limit,$end);
+        \Zilf\Helpers\Str::limit($value, $limit, $end);
     }
 }
 
 
-if (! function_exists('tap')) {
+if (!function_exists('tap')) {
     /**
      * Call the given Closure with the given value then return the value.
      *
-     * @param  mixed  $value
-     * @param  callable  $callback
+     * @param  mixed $value
+     * @param  callable $callback
      * @return mixed
      */
     function tap($value, $callback)
@@ -156,11 +188,11 @@ if (! function_exists('tap')) {
 }
 
 
-if (! function_exists('value')) {
+if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return mixed
      */
     function value($value)
@@ -169,7 +201,7 @@ if (! function_exists('value')) {
     }
 }
 
-if (! function_exists('windows_os')) {
+if (!function_exists('windows_os')) {
     /**
      * Determine whether the current environment is Windows based.
      *
@@ -182,13 +214,13 @@ if (! function_exists('windows_os')) {
 }
 
 
-if (! function_exists('array_get')) {
+if (!function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  \ArrayAccess|array $array
+     * @param  string $key
+     * @param  mixed $default
      * @return mixed
      */
     function array_get($array, $key, $default = null)
@@ -197,12 +229,12 @@ if (! function_exists('array_get')) {
     }
 }
 
-if (! function_exists('array_has')) {
+if (!function_exists('array_has')) {
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string|array  $keys
+     * @param  \ArrayAccess|array $array
+     * @param  string|array $keys
      * @return bool
      */
     function array_has($array, $keys)
@@ -242,9 +274,9 @@ if (!function_exists('hashids_decode')) {
          */
         $hashId = \Zilf\System\Zilf::$container->get('hashids');
         $arr = $hashId->decode($hash);
-        if(!empty($arr)){
+        if (!empty($arr)) {
             return count($arr) == 1 ? $arr[0] : $arr;
-        }else{
+        } else {
             return null;
         }
     }
@@ -256,8 +288,8 @@ if (!function_exists('password_make')) {
     /**
      * Hash the given value.
      *
-     * @param  string  $value
-     * @param  array   $options
+     * @param  string $value
+     * @param  array $options
      * @return string
      *
      * @throws \RuntimeException
@@ -276,9 +308,9 @@ if (!function_exists('password_check')) {
     /**
      * Check the given plain value against a hash.
      *
-     * @param  string  $value
-     * @param  string  $hashedValue
-     * @param  array   $options
+     * @param  string $value
+     * @param  string $hashedValue
+     * @param  array $options
      * @return bool
      */
     function password_check($value, $hashedValue, array $options = [])
