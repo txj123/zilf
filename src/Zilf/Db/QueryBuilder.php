@@ -185,7 +185,7 @@ class QueryBuilder extends \Zilf\Db\Exception\Object
                     foreach ($value->params as $n => $v) {
                         $params[$n] = $v;
                     }
-                } elseif ($value instanceof \yii\db\Query) {
+                } elseif ($value instanceof \Zilf\Db\Query) {
                     list($sql, $params) = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {

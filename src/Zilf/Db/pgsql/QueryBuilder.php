@@ -264,7 +264,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      */
     private function normalizeTableRowData($table, $columns)
     {
-        if ($columns instanceof \yii\db\Query) {
+        if ($columns instanceof \Zilf\Db\Query) {
             return $columns;
         }
 
