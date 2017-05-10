@@ -179,7 +179,7 @@ if (!function_exists('str_limit')) {
      */
     function str_limit($value, $limit = 100, $end = '...')
     {
-        \Zilf\Helpers\Str::limit($value, $limit, $end);
+        return \Zilf\Helpers\Str::limit($value, $limit, $end);
     }
 }
 

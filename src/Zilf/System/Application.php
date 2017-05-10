@@ -140,7 +140,7 @@ class Application
             }
             $response->send();
         } else {
-            throw new \Exception('action函数方法不存在: ' . $this->action . ', 类：' . $this->class);
+            throw new \Exception('类: ' . $class . ' 调用的方法：' . $this->action . ' 不存在！');
         }
     }
 
@@ -400,7 +400,8 @@ class Application
     /**
      * @return mixed
      */
-    public function getEnvironment(){
+    public function getEnvironment()
+    {
         return $this->environment;
     }
 }

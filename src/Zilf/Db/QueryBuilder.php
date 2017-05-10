@@ -175,7 +175,7 @@ class QueryBuilder extends \Zilf\Db\Exception\Object
         $names = [];
         $placeholders = [];
         $values = ' DEFAULT VALUES';
-        if ($columns instanceof \Zilf\db\Query) {
+        if ($columns instanceof \Zilf\Db\Query) {
             list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema);
         } else {
             foreach ($columns as $name => $value) {
