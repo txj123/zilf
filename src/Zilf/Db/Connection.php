@@ -8,6 +8,7 @@
 namespace Zilf\Db;
 
 use PDO;
+use Zilf\Cache\CacheManager;
 use Zilf\System\Zilf;
 use Zilf\Db\Exception\Component;
 use Zilf\Db\Exception\InvalidConfigException;
@@ -513,11 +514,10 @@ class Connection extends Component
      * Returns the current query cache information.
      * This method is used internally by [[Command]].
      * @param int $duration the preferred caching duration. If null, it will be ignored.
-     * @param \Zilf\caching\Dependency $dependency the preferred caching dependency. If null, it will be ignored.
      * @return array the current query cache information, or null if query cache is not enabled.
      * @internal
      */
-    public function getQueryCacheInfo($duration, $dependency)
+    public function getQueryCacheInfo($duration)
     {
         if (!$this->enableQueryCache) {
             return null;
@@ -528,19 +528,12 @@ class Connection extends Component
             if ($duration === null) {
                 $duration = $info[0];
             }
-            if ($dependency === null) {
-                $dependency = $info[1];
-            }
         }
 
         if ($duration === 0 || $duration > 0) {
-            if (is_string($this->queryCache) && Yii::$app) {
-                $cache = Yii::$app->get($this->queryCache, false);
-            } else {
-                $cache = $this->queryCache;
-            }
-            if ($cache instanceof Cache) {
-                return [$cache, $duration, $dependency];
+            $cache = Zilf::$container->get('cache');
+            if ($cache instanceof CacheManager) {
+                return [$cache, $duration];
             }
         }
 
@@ -580,7 +573,7 @@ class Connection extends Component
 //            Yii::endProfile($token, __METHOD__);
         } catch (\PDOException $e) {
 //            Yii::endProfile($token, __METHOD__);
-            throw new \Exception($e->getMessage(), $e->errorInfo, (int) $e->getCode(), $e);
+            throw new \Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
         }
     }
 
@@ -640,7 +633,7 @@ class Connection extends Component
 
         $dsn = $this->dsn;
         if (strncmp('sqlite:@', $dsn, 8) === 0) {
-            $dsn = 'sqlite:' . Yii::getAlias(substr($dsn, 7));
+            $dsn = 'sqlite:' . substr($dsn, 7);
         }
         return new $pdoClass($dsn, $this->username, $this->password, $this->attributes);
     }
@@ -752,7 +745,7 @@ class Connection extends Component
             try {
                 $transaction->rollBack();
             } catch (\Exception $e) {
-                \Yii::error($e, __METHOD__);
+//                \Yii::error($e, __METHOD__);
                 // hide this exception to be able to continue throwing original exception outside
             }
         }
@@ -1040,7 +1033,7 @@ class Connection extends Component
         }
 
 //        $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
-        $cache = is_string($this->serverStatusCache) ?  $this->serverStatusCache : $this->serverStatusCache;
+        $cache = is_string($this->serverStatusCache) ? $this->serverStatusCache : $this->serverStatusCache;
 
         shuffle($pool);
 
@@ -1057,14 +1050,14 @@ class Connection extends Component
             }
 
             /* @var $db Connection */
-            $db = Zilf::$container->get('db',$config);
+            $db = Zilf::$container->get('db', $config);
 //          $db = Yii::createObject($config);
 
             try {
                 $db->open();
                 return $db;
             } catch (\Exception $e) {
-                Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
+//                Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
                 if ($cache instanceof Cache) {
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
@@ -1082,6 +1075,6 @@ class Connection extends Component
     public function __sleep()
     {
         $this->close();
-        return array_keys((array) $this);
+        return array_keys((array)$this);
     }
 }

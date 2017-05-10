@@ -551,11 +551,8 @@ class Arr
      * @return array the encoded data
      * @see http://www.php.net/manual/en/function.htmlspecialchars.php
      */
-    public static function htmlEncode($data, $valuesOnly = true, $charset = null)
+    public static function htmlEncode($data, $valuesOnly = true, $charset = 'UTF-8')
     {
-        if ($charset === null) {
-            $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
-        }
         $d = [];
         foreach ($data as $key => $value) {
             if (!$valuesOnly && is_string($key)) {

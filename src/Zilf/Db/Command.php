@@ -7,6 +7,7 @@
 
 namespace Zilf\Db;
 
+use Zilf\Cache\CacheManager;
 use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\Exception\Component;
@@ -865,7 +866,7 @@ class Command extends Component
     {
         if ($this->db->enableLogging) {
             $rawSql = $this->getRawSql();
-            APP_DEBUG && Log::info($rawSql, [$category]);
+            APP_DEBUG && Log::info($rawSql, [$category,get_called_class()]);
         }
         if (!$this->db->enableProfiling) {
             return [false, isset($rawSql) ? $rawSql : null];
@@ -888,9 +889,9 @@ class Command extends Component
         list($profile, $rawSql) = $this->logQuery('yii\db\Command::query');
 
         if ($method !== '') {
-            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
+            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration);
             if (is_array($info)) {
-                /* @var $cache \Zilf\caching\Cache */
+                /* @var $cache CacheManager*/
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,
@@ -900,6 +901,7 @@ class Command extends Component
                     $this->db->username,
                     $rawSql ?: $rawSql = $this->getRawSql(),
                 ];
+                $cacheKey = md5(json_encode($cacheKey));
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
 //                    // Yii::trace('Query result served from cache', 'Zilf\Db\Command::query');
@@ -932,7 +934,7 @@ class Command extends Component
         }
 
         if (isset($cache, $cacheKey, $info)) {
-            $cache->set($cacheKey, [$result], $info[1], $info[2]);
+            $cache->put($cacheKey, [$result], $info[1]);
 //            // Yii::trace('Saved query result in cache', 'Zilf\Db\Command::query');
         }
 

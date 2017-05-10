@@ -136,7 +136,7 @@ class Transaction extends \Zilf\Db\Exception\Object
             // Yii::trace('Set savepoint ' . $this->_level, __METHOD__);
             $schema->createSavepoint('LEVEL' . $this->_level);
         } else {
-            Yii::info('Transaction not started: nested transaction not supported', __METHOD__);
+//            Yii::info('Transaction not started: nested transaction not supported', __METHOD__);
         }
         $this->_level++;
     }
@@ -164,7 +164,7 @@ class Transaction extends \Zilf\Db\Exception\Object
             // Yii::trace('Release savepoint ' . $this->_level, __METHOD__);
             $schema->releaseSavepoint('LEVEL' . $this->_level);
         } else {
-            Yii::info('Transaction not committed: nested transaction not supported', __METHOD__);
+//            Yii::info('Transaction not committed: nested transaction not supported', __METHOD__);
         }
     }
 
@@ -193,7 +193,7 @@ class Transaction extends \Zilf\Db\Exception\Object
             // Yii::trace('Roll back to savepoint ' . $this->_level, __METHOD__);
             $schema->rollBackSavepoint('LEVEL' . $this->_level);
         } else {
-            Yii::info('Transaction not rolled back: nested transaction not supported', __METHOD__);
+//            Yii::info('Transaction not rolled back: nested transaction not supported', __METHOD__);
             // throw an exception to fail the outer transaction
             throw new Exception('Roll back failed: nested transaction not supported.');
         }

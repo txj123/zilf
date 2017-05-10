@@ -275,7 +275,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $modelClass \Zilf\db\ActiveRecord */
+        /* @var $modelClass \Zilf\Db\ActiveRecord */
         $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }

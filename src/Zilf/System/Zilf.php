@@ -10,6 +10,7 @@ namespace Zilf\System;
 
 
 use Zilf\Config\Config;
+use Zilf\Db\Exception\InvalidConfigException;
 use Zilf\Di\Container;
 
 class Zilf
@@ -75,7 +76,6 @@ class Zilf
      * @param array $params the constructor parameters
      * @return object the created object
      * @throws InvalidConfigException if the configuration is invalid.
-     * @see \yii\di\Container
      */
     public static function createObject($type, array $params = [])
     {
@@ -89,10 +89,6 @@ class Zilf
 
             static::$container->set($class, $class, $type);
             return static::$container->get($class);
-
-        } elseif (is_callable($type, true)) {
-
-            return static::$container->invoke($type, $params);
 
         } elseif (is_array($type)) {
 
