@@ -51,14 +51,15 @@ class Services
          * 日志类
          */
         $this->register('log',function (){
-            return new Writer($this->container->getShare('config')->get('monolog'), $this->container->getShare('config')->get('runtime'));
-        });
-
-        /**
-         * 缓存类
-         */
-        $this->register('cache',function (){
-            return new CacheManager();
+            $monolog_config = [
+                'handlers' => [
+                    [
+                        'type' => 'StreamHandler',
+                        'level' => 'debug',
+                    ]
+                ]
+            ];
+            return new Writer(config('monolog',$monolog_config), config('runtime',APP_PATH . '/runtime'));
         });
     }
 
@@ -72,13 +73,14 @@ class Services
             'hashids' => 'Zilf\Security\Hashids\Hashids',
             'validator' => 'Zilf\Validation\Factory',
             'files' => 'Zilf\Filesystem\Filesystem',
+            'cache' => 'Zilf\Cache\CacheManager',
 //            'Mail',
 //            'Redis',
 //            'Request',
 //            'Response',
 //            'Session',
 //            'Cookie',
-            //            'view',
+//            'view',
 //            'Cache',
 //            'DB',
 //            'File',
