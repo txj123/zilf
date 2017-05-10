@@ -75,6 +75,11 @@ abstract class Schema extends Object
     public $exceptionMap = [
         'SQLSTATE[23' => 'Zilf\Db\IntegrityException',
     ];
+    /**
+     * @var string column schema class
+     * @since 2.0.11
+     */
+    public $columnSchemaClass = 'Zilf\Db\ColumnSchema';
 
     /**
      * @var array list of ALL schema names in the database, except system schemas
@@ -100,7 +105,7 @@ abstract class Schema extends Object
      */
     protected function createColumnSchema()
     {
-        return Zilf::createObject('Zilf\Db\ColumnSchema');
+        return Zilf::createObject($this->columnSchemaClass);
     }
 
     /**
@@ -113,7 +118,7 @@ abstract class Schema extends Object
     /**
      * Obtains the metadata for the named table.
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+     * @param bool $refresh whether to reload the table schema even if it is found in the cache.
      * @return null|TableSchema table metadata. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
@@ -180,7 +185,7 @@ abstract class Schema extends Object
     /**
      * Returns the metadata for all tables in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param boolean $refresh whether to fetch the latest available table schemas. If this is false,
+     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
      * cached data may be returned if available.
      * @return TableSchema[] the metadata for all tables in the database.
      * Each array element is an instance of [[TableSchema]] or its child class.
@@ -202,7 +207,7 @@ abstract class Schema extends Object
 
     /**
      * Returns all schema names in the database, except system schemas.
-     * @param boolean $refresh whether to fetch the latest available schema names. If this is false,
+     * @param bool $refresh whether to fetch the latest available schema names. If this is false,
      * schema names fetched previously (if available) will be returned.
      * @return string[] all schema names in the database, except system schemas.
      * @since 2.0.4
@@ -220,7 +225,7 @@ abstract class Schema extends Object
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
      * If not empty, the returned table names will be prefixed with the schema name.
-     * @param boolean $refresh whether to fetch the latest available table names. If this is false,
+     * @param bool $refresh whether to fetch the latest available table names. If this is false,
      * table names fetched previously (if available) will be returned.
      * @return string[] all table names in the database.
      */
@@ -248,7 +253,7 @@ abstract class Schema extends Object
     /**
      * Determines the PDO type for the given PHP data value.
      * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
+     * @return int the PDO type
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
@@ -316,7 +321,7 @@ abstract class Schema extends Object
      * This method may be overridden by child classes to create a DBMS-specific column schema builder.
      *
      * @param string $type type of the column. See [[ColumnSchemaBuilder::$type]].
-     * @param integer|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
+     * @param int|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
      * @return ColumnSchemaBuilder column schema builder instance
      * @since 2.0.6
      */
@@ -390,7 +395,7 @@ abstract class Schema extends Object
     }
 
     /**
-     * @return boolean whether this DBMS supports [savepoint](http://en.wikipedia.org/wiki/Savepoint).
+     * @return bool whether this DBMS supports [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      */
     public function supportsSavepoint()
     {
@@ -434,14 +439,14 @@ abstract class Schema extends Object
      */
     public function setTransactionIsolationLevel($level)
     {
-        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level;")->execute();
+        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level")->execute();
     }
 
     /**
      * Executes the INSERT command, returning primary key values.
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
-     * @return array primary key values or false if the command fails
+     * @return array|false primary key values or false if the command fails
      * @since 2.0.4
      */
     public function insert($table, $columns)
@@ -635,7 +640,7 @@ abstract class Schema extends Object
     /**
      * Returns a value indicating whether a SQL statement is for read purpose.
      * @param string $sql the SQL statement
-     * @return boolean whether a SQL statement is for read purpose.
+     * @return bool whether a SQL statement is for read purpose.
      */
     public function isReadQuery($sql)
     {

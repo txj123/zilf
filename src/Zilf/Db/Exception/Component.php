@@ -7,7 +7,8 @@
 
 namespace Zilf\Db\Exception;
 
-use Zilf;
+use Zilf\System\Zilf;
+
 
 /**
  * Component is the base class that implements the *property*, *event* and *behavior* features.
@@ -177,7 +178,7 @@ class Component extends Object
         } elseif (strncmp($name, 'as ', 3) === 0) {
             // as behavior: attach behavior
             $name = trim(substr($name, 3));
-            $this->attachBehavior($name, $value instanceof Behavior ? $value : Yii::createObject($value));
+            $this->attachBehavior($name, $value instanceof Behavior ? $value : Zilf::createObject($value));
 
             return;
         } else {
@@ -192,6 +193,7 @@ class Component extends Object
             }
         }
         if (method_exists($this, 'get' . $name)) {
+
             throw new InvalidCallException('Setting read-only property: ' . get_class($this) . '::' . $name);
         } else {
             throw new UnknownPropertyException('Setting unknown property: ' . get_class($this) . '::' . $name);
@@ -660,7 +662,7 @@ class Component extends Object
     private function attachBehaviorInternal($name, $behavior)
     {
         if (!($behavior instanceof Behavior)) {
-            $behavior = Yii::createObject($behavior);
+            $behavior = Zilf::createObject($behavior);
         }
         if (is_int($name)) {
             $behavior->attach($this);

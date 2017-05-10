@@ -7,6 +7,7 @@
 
 namespace Zilf\Db;
 
+use Zilf\Cache\CacheManager;
 use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\Exception\Component;
@@ -66,8 +67,8 @@ class Command extends Component
      */
     public $pdoStatement;
     /**
-     * @var integer the default fetch mode for this command.
-     * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
+     * @var int the default fetch mode for this command.
+     * @see http://www.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
@@ -77,7 +78,7 @@ class Command extends Component
      */
     public $params = [];
     /**
-     * @var integer the default number of seconds that query results can remain valid in cache.
+     * @var int the default number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire. And use a negative number to indicate
      * query cache should not be used.
      * @see cache()
@@ -105,7 +106,7 @@ class Command extends Component
 
     /**
      * Enables query cache for this command.
-     * @param integer $duration the number of seconds that query result of this command can remain valid in the cache.
+     * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
      * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
      * Use 0 to indicate that the cached data will never expire.
      * @param \Zilf\caching\Dependency $dependency the cache dependency associated with the cached query result.
@@ -199,7 +200,7 @@ class Command extends Component
      * this may improve performance.
      * For SQL statement with binding parameters, this method is invoked
      * automatically.
-     * @param boolean $forRead whether this method is called for a read query. If null, it means
+     * @param bool $forRead whether this method is called for a read query. If null, it means
      * the SQL statement should be used to determine whether it is for read or write.
      * @throws Exception if there is any DB error
      */
@@ -243,13 +244,13 @@ class Command extends Component
 
     /**
      * Binds a parameter to the SQL statement to be executed.
-     * @param string|integer $name parameter identifier. For a prepared statement
+     * @param string|int $name parameter identifier. For a prepared statement
      * using named placeholders, this will be a parameter name of
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value the PHP variable to bind to the SQL statement parameter (passed by reference)
-     * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-     * @param integer $length length of the data type
+     * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param int $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
      * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
@@ -287,12 +288,12 @@ class Command extends Component
 
     /**
      * Binds a value to a parameter.
-     * @param string|integer $name Parameter identifier. For a prepared statement
+     * @param string|int $name Parameter identifier. For a prepared statement
      * using named placeholders, this will be a parameter name of
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value The value to bind to the parameter
-     * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
      * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
@@ -352,7 +353,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -366,7 +367,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -378,7 +379,6 @@ class Command extends Component
     }
 
     /**
-     * 取多列结果中第一行的第一字段
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
      * @return string|null|false the value of the first column in the first row of the query result.
@@ -396,7 +396,6 @@ class Command extends Component
     }
 
     /**
-     * 取多列结果中第一行的第一列
      * Executes the SQL statement and returns the first column of the result.
      * This method is best used when only the first column of result (i.e. the first element in each row)
      * is needed for a query.
@@ -424,7 +423,9 @@ class Command extends Component
      * Note that the created command is not executed until [[execute()]] is called.
      *
      * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column data (name => value) to be inserted into the table.
+     * @param array|\Zilf\Db\Query $columns the column data (name => value) to be inserted into the table or instance
+     * of [[Zilf\Db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
+     * Passing of [[Zilf\Db\Query|Query]] is available since version 2.0.11.
      * @return $this the command object itself
      */
     public function insert($table, $columns)
@@ -538,7 +539,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->createTable($table, $columns, $options);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -681,7 +682,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -694,7 +695,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropForeignKey($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -703,7 +704,7 @@ class Command extends Component
      * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
      * by commas. The column names will be properly quoted by the method.
-     * @param boolean $unique whether to add UNIQUE constraint on the created index.
+     * @param bool $unique whether to add UNIQUE constraint on the created index.
      * @return $this the command object itself
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -745,7 +746,7 @@ class Command extends Component
 
     /**
      * Builds a SQL command for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema name of the tables. Defaults to empty string, meaning the current
      * or default schema.
      * @param string $table the table name.
@@ -772,7 +773,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -802,7 +803,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropCommentFromColumn($table, $column);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -829,11 +830,7 @@ class Command extends Component
     public function execute()
     {
         $sql = $this->getSql();
-
-        $rawSql = $this->getRawSql();
-
-//        Yii::info($rawSql, __METHOD__);
-        Log::info($rawSql, [__METHOD__]);
+        list($profile, $rawSql) = $this->logQuery(__METHOD__);
 
         if ($sql == '') {
             return 0;
@@ -841,7 +838,6 @@ class Command extends Component
 
         $this->prepare(false);
 
-        $token = $rawSql;
         try {
 //            Yii::beginProfile($token, __METHOD__);
 
@@ -860,9 +856,29 @@ class Command extends Component
     }
 
     /**
+     * Logs the current database query if query logging is enabled and returns
+     * the profiling token if profiling is enabled.
+     * @param string $category the log category.
+     * @return array array of two elements, the first is boolean of whether profiling is enabled or not.
+     * The second is the rawSql if it has been created.
+     */
+    private function logQuery($category)
+    {
+        if ($this->db->enableLogging) {
+            $rawSql = $this->getRawSql();
+            APP_DEBUG && Log::info($rawSql, [$category,get_called_class()]);
+        }
+        if (!$this->db->enableProfiling) {
+            return [false, isset($rawSql) ? $rawSql : null];
+        } else {
+            return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
+        }
+    }
+
+    /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
@@ -870,15 +886,12 @@ class Command extends Component
      */
     protected function queryInternal($method, $fetchMode = null)
     {
-        $rawSql = $this->getRawSql();
-
-//        Yii::info($rawSql, 'Zilf\Db\Command::query');
-        Log::info($rawSql, ['Zilf\Db\Command::query']);
+        list($profile, $rawSql) = $this->logQuery('yii\db\Command::query');
 
         if ($method !== '') {
-            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
+            $info = $this->db->getQueryCacheInfo($this->queryCacheDuration);
             if (is_array($info)) {
-                /* @var $cache \Zilf\caching\Cache */
+                /* @var $cache CacheManager*/
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,
@@ -886,8 +899,9 @@ class Command extends Component
                     $fetchMode,
                     $this->db->dsn,
                     $this->db->username,
-                    $rawSql,
+                    $rawSql ?: $rawSql = $this->getRawSql(),
                 ];
+                $cacheKey = md5(json_encode($cacheKey));
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
 //                    // Yii::trace('Query result served from cache', 'Zilf\Db\Command::query');
@@ -898,9 +912,8 @@ class Command extends Component
 
         $this->prepare(true);
 
-        $token = $rawSql;
         try {
-//            Yii::beginProfile($token, 'Zilf\Db\Command::query');
+//            $profile and Yii::beginProfile($rawSql, 'yii\db\Command::query');
 
             $this->pdoStatement->execute();
 
@@ -914,14 +927,14 @@ class Command extends Component
                 $this->pdoStatement->closeCursor();
             }
 
-//            Yii::endProfile($token, 'Zilf\Db\Command::query');
+ //           $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
         } catch (\Exception $e) {
-//            Yii::endProfile($token, 'Zilf\Db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql);
+ //           $profile and Yii::endProfile($rawSql, 'yii\db\Command::query');
+            throw $this->db->getSchema()->convertException($e, $rawSql ?: $this->getRawSql());
         }
 
         if (isset($cache, $cacheKey, $info)) {
-            $cache->set($cacheKey, [$result], $info[1], $info[2]);
+            $cache->put($cacheKey, [$result], $info[1]);
 //            // Yii::trace('Saved query result in cache', 'Zilf\Db\Command::query');
         }
 

@@ -151,7 +151,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Meaningless for MySQL.
      * @param string $table the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
@@ -185,6 +185,25 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * @inheritdoc
      */
+    protected function hasLimit($limit)
+    {
+        // In MySQL limit argument must be nonnegative integer constant
+        return ctype_digit((string) $limit);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function hasOffset($offset)
+    {
+        // In MySQL offset argument must be nonnegative integer constant
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function insert($table, $columns, &$params)
     {
         $schema = $this->db->getSchema();
@@ -195,30 +214,38 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
         }
         $names = [];
         $placeholders = [];
-        foreach ($columns as $name => $value) {
-            $names[] = $schema->quoteColumnName($name);
-            if ($value instanceof Expression) {
-                $placeholders[] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $placeholders[] = $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-            }
-        }
-        if (empty($names) && $tableSchema !== null) {
-            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
-            foreach ($columns as $name) {
+        $values = ' DEFAULT VALUES';
+        if ($columns instanceof \Zilf\Db\Query) {
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
+        } else {
+            foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                $placeholders[] = 'DEFAULT';
+                if ($value instanceof Expression) {
+                    $placeholders[] = $value->expression;
+                    foreach ($value->params as $n => $v) {
+                        $params[$n] = $v;
+                    }
+                } elseif ($value instanceof \Zilf\Db\Query) {
+                    list($sql, $params) = $this->build($value, $params);
+                    $placeholders[] = "($sql)";
+                } else {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $placeholders[] = $phName;
+                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                }
+            }
+            if (empty($names) && $tableSchema !== null) {
+                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
+                foreach ($columns as $name) {
+                    $names[] = $schema->quoteColumnName($name);
+                    $placeholders[] = 'DEFAULT';
+                }
             }
         }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
     }
 
     /**

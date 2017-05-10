@@ -478,7 +478,7 @@ class Repository implements ArrayAccess
     protected function getMinutes($duration)
     {
         if ($duration instanceof DateTime) {
-            $duration = Carbon::now()->diffInSeconds(Carbon::instance($duration), false) / 60;
+            $duration = (time()-$duration->getTimestamp()) / 60;
         }
 
         return (int) ($duration * 60) > 0 ? $duration : null;
