@@ -135,6 +135,19 @@ if (!function_exists('current_url')) {
     }
 }
 
+if (!function_exists('route_info')) {
+    /**
+     * 获取当前的url
+     *
+     * @param string $key
+     * @return string
+     */
+    function route_info($key)
+    {
+        return \Zilf\Helpers\Url::routeInfo($key);
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////
 
 if (!function_exists('toRoute')) {

@@ -8,17 +8,17 @@ use Zilf\System\Zilf;
 
 class Url
 {
-    public static function assetUrl($url, $version='', $urlName = 'default')
+    public static function assetUrl($url, $version = '', $urlName = 'default')
     {
         //获取设置的url信息，如果不存在，则使用当前默认地址
         $staticUrl = config('assets.' . $urlName, Request::getSchemeAndHttpHost());
 
-        $strVersion = (stripos($url,'?') == 0) ? $version ? '?'.$version : '' : '&'.$version;
+        $strVersion = (stripos($url, '?') == 0) ? $version ? '?' . $version : '' : '&' . $version;
 
         if (strncmp($url, '//', 2) === 0) {
-            return $url.$strVersion;
+            return $url . $strVersion;
         } else {
-            return $staticUrl . '/' . ltrim($url, '/').$strVersion;
+            return $staticUrl . '/' . ltrim($url, '/') . $strVersion;
         }
     }
 
@@ -68,5 +68,27 @@ class Url
     public static function current_url()
     {
         return Request::fullUrl();
+    }
+
+    /**
+     * 获取当前请求的bundle controller action 的信息
+     *
+     * @param $key
+     * @return string
+     * @throws \Exception
+     */
+    public static function routeInfo($key)
+    {
+        switch (strtolower($key)) {
+            case 'bundle':
+                return Zilf::$app->bundle;
+            case 'controller':
+                return Zilf::$app->controller;
+            case 'method':
+            case 'action':
+                return Zilf::$app->action;
+            default:
+                return (Zilf::$app->params[$key]) ?? '';
+        }
     }
 }
