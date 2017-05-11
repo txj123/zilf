@@ -15,5 +15,6 @@ class View
         //优化，如果view有后缀名称，则直接按照后缀寻找视图文件，不会添加默认后缀
         $suffix = $this->getParameter('framework.view_suffix');
         $this->defaultExtension = $suffix ?? '.php';
+        echo '';
     }
 }
