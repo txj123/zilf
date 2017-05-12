@@ -6,8 +6,6 @@
  * @package phpQuery
  * @method phpQueryObject clone() clone()
  * @method phpQueryObject empty() empty()
- * @method phpQueryObject next() next($selector = null)
- * @method phpQueryObject prev() prev($selector = null)
  * @property Int $length
  */
 class phpQueryObject
@@ -2273,24 +2271,14 @@ class phpQueryObject
 		phpQuery::plugin($class, $file);
 		return $this;
 	}
-	/**
-	 * Deprecated, use $pq->plugin() instead.
-	 *
-	 * @deprecated
-	 * @param $class
-	 * @param $file
-	 * @return unknown_type
-	 */
-	public static function extend($class, $file = null) {
-		return $this->plugin($class, $file);
-	}
-	/**
-	 *
-	 * @access private
-	 * @param $method
-	 * @param $args
-	 * @return unknown_type
-	 */
+
+    /**
+     * @access private
+     * @param $method
+     * @param $args
+     * @return mixed|phpQueryObject|unknown_type
+     * @throws Exception
+     */
 	public function __call($method, $args) {
 		$aliasMethods = array('clone', 'empty');
 		if (isset(phpQuery::$extendMethods[$method])) {
