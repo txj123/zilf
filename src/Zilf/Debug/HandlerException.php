@@ -1,16 +1,14 @@
 <?php
 
-namespace Zilf\Exceptions;
+namespace Zilf\Debug;
 
 use Exception;
-use Psr\Log\LoggerInterface;
-use Zilf\Debug\Exception\FlattenException;
-use Zilf\Debug\ExceptionHandler;
+use Zilf\Debug\Exceptions\FlattenException;
 use Zilf\HttpFoundation\RedirectResponse;
 use Zilf\HttpFoundation\Response;
 use Zilf\System\Zilf;
 
-class Handler
+class HandlerException
 {
     /**
      * Report or log an exception.
