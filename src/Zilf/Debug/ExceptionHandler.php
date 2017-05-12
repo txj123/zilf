@@ -1,31 +1,11 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Zilf\Debug;
 
-use Zilf\Debug\Exception\FlattenException;
-use Zilf\Debug\Exception\OutOfMemoryException;
+use Zilf\Debug\Exceptions\FlattenException;
+use Zilf\Debug\Exceptions\OutOfMemoryException;
 
-/**
- * ExceptionHandler converts an exception to a Response object.
- *
- * It is mostly useful in debug mode to replace the default PHP/XDebug
- * output with something prettier and more useful.
- *
- * As this class is mainly used during Kernel boot, where nothing is yet
- * available, the Response content is always HTML.
- *
- * @author Fabien Potencier <fabien@symfony.com>
- * @author Nicolas Grekas <p@tchwork.com>
- */
+
 class ExceptionHandler
 {
     private $debug;

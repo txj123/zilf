@@ -12,8 +12,8 @@ use Zilf\ClassLoader\ClassMapGenerator;
 use Zilf\ClassLoader\MapClassLoader;
 use Zilf\Db\Connection;
 use Zilf\Di\Container;
-use Zilf\Exceptions\HandleExceptions;
-use Zilf\Exceptions\NotFoundHttpException;
+use Zilf\Debug\Debug;
+use Zilf\Debug\Exceptions\NotFoundHttpException;
 use Zilf\HttpFoundation\Response;
 use Zilf\Routing\Route;
 
@@ -363,7 +363,7 @@ class Application
      */
     private function setHandler()
     {
-        $handle = new HandleExceptions();
+        $handle = new Debug();
         $handle->bootstrap();
 
         switch ($this->environment) {

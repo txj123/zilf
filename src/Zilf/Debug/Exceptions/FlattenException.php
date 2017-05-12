@@ -1,17 +1,7 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+namespace Zilf\Debug\Exceptions;
 
-namespace Zilf\Debug\Exception;
-
-use Zilf\Exceptions\HttpExceptionInterface;
 
 /**
  * FlattenException wraps a PHP Exception to be able to serialize it.

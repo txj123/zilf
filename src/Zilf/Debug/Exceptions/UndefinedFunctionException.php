@@ -1,22 +1,13 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace Zilf\Debug\Exception;
+namespace Zilf\Debug\Exceptions;
 
 /**
- * Class (or Trait or Interface) Not Found Exception.
+ * Undefined Function Exception.
  *
  * @author Konstanton Myakshin <koc-dp@yandex.ru>
  */
-class ClassNotFoundException extends FatalErrorException
+class UndefinedFunctionException extends FatalErrorException
 {
     public function __construct($message, \ErrorException $previous)
     {

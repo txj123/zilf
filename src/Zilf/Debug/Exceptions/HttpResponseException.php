@@ -1,6 +1,6 @@
 <?php
 
-namespace Zilf\Exceptions;
+namespace Zilf\Debug\Exceptions;
 
 use RuntimeException;
 use Zilf\HttpFoundation\Response;
