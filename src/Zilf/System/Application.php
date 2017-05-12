@@ -301,16 +301,15 @@ class Application
                 throw new \Exception('目录：' . $runtime . '不可写，请增加写的权限！');
             }
         } else {
-            try {
-                mkdir($runtime, 0777, true);
-            } catch (\Exception $e) {
-                throw new \Exception('目录：' . $runtime . '无权限创建，请手动创建！' . $e->getMessage());
+            @mkdir($runtime, 0777, true);
+            if(!is_dir($runtime)){
+                throw new \Exception('目录：' . $runtime . '无权限创建，请手动创建！');
             }
         }
 
         //注册
         $file = $runtime . DIRECTORY_SEPARATOR . 'class_map.php';
-        if (!file_exists($file) || Zilf::$app->getEnvironment() == 'dev' || Zilf::$app->getEnvironment() == 'test') {
+        if (!file_exists($file) || Zilf::$app->getEnvironment() == 'dev') {
             //写入类的地图信息
             ClassMapGenerator::dump(APP_PATH . DIRECTORY_SEPARATOR . 'app', $file);
         }
