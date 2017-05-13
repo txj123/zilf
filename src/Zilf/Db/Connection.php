@@ -447,14 +447,13 @@ class Connection extends Component
      * @param int $duration the number of seconds that query results can remain valid in the cache. If this is
      * not set, the value of [[queryCacheDuration]] will be used instead.
      * Use 0 to indicate that the cached data will never expire.
-     * @param \Zilf\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
      * @throws \Exception|\Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
      */
-    public function cache(callable $callable, $duration = null, $dependency = null)
+    public function cache(callable $callable, $duration = null)
     {
         $this->_queryCacheInfo[] = [$duration === null ? $this->queryCacheDuration : $duration, $dependency];
         try {
