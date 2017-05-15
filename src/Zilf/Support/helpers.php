@@ -256,6 +256,33 @@ if (!function_exists('array_has')) {
     }
 }
 
+if (! function_exists('e')) {
+    /**
+     * Escape HTML special characters in a string.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    function e($value)
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
+    }
+}
+
+if (! function_exists('last')) {
+    /**
+     * Get the last element from an array.
+     *
+     * @param  array  $array
+     * @return mixed
+     */
+    function last($array)
+    {
+        return end($array);
+    }
+}
+
+
 //////////////////////////////////////////////
 
 if (!function_exists('hashids_encode')) {
