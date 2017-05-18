@@ -284,39 +284,6 @@ class Application
     }
 
     /**
-     * 加载app目录下面的类的文件，优化加载速度，提高效率
-     * 开发模式下 class_map.php 每次都会重新生成
-     *
-     * @throws \Exception
-     */
-    public function loadClassMap()
-    {
-        $runtime = $this->getRuntime();
-        //判断文件夹是否存在
-        if (file_exists($runtime) && is_dir($runtime)) {
-            if (!is_writable($runtime)) {
-                throw new \Exception('目录：' . $runtime . '不可写，请增加写的权限！');
-            }
-        } else {
-            @mkdir($runtime, 0777, true);
-            if(!is_dir($runtime)){
-                throw new \Exception('目录：' . $runtime . '无权限创建，请手动创建！');
-            }
-        }
-
-        //注册
-        $file = $runtime . DIRECTORY_SEPARATOR . 'class_map.php';
-        if (!file_exists($file) || Zilf::$app->getEnvironment() == 'dev') {
-            //写入类的地图信息
-            ClassMapGenerator::dump(APP_PATH . DIRECTORY_SEPARATOR . 'app', $file);
-        }
-
-        $mapping = require_once $file;
-        $loader = new MapClassLoader($mapping);
-        $loader->register();
-    }
-
-    /**
      * 获取缓存文件夹的路径
      * @return string
      */
