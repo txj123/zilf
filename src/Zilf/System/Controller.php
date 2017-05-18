@@ -17,6 +17,7 @@ use Zilf\HttpFoundation\RedirectResponse;
 use Zilf\HttpFoundation\Request;
 use Zilf\HttpFoundation\Response;
 use Zilf\Log\Writer;
+use Zilf\View\Factory;
 
 abstract class Controller
 {
@@ -115,77 +116,60 @@ abstract class Controller
     /**
      * 渲染视图
      *
-     * @param string $view
+     * @param string $viewFile
      * @param array $parameters
      * @param Response|null $response
      * @return Response
      * @throws \Exception
      */
-    public function render($view, $parameters = [], Response $response = null)
+    public function render($viewFile, $parameters = [], Response $response = null)
     {
-        $file = $this->getViewFile($view, $parameters);
-
-        //显示页面模板内容
-        ob_start();
-        ob_implicit_flush(false);
-        if($parameters){
-            extract($parameters, EXTR_OVERWRITE);
-        }
-        include($file);
-        $buffer = ob_get_clean();
-
         if (null === $response) {
             $response = new Response();
         }
 
-        return $response->setContent($buffer);
+        return $response->setContent($this->getContent($viewFile,$parameters));
     }
 
     /**
-     * 渲染包含的页面
+     * @param $viewFile
+     * @param array $parameters
+     * @return \Zilf\View\Contracts\View
      */
-    public function view($view = '', array $parameters = [])
+    public function view($viewFile, $parameters = [])
     {
-        $file = $this->getViewFile($view, $parameters);
+       return $this->getContent($viewFile,$parameters);
+    }
 
-        //显示页面模板内容
-        ob_start();
-        //ob_implicit_flush(false);
-        extract($parameters, EXTR_OVERWRITE);
-        include($file);
-        $buffer = ob_get_clean();
+    /**
+     * @param $viewFile
+     * @param array $parameters
+     * @return \Zilf\View\Contracts\View
+     */
+    private function getContent($viewFile, $parameters = []){
+        $viewFile = $this->getViewFile($viewFile, $parameters);
 
-        echo $buffer;
+        /**
+         * @var $viewFactory Factory
+         */
+        $viewFactory = Zilf::$container->get('view');
+        $parameters['app'] = $this;
+
+        return $viewFactory->make($viewFile, $parameters);
     }
 
     private function getViewFile($view, $parameters = [])
     {
-        //优化，如果view有后缀名称，则直接按照后缀寻找视图文件，不会添加默认后缀
-        if (stripos($view, '.')) {
-            $suffix = '';
-        } else {
-            $suffix = config_helper('framework.view_suffix');
-            $suffix = $suffix ? $suffix : '.php';
-        }
-
         //直接去视图根目录寻找文件
         if (stripos($view, '@') === 0) {
             $view = ltrim($view, '@');
-            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
+            $path = '';
         } else {
-            $bundle_arr = explode('\\',get_called_class());
-            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . strtolower($bundle_arr[1]) . DIRECTORY_SEPARATOR;
+            $bundle_arr = explode('\\', get_called_class());
+            $path = strtolower($bundle_arr[1]) . DIRECTORY_SEPARATOR;
         }
 
-        //为空，则自动寻找规则下的视图文件
-        if (empty($view)) {
-            //$view = strtolower(Zilf::$app->controller) . DIRECTORY_SEPARATOR . Zilf::$app->action;
-        }
-
-        $file = $path . $view . $suffix;
-        if (!file_exists($file)) {
-            throw new \Exception("视图文件" . $file . '不存在');
-        }
+        $file = $path . $view;
 
         return $file;
     }

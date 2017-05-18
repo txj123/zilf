@@ -364,7 +364,7 @@ class Container implements ArrayAccess, ContainerInterface
      * @return mixed
      * @throws \Exception
      */
-    public function build($definition, array $params)
+    public function build($definition, array $params = [])
     {
         /**
          * @var $reflection (new \Reflection)

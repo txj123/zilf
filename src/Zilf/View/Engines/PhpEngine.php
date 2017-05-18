@@ -29,9 +29,6 @@ class PhpEngine implements EngineInterface
      */
     protected function evaluatePath($__path, $__data)
     {
-        extract($__data, EXTR_SKIP);
-        include $__path;
-        die();
         $obLevel = ob_get_level();
 
         ob_start();

@@ -8,10 +8,10 @@ use InvalidArgumentException;
 use Zilf\View\Contracts\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
 use ZIlf\View\Engines\EngineResolver;
-use Illuminate\Contracts\Container\Container;
+use Zilf\Di\Container;
 use Zilf\View\Contracts\Factory as FactoryContract;
 
-class Factory
+class Factory implements FactoryContract
 {
     use Concerns\ManagesComponents,
         Concerns\ManagesEvents,
@@ -44,7 +44,7 @@ class Factory
     /**
      * The IoC container instance.
      *
-     * @var \Illuminate\Contracts\Container\Container
+     * @var \Zilf\Di\Container
      */
     protected $container;
 
@@ -499,7 +499,7 @@ class Factory
     /**
      * Get the IoC container instance.
      *
-     * @return \Illuminate\Contracts\Container\Container
+     * @return \Zilf\Di\Container
      */
     public function getContainer()
     {
@@ -509,7 +509,7 @@ class Factory
     /**
      * Set the IoC container instance.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \Zilf\Di\Container  $container
      * @return void
      */
     public function setContainer(Container $container)
