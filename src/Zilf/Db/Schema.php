@@ -8,6 +8,7 @@
 namespace Zilf\Db;
 
 use Yii;
+use Zilf\Cache\CacheManager;
 use Zilf\Db\Exception\Object;
 use Zilf\Db\Exception\NotSupportedException;
 use Zilf\Db\Exception\InvalidCallException;
@@ -131,16 +132,14 @@ abstract class Schema extends Object
         $realName = $this->getRawTableName($name);
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-            /* @var $cache Cache */
-            $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
-            if ($cache instanceof Cache) {
+            /* @var $cache CacheManager */
+            $cache = is_string($db->schemaCache) ? Zilf::$container->get($db->schemaCache) : $db->schemaCache;
+            if ($cache instanceof CacheManager) {
                 $key = $this->getCacheKey($name);
-                if ($refresh || ($table = $cache->get($key)) === false) {
+                if ($refresh || empty($table = $cache->get($key))) {
                     $this->_tables[$name] = $table = $this->loadTableSchema($realName);
                     if ($table !== null) {
-                        $cache->set($key, $table, $db->schemaCacheDuration, new TagDependency([
-                            'tags' => $this->getCacheTag(),
-                        ]));
+                        $cache->put($key, $table, $db->schemaCacheDuration);
                     }
                 } else {
                     $this->_tables[$name] = $table;
@@ -160,12 +159,14 @@ abstract class Schema extends Object
      */
     protected function getCacheKey($name)
     {
-        return [
-            __CLASS__,
-            $this->db->dsn,
-            $this->db->username,
-            $name,
-        ];
+        return md5(json_encode(
+            [
+                __CLASS__,
+                $this->db->dsn,
+                $this->db->username,
+                $name,
+            ]
+        ));
     }
 
     /**
@@ -279,7 +280,7 @@ abstract class Schema extends Object
     public function refresh()
     {
         /* @var $cache Cache */
-        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        $cache = is_string($this->db->schemaCache) ? Zilf::$container->get($this->db->schemaCache) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof Cache) {
             TagDependency::invalidate($cache, $this->getCacheTag());
         }
@@ -298,9 +299,9 @@ abstract class Schema extends Object
     {
         unset($this->_tables[$name]);
         $this->_tableNames = [];
-        /* @var $cache Cache */
-        $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+        /* @var $cache CacheManager */
+        $cache = is_string($this->db->schemaCache) ? Zilf::$container->get($this->db->schemaCache) : $this->db->schemaCache;
+        if ($this->db->enableSchemaCache && $cache instanceof CacheManager) {
             $cache->delete($this->getCacheKey($name));
         }
     }
