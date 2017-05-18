@@ -128,7 +128,7 @@ abstract class Controller
             $response = new Response();
         }
 
-        return $response->setContent($this->getContent($viewFile,$parameters));
+        return $response->setContent($this->getContent($viewFile, $parameters));
     }
 
     /**
@@ -138,7 +138,7 @@ abstract class Controller
      */
     public function view($viewFile, $parameters = [])
     {
-       return $this->getContent($viewFile,$parameters);
+        return $this->getContent($viewFile, $parameters);
     }
 
     /**
@@ -146,7 +146,8 @@ abstract class Controller
      * @param array $parameters
      * @return \Zilf\View\Contracts\View
      */
-    private function getContent($viewFile, $parameters = []){
+    private function getContent($viewFile, $parameters = [])
+    {
         $viewFile = $this->getViewFile($viewFile, $parameters);
 
         /**
@@ -155,7 +156,7 @@ abstract class Controller
         $viewFactory = Zilf::$container->get('view');
         $parameters['app'] = $this;
 
-        return $viewFactory->make($viewFile, $parameters);
+        return $viewFactory->make($viewFile, $parameters)->render();
     }
 
     private function getViewFile($view, $parameters = [])
