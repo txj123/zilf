@@ -174,8 +174,7 @@ abstract class Controller
             $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
         } else {
             $bundle_arr = explode('\\',get_called_class());
-            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . strtolower($bundle_arr[0]) . DIRECTORY_SEPARATOR;
-            $theme = $this->theme ? $this->theme . DIRECTORY_SEPARATOR : '';
+            $path = APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . strtolower($bundle_arr[1]) . DIRECTORY_SEPARATOR;
         }
 
         //为空，则自动寻找规则下的视图文件

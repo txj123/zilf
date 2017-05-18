@@ -55,9 +55,6 @@ class Application
         //注册服务
         new Services();
 
-        //加载或缓存app目录下的类的列表
-        $this->loadClassMap();
-
         //设置时区
         $this->setTimeZone();
 
@@ -100,7 +97,7 @@ class Application
      */
     function run()
     {
-        $class = ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
+        $class = 'App\\'.ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
         if (!class_exists($class)) {
             $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
 
