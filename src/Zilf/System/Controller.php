@@ -166,8 +166,7 @@ abstract class Controller
             $view = ltrim($view, '@');
             $path = '';
         } else {
-            $bundle_arr = explode('\\', get_called_class());
-            $path = strtolower($bundle_arr[1]) . DIRECTORY_SEPARATOR;
+            $path = $this->theme ? $this->theme . DIRECTORY_SEPARATOR : '';
         }
 
         $file = $path . $view;
