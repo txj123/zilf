@@ -11,9 +11,10 @@
 
 namespace Zilf\Finder\Tests\Comparator;
 
+use PHPUnit\Framework\TestCase;
 use Zilf\Finder\Comparator\Comparator;
 
-class ComparatorTest extends \PHPUnit_Framework_TestCase
+class ComparatorTest extends TestCase
 {
     public function testGetSetOperator()
     {

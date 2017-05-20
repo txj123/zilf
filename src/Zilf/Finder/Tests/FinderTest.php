@@ -242,8 +242,8 @@ class FinderTest extends Iterator\RealIteratorTestCase
 
         $expected = array(
             self::$tmpDir.DIRECTORY_SEPARATOR.'test.php',
-            __DIR__ . DIRECTORY_SEPARATOR,
-            __DIR__ . DIRECTORY_SEPARATOR,
+            __DIR__.DIRECTORY_SEPARATOR.'FinderTest.php',
+            __DIR__.DIRECTORY_SEPARATOR.'GlobTest.php',
         );
 
         $this->assertIterator($expected, $iterator);
@@ -312,7 +312,7 @@ class FinderTest extends Iterator\RealIteratorTestCase
 
         $finder = $this->buildFinder();
         $a = iterator_to_array($finder->directories()->in(self::$tmpDir));
-        $a = array_values(array_map(function ($a) { return (string) $a; }, $a));
+        $a = array_values(array_map('strval', $a));
         sort($a);
         $this->assertEquals($expected, $a, 'implements the \IteratorAggregate interface');
     }
@@ -405,7 +405,7 @@ class FinderTest extends Iterator\RealIteratorTestCase
 
     public function testCountFiles()
     {
-        $files = Finder::create()->files()->in(__DIR__ . DIRECTORY_SEPARATOR);
+        $files = Finder::create()->files()->in(__DIR__.DIRECTORY_SEPARATOR.'Fixtures');
         $i = 0;
 
         foreach ($files as $file) {
@@ -430,7 +430,7 @@ class FinderTest extends Iterator\RealIteratorTestCase
     public function testContains($matchPatterns, $noMatchPatterns, $expected)
     {
         $finder = $this->buildFinder();
-        $finder->in(__DIR__ . DIRECTORY_SEPARATOR)
+        $finder->in(__DIR__.DIRECTORY_SEPARATOR.'Fixtures')
             ->name('*.txt')->sortByName()
             ->contains($matchPatterns)
             ->notContains($noMatchPatterns);
@@ -492,7 +492,7 @@ class FinderTest extends Iterator\RealIteratorTestCase
     public function testMultipleLocationsWithSubDirectories()
     {
         $locations = array(
-            __DIR__ . '/Fixtures/one',
+            __DIR__.'/Fixtures/one',
             self::$tmpDir.DIRECTORY_SEPARATOR.'toto',
         );
 
@@ -500,8 +500,8 @@ class FinderTest extends Iterator\RealIteratorTestCase
         $finder->in($locations)->depth('< 10')->name('*.neon');
 
         $expected = array(
-            __DIR__ . '/Fixtures/one' .DIRECTORY_SEPARATOR.'b'.DIRECTORY_SEPARATOR.'c.neon',
-            __DIR__ . '/Fixtures/one' .DIRECTORY_SEPARATOR.'b'.DIRECTORY_SEPARATOR.'d.neon',
+            __DIR__.'/Fixtures/one'.DIRECTORY_SEPARATOR.'b'.DIRECTORY_SEPARATOR.'c.neon',
+            __DIR__.'/Fixtures/one'.DIRECTORY_SEPARATOR.'b'.DIRECTORY_SEPARATOR.'d.neon',
         );
 
         $this->assertIterator($expected, $finder);
@@ -522,7 +522,7 @@ class FinderTest extends Iterator\RealIteratorTestCase
     public function testRegexSpecialCharsLocationWithPathRestrictionContainingStartFlag()
     {
         $finder = $this->buildFinder();
-        $finder->in(__DIR__ . DIRECTORY_SEPARATOR .DIRECTORY_SEPARATOR.'r+e.gex[c]a(r)s')
+        $finder->in(__DIR__.DIRECTORY_SEPARATOR.'Fixtures'.DIRECTORY_SEPARATOR.'r+e.gex[c]a(r)s')
             ->path('/^dir/');
 
         $expected = array('r+e.gex[c]a(r)s'.DIRECTORY_SEPARATOR.'dir', 'r+e.gex[c]a(r)s'.DIRECTORY_SEPARATOR.'dir'.DIRECTORY_SEPARATOR.'bar.dat');
@@ -559,7 +559,7 @@ class FinderTest extends Iterator\RealIteratorTestCase
     public function testPath($matchPatterns, $noMatchPatterns, array $expected)
     {
         $finder = $this->buildFinder();
-        $finder->in(__DIR__ . DIRECTORY_SEPARATOR)
+        $finder->in(__DIR__.DIRECTORY_SEPARATOR.'Fixtures')
             ->path($matchPatterns)
             ->notPath($noMatchPatterns);
 
@@ -632,6 +632,10 @@ class FinderTest extends Iterator\RealIteratorTestCase
                 $expectedExceptionClass = 'Zilf\\\Finder\\Exception\\AccessDeniedException';
                 if ($e instanceof \PHPUnit_Framework_ExpectationFailedException) {
                     $this->fail(sprintf("Expected exception:\n%s\nGot:\n%s\nWith comparison failure:\n%s", $expectedExceptionClass, 'PHPUnit_Framework_ExpectationFailedException', $e->getComparisonFailure()->getExpectedAsString()));
+                }
+
+                if ($e instanceof \PHPUnit\Framework\ExpectationFailedException) {
+                    $this->fail(sprintf("Expected exception:\n%s\nGot:\n%s\nWith comparison failure:\n%s", $expectedExceptionClass, '\PHPUnit\Framework\ExpectationFailedException', $e->getComparisonFailure()->getExpectedAsString()));
                 }
 
                 $this->assertInstanceOf($expectedExceptionClass, $e);

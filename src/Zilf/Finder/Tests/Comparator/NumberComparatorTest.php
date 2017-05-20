@@ -11,9 +11,10 @@
 
 namespace Zilf\Finder\Tests\Comparator;
 
+use PHPUnit\Framework\TestCase;
 use Zilf\Finder\Comparator\NumberComparator;
 
-class NumberComparatorTest extends \PHPUnit_Framework_TestCase
+class NumberComparatorTest extends TestCase
 {
     /**
      * @dataProvider getConstructorTestData

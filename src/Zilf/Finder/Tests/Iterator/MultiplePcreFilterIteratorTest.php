@@ -11,9 +11,10 @@
 
 namespace Zilf\Finder\Tests\Iterator;
 
+use PHPUnit\Framework\TestCase;
 use Zilf\Finder\Iterator\MultiplePcreFilterIterator;
 
-class MultiplePcreFilterIteratorTest extends \PHPUnit_Framework_TestCase
+class MultiplePcreFilterIteratorTest extends TestCase
 {
     /**
      * @dataProvider getIsRegexFixtures
