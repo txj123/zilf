@@ -80,7 +80,7 @@ class Application
         //加载服务信息
         $services = APP_PATH . '/config/services.php';
         if (file_exists($services)) {
-            require_once($services);
+            require $services;
         }
 
         //初始化数据库
@@ -108,11 +108,8 @@ class Application
         }
 
         $object = Zilf::$container->build($class, []);
+
         if (method_exists($object, $this->action)) {
-            //class 必须是controller的子类
-            /*  if (!is_subclass_of($this->class, 'Zilf\System\Controller')) {
-                throw new \Exception('控制器必须是继承Zilf\System\Controller类');
-            }*/
 
             //将参数追加到GET里面
             if (!empty($this->params)) {
@@ -177,6 +174,8 @@ class Application
 
     /**
      * 获取路由信息
+     *
+     * @param string $pathInfo
      */
     public function setRoute($pathInfo = '')
     {
@@ -185,26 +184,21 @@ class Application
         $routes_config = APP_PATH . '/config/routes.php';
         if (file_exists($routes_config)) {
             //加载路由的配置文件
-            include_once $routes_config;
+            include $routes_config;
 
             $class_exec = $route->dispatch($pathInfo);
             if ($class_exec) {
+
                 list($pcre, $pattern, $cb, $options) = $class_exec;
-                $this->controller = $cb[0];
+                $segments = explode('\\',$cb[0]);
+
+                $this->bundle = $segments[1];
+                $this->controller = rtrim($segments[3],$this->controller_suffix);
                 $this->action = $cb[1] . $this->action_suffix;
-                $this->params = isset($options['vars']) ? $options['vars'] : array();
+                $this->params = isset($options['vars']) ? $options['vars'] : [];
 
             } else {
                 $pathInfo = trim($pathInfo, '/');
-                //获取默认的配置
-                $framework = Zilf::$container->getShare('config')->get('framework');
-                if (!empty($framework)) {
-                    foreach ($framework as $key => $value) {
-                        if ($value) {
-                            $this->$key = $value;
-                        }
-                    }
-                }
 
                 //设置路由
                 if ($pathInfo) {
@@ -214,7 +208,20 @@ class Application
                     $this->getController();
                     $this->getAction();
                     $this->getParams();
+
+                }else{
+                    //获取默认的配置
+                    $framework = Zilf::$container->getShare('config')->get('framework');
+
+                    if (!empty($framework)) {
+                        foreach ($framework as $key => $value) {
+                            if ($value) {
+                                $this->$key = $value;
+                            }
+                        }
+                    }
                 }
+
             }
         }
     }
