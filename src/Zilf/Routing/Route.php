@@ -2,15 +2,6 @@
 
 namespace Zilf\Routing;
 
-/**
- * Created by PhpStorm.
- * User: lilei
- * Date: 16-10-26
- * Time: 上午11:20
- */
-
-use Zilf\Routing\Controller\Controller;
-
 define('REQUEST_METHOD_GET', 1);
 define('REQUEST_METHOD_POST', 2);
 define('REQUEST_METHOD_PUT', 3);

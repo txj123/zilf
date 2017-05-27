@@ -11,13 +11,14 @@
 
 namespace Zilf\Filesystem\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Zilf\Filesystem\Exception\IOException;
 use Zilf\Filesystem\Exception\FileNotFoundException;
 
 /**
  * Test class for Filesystem.
  */
-class ExceptionTest extends \PHPUnit_Framework_TestCase
+class ExceptionTest extends TestCase
 {
     public function testGetPath()
     {

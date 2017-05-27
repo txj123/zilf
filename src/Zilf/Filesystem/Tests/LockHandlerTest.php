@@ -11,9 +11,10 @@
 
 namespace Zilf\Filesystem\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Zilf\Filesystem\LockHandler;
 
-class LockHandlerTest extends \PHPUnit_Framework_TestCase
+class LockHandlerTest extends TestCase
 {
     /**
      * @expectedException \Zilf\Filesystem\Exception\IOException
