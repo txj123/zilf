@@ -11,10 +11,16 @@ zilf 是一个当代的php框架
 
 开发文档地址[开发文档](https://github.com/txj123/zilf-docs)
 
+## 安装 Zilf
 
-## V1.0版本正式发布
-   - [v1.0正式版](https://github.com/txj123/zilf/releases)
+Zilf 使用 [Composer](https://getcomposer.org/) 来管理代码依赖。所以，在使用 Zilf 之前，请先确认你的电脑上安装了 [Composer](https://getcomposer.org/)。
 
+通过 Composer 在命令行运行 create-project 命令来安装 Zilf：
+```
+composer create-project --prefer-dist zilf/zilf-demo blog
+cd blog
+chmod -R 777 runtime
+```
 
 ## 示例代码下载
    事例代码[zilf-demo](https://github.com/txj123/zilf-demo)，用户可以根据demo的代码格式开发自己的网站系统
