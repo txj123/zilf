@@ -154,7 +154,9 @@ abstract class Controller
          * @var $viewFactory Factory
          */
         $viewFactory = Zilf::$container->get('view');
-        $parameters['app'] = $this;
+        if(!isset($parameters['app'])){
+            $parameters['app'] = $this;
+        }
 
         return $viewFactory->make($viewFile, $parameters)->render();
     }
