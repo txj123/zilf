@@ -1,10 +1,10 @@
 # zilf 框架
 
 <p align="center">
-<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/overtrue/wechat/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/overtrue/wechat/v/unstable.svg" alt="Latest Unstable Version"></a>
-<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/overtrue/wechat/downloads" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/overtrue/wechat/license" alt="License"></a>    
+<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/txj123/zilf/v/stable.svg" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/txj123/zilf/v/unstable.svg" alt="Latest Unstable Version"></a>
+<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/txj123/zilf/downloads" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/overtrue/wechat"><img src="https://poser.pugx.org/txj123/zilf/license" alt="License"></a>    
 </p>
 
 > 该框架参考了当前比较流行的框架的开发模式，使用更简单方便。
