@@ -45,36 +45,35 @@ class CurlResponse
     private $_response_header;
 
     /**
-     * @var Curl
+     * @var Client
      */
-    public $curl;
+    public $client;
 
     public $end_time;
 
     /**
      * CurlResponse constructor.
-     * @param $curl
      */
-    function __construct($curl)
+    function __construct($client,$curl_init)
     {
-        $this->curl = $curl;
+        $this->client = $client;
 
-        $curl_init = $this->curl->get_curl_obj();
-
-        $curl_error_code = curl_errno($curl_init);
-        $curl_error_message = curl_error($curl_init);
-        $curl_getinfo = curl_getinfo($curl_init);
-
-        $this->_response = $this->curl->get_content();
-        $this->_curl_errno = $curl_error_code;
-        $this->_curl_error = $curl_error_message;
-        $this->_curl_getinfo = $curl_getinfo;
+        $this->_response = curl_exec($curl_init);
+        $this->_curl_errno = curl_errno($curl_init);
+        $this->_curl_error = curl_error($curl_init);
+        $this->_curl_getinfo = curl_getinfo($curl_init);
 
         $this->_init();
 
         $this->end_time = microtime();
     }
 
+    /**
+     * @return Client
+     */
+    public function getClient(){
+        return $this->client;
+    }
 
     /**
      * 分离头信息 和 body
@@ -105,7 +104,7 @@ class CurlResponse
      * 返回body信息
      * @return string
      */
-    function get_response()
+    function get_content()
     {
         return $this->_response;
     }
@@ -116,7 +115,7 @@ class CurlResponse
      *
      * @return mixed
      */
-    function get_to_array(){
+    function toArray(){
         return json_decode($this->_response);
     }
 
@@ -126,7 +125,7 @@ class CurlResponse
      *
      * @return string
      */
-    function get_to_json(){
+    function toJson(){
         return json_encode($this->_response);
     }
 
@@ -137,7 +136,7 @@ class CurlResponse
      * @param string $callback
      * @return string
      */
-    function get_to_jsonp($callback='callback_func'){
+    function toJsonp($callback='parent.callback_func'){
         return $callback . '(' . $this->_response . ')';
     }
 
@@ -193,7 +192,7 @@ class CurlResponse
 
         //通过页面的《meta 标签获取页面编码
         if (empty($charset)) {
-            preg_match('/charset="?([\w-\d]*)"?/i', $this->get_response(), $re);
+            preg_match('/charset="?([\w-\d]*)"?/i', $this->get_content(), $re);
             $charset = isset($re[1]) ? $re[1] : '';
         }
 
@@ -233,9 +232,10 @@ class CurlResponse
     function get_all()
     {
         return array(
-            'url' => $this->curl->_url,
-            'method' => $this->curl->_method,
-            'time' => ($this->end_time - $this->curl->start_time),
+            'url' => $this->getClient()->getUrl(),
+            'method' => $this->getClient()->getMethod(),
+            '$parameters' => $this->getClient()->getParameters(),
+            'time' => ($this->end_time - $this->getClient()->start_time),
             'curl_error_code' => $this->get_curl_error_code(),
             'curl_error_message' => $this->get_curl_error_message(),
             'charset' => $this->get_charset(),
@@ -244,7 +244,7 @@ class CurlResponse
             'curl_getInfo' => $this->get_curl_getInfo(),
             'request_headers' => $this->get_request_headers(),
             'response_headers' => $this->get_response_headers(),
-            'response' => $this->get_response()
+//            'response' => $this->get_content()
         );
     }
 }
