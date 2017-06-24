@@ -54,11 +54,16 @@ class CurlResponse
     /**
      * CurlResponse constructor.
      */
-    function __construct($client,$curl_init)
+    function __construct($client,$curl_init,$content)
     {
         $this->client = $client;
 
-        $this->_response = curl_exec($curl_init);
+        if($content){
+            $this->_response = $content;
+        }else{
+            $this->_response = curl_exec($curl_init);
+        }
+
         $this->_curl_errno = curl_errno($curl_init);
         $this->_curl_error = curl_error($curl_init);
         $this->_curl_getinfo = curl_getinfo($curl_init);

@@ -153,8 +153,6 @@ namespace Zilf\Curl;
  * @method $this get_proxyheader()
  * @method $this set_proxyauth()
  * @method $this get_proxyauth()
- * @method $this set_proxy()
- * @method $this get_proxy()
  * @method $this set_protocols()
  * @method $this get_protocols()
  * @method $this set_progressfunction()
@@ -568,10 +566,7 @@ class Client
 
     private $method;
     private $baseUrl;
-    private $url;
     private $parameters;
-
-    private $is_ssl = false;
 
     private $timeout = 15;
     private $connecttimeout = 15;
@@ -602,6 +597,9 @@ class Client
         if (!extension_loaded('curl')) {
             throw new \ErrorException('curl library is not loaded');
         }
+
+        $this->config['CURLOPT_IMEOUT'] = $this->timeout;
+        $this->config['CURLOPT_CONNECTTIMEOUT'] = $this->connecttimeout;
 
         if ($config) {
             foreach ($config as $key => $value) {
@@ -666,7 +664,6 @@ class Client
         return $this->exec();
     }
 
-
     /**
      * @param string $method
      * @param string $url
@@ -689,7 +686,15 @@ class Client
      */
     public function exec()
     {
+        $curlObj = $this->get_curlObj();
 
+        return new CurlResponse($this, $curlObj);
+    }
+
+    /**
+     * curl_init 对象
+     */
+    public function get_curlObj(){
         //curl 请求的句柄
         $curlObj = curl_init();
 
@@ -724,8 +729,96 @@ class Client
             curl_setopt($curlObj, $this->curlOptions[$key], $row);
         }
 
-        return new CurlResponse($this, $curlObj);
+        return $curlObj;
     }
+
+    /**
+     * @param $url
+     * @param array $parameters
+     * @return array
+     */
+    public function getAsync($url,$parameters = []){
+        return $this->requestAsync('GET', $url, $parameters);
+    }
+
+    /**
+     * @param $url
+     * @param array $parameters
+     * @return array
+     */
+    public function postAsync($url,$parameters = []){
+        return $this->requestAsync('GET', $url, $parameters);
+    }
+
+    /**
+     * @param string $method
+     * @param string $url
+     * @param string $parameters
+     * @return array
+     */
+    public function requestAsync($method = '', $url = '', $parameters = ''){
+        $curlObj_arr = [];
+        $response_arr = [];
+
+        //请求方式
+        $this->method = $method;
+
+        $master = curl_multi_init();
+
+        if(is_array($url)){
+
+            foreach ($url as $key => $one_url){
+                $this->parameters = $parameters[$key] ?? [];
+                $this->config['CURLOPT_URL'] = $this->baseUrl . $one_url;
+                $curlObj_arr[] = $curlObj = $this->get_curlObj();
+                curl_multi_add_handle($master, $curlObj);
+            }
+
+        }else{
+
+            $this->parameters = $parameters;
+            $this->config['CURLOPT_URL'] = $this->baseUrl . $url;
+            $curlObj_arr[] = $curlObj = $this->get_curlObj();
+            curl_multi_add_handle($master, $curlObj);
+        }
+
+        $active=null;
+
+        // 执行批处理句柄
+        do {
+            $mrc = curl_multi_exec($master, $active);
+        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+        while ($active && $mrc == CURLM_OK)
+        {
+            // add this line
+            while (curl_multi_exec($master, $active) === CURLM_CALL_MULTI_PERFORM);
+
+            if (curl_multi_select($master) != -1)
+            {
+                do {
+                    $mrc = curl_multi_exec($master, $active);
+                    if ($mrc == CURLM_OK)
+                    {
+                        /*while($info = curl_multi_info_read($master))
+                        {
+                        }*/
+                    }
+                } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+            }
+        }
+
+        foreach ($curlObj_arr as $i => $url) {
+            $content = curl_multi_getcontent($curlObj_arr[$i]);
+            $response_arr[] = new CurlResponse($this, $curlObj_arr[$i],$content);
+            curl_close($curlObj_arr[$i]);
+        }
+
+        curl_multi_close($master);
+
+        return $response_arr;
+    }
+
 
     /**
      * 添加需要上传的文件
@@ -785,7 +878,7 @@ class Client
         if (!empty($cacert_path)) {
 
             $this->config['CURLOPT_SSL_VERIFYPEER'] = true; // 只信任CA颁布的证书
-            $this->config['CURLOPT_CAINFO'] = $cacert_path; // CA根证书（用来验证的网站证书是否是CA颁布）
+            $this->config['CURLOPT_CAINFO'] = $cacert; // CA根证书（用来验证的网站证书是否是CA颁布）
 
         } else {
             $this->config['CURLOPT_SSL_VERIFYPEER'] = false;
@@ -903,6 +996,32 @@ class Client
         $this->config['CURLOPT_HTTPHEADER'] = $data;
 
         return $this;
+    }
+
+    /**
+     * 设置代理请求
+     *
+     * @param $proxy   如: 192.168.2.2:220
+     * @param string $userpwd 如: admin:admin
+     * @return $this
+     */
+    public function set_proxy($proxy,$userpwd=''){
+        $this->config['CURLOPT_PROXY'] = $proxy;
+
+        if ($userpwd)
+            $this->config['CURLOPT_PROXYUSERPWD'] = $userpwd;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_proxy(){
+        return [
+            'CURLOPT_PROXY' => $this->config['CURLOPT_PROXY'],
+            'CURLOPT_PROXYUSERPWD' => $this->config['CURLOPT_PROXYUSERPWD'],
+        ];
     }
 
     /**
