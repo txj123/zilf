@@ -200,11 +200,16 @@ class CurlResponse
     }
 
     /**
-     * @return array
+     * @param string $name
+     * @return mixed
      */
-    function get_curl_getInfo()
+    function get_info($name='')
     {
-        return $this->_curl_getinfo;
+        if(!empty($name)){
+            return $this->_curl_getinfo[$name];
+        }else{
+            return $this->_curl_getinfo;
+        }
     }
 
 
@@ -232,17 +237,14 @@ class CurlResponse
     function get_all()
     {
         return array(
-            'url' => $this->getClient()->getUrl(),
-            'method' => $this->getClient()->getMethod(),
-            '$parameters' => $this->getClient()->getParameters(),
-            'time' => ($this->end_time - $this->getClient()->start_time),
+            'url' => $this->getClient()->get_url(),
+            'method' => $this->getClient()->get_method(),
+            'parameters' => $this->getClient()->get_parameters(),
+
             'curl_error_code' => $this->get_curl_error_code(),
             'curl_error_message' => $this->get_curl_error_message(),
             'charset' => $this->get_charset(),
-            'http_code' => $this->get_http_code(),
-            'content_type' => $this->get_content_type(),
-            'curl_getInfo' => $this->get_curl_getInfo(),
-            'request_headers' => $this->get_request_headers(),
+            'curl_getInfo' => $this->get_info(),
             'response_headers' => $this->get_response_headers(),
 //            'response' => $this->get_content()
         );
