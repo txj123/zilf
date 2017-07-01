@@ -4,6 +4,7 @@ namespace Zilf\Debug;
 
 use Exception;
 use ErrorException;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Zilf\Debug\Exceptions\FatalErrorException;
 use Zilf\Debug\Exceptions\FatalThrowableError;
 use Zilf\System\Zilf;
@@ -78,7 +79,7 @@ class Debug
      */
     protected function renderForConsole(Exception $e)
     {
-        $this->getExceptionHandler()->renderForConsole(new ConsoleOutput, $e);
+        $this->getExceptionHandler()->renderForConsole(new ConsoleOutput(), $e);
     }
 
     /**
