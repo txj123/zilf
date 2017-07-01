@@ -54,12 +54,12 @@ class CurlResponse
     /**
      * CurlResponse constructor.
      */
-    function __construct($client,$curl_init,$content)
+    function __construct($client,$curl_init,$async_content='')
     {
         $this->client = $client;
 
-        if($content){
-            $this->_response = $content;
+        if($async_content){
+            $this->_response = $async_content;
         }else{
             $this->_response = curl_exec($curl_init);
         }

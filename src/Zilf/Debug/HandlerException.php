@@ -3,6 +3,7 @@
 namespace Zilf\Debug;
 
 use Exception;
+use Symfony\Component\Console\Application;
 use Zilf\Debug\Exceptions\FlattenException;
 use Zilf\HttpFoundation\RedirectResponse;
 use Zilf\HttpFoundation\Response;
@@ -137,7 +138,7 @@ class HandlerException
      */
     public function renderForConsole($output, Exception $e)
     {
-        (new ConsoleApplication)->renderException($e, $output);
+        (new Application())->renderException($e, $output);
     }
 
     /**

@@ -654,7 +654,7 @@ class Client
 
     /**
      * @param $url
-     * @param string $parameters
+     * @param mixed $parameters
      * @return CurlResponse
      */
     public function post($url, $parameters = '')
@@ -667,7 +667,7 @@ class Client
     /**
      * @param string $method
      * @param string $url
-     * @param string $parameters
+     * @param mixed $parameters
      * @return CurlResponse
      */
     public function request($method = '', $url = '', $parameters = '')
@@ -1137,7 +1137,7 @@ class Client
         $name = 'CURLOPT' . $name;
 
         if (array_key_exists($name, $this->curlOptions)) {
-            $this->config[$name] = $arguments;
+            $this->config[$name] = $arguments[0] ?? '';
         } else {
             throw new \RuntimeException('curl的参数: ' . $name . '不存在的,请检查设置');
         }
