@@ -47,7 +47,7 @@ class Services
         /**
          * 注册配置信息类
          */
-        $this->register('config',function ($config) use ($config){
+        $this->register('config',function () use ($config){
             return new LoadConfig($config);
         });
 
