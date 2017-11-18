@@ -40,7 +40,7 @@ class Application
      */
     public $route;
 
-    public $database = 'default';
+    public $database = 'db.default';
 
     /**
      * Application constructor.
@@ -86,7 +86,11 @@ class Application
         //初始化数据库
         $params = Zilf::$container->getShare('config')->get('db');
         foreach ($params as $key => $row) {
-            Zilf::$container->register($key, 'Zilf\Db\Connection', $row);
+            Zilf::$container->register('db.'.$key, function () use ($row){
+                $connect = new Connection($row);
+                $connect->open();
+                return $connect;
+            });
         }
     }
 
