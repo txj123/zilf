@@ -53,14 +53,11 @@ class Repository implements ArrayAccess
         if(substr_count($key,'.') > 0){
             $paramArr = explode('.',$key);
             $data = $this->items[$paramArr[0]];
-            for($i = 1; $i< count($paramArr);$i++){
-                if(isset($data[$paramArr[$i]])){
-                    $data = $data[$paramArr[$i]];
-                }else{
-                    $data = '';
-                    break;
-                }
+
+            if(isset($data[$paramArr[1]])){
+                $data = $data[$paramArr[1]];
             }
+
             return $data ? $data : $default;
         }else{
             return isset($this->items[$key]) ? $this->items[$key] : $default;
