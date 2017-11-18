@@ -54,15 +54,17 @@ class Writer
         $filename = date('Y-m-d') . '_' . Zilf::$app->getEnvironment() . '.log';
 
         $logger = new Logger('logger'); //Zilf::$container->get('logger');
-        foreach ($handlers as $row) {
-            $handler = isset($row['type']) ? $row['type'] : 'StreamHandler';
-            $level = isset($row['level']) ? $row['level'] : 'debug';
-            if ($handler == 'StreamHandler') {
-                $handObj = new StreamHandler($runtimePath . '/logs/' . $filename, $this->parseLevel($level));
-            } else {
-                $handObj = new $handler($this->levels[$level]);
+        if($handlers){
+            foreach ($handlers as $row) {
+                $handler = isset($row['type']) ? $row['type'] : 'StreamHandler';
+                $level = isset($row['level']) ? $row['level'] : 'debug';
+                if ($handler == 'StreamHandler') {
+                    $handObj = new StreamHandler($runtimePath . '/logs/' . $filename, $this->parseLevel($level));
+                } else {
+                    $handObj = new $handler($this->levels[$level]);
+                }
+                $logger->pushHandler($handObj);
             }
-            $logger->pushHandler($handObj);
         }
 
         $this->monolog = $logger;

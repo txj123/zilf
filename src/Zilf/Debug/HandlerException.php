@@ -106,7 +106,7 @@ class HandlerException
     {
         $e = FlattenException::create($e);
 
-        $handler = new ExceptionHandler(APP_DEBUG);
+        $handler = new ExceptionHandler(true);
 
         return Response::create($handler->getHtml($e), $e->getStatusCode(), $e->getHeaders());
     }

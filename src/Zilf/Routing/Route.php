@@ -173,7 +173,8 @@ class Route implements \IteratorAggregate
                 $this->routesById[ $options['id'] ] = $route;
             }
 
-            return $this->routes[] = $route;
+            $this->routes[] = $route;
+            return $this->routes;
         } else {
             $route = array(
                 false,

@@ -18,8 +18,6 @@ class Debug
      */
     public function bootstrap()
     {
-        error_reporting(-1);
-
         set_error_handler([$this, 'handleError']);
 
         set_exception_handler([$this, 'handleException']);

@@ -866,7 +866,7 @@ class Command extends Component
     {
         if ($this->db->enableLogging) {
             $rawSql = $this->getRawSql();
-            APP_DEBUG && Log::info($rawSql, [$category,get_called_class()]);
+            Zilf::$app->is_debug && Log::info($rawSql, [$category,get_called_class()]);
         }
         if (!$this->db->enableProfiling) {
             return [false, isset($rawSql) ? $rawSql : null];

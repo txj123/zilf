@@ -47,7 +47,7 @@ class Services
         /**
          * 注册配置信息类
          */
-        $this->register('config',function ($config) use ($config){
+        $this->register('config',function () use ($config){
             return new LoadConfig($config);
         });
 
@@ -171,8 +171,16 @@ class Services
         // The Compiler engine requires an instance of the CompilerInterface, which in
         // this case will be the Blade compiler, so we'll first create the compiler
         // instance to pass into the engine so it can compile the views properly.
-        $this->register('blade.compiler',function () {
-            $cachePath = APP_PATH.'/runtime/views';
+        $cachePath = APP_PATH.'/runtime/views';
+        if(!is_dir($cachePath)){
+            $status = mkdir($cachePath, 0777, true);
+            if (false === $status) {
+                throw new \UnexpectedValueException(sprintf('There is no existing directory at "%s" and its not buildable', $cachePath));
+            }
+        }
+
+        $this->register('blade.compiler',function () use ($cachePath) {
+
             return new BladeCompiler(
                 Zilf::$container['files'], $cachePath
             );

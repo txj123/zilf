@@ -35,12 +35,13 @@ class Application
     public $request;
 
     public $environment;  //开发环境
+    public $is_debug = false;  //调试模式是否开启
     /**
      * @var Route
      */
     public $route;
 
-    public $database = 'default';
+    public $database = 'db.default';
 
     /**
      * Application constructor.
@@ -86,7 +87,11 @@ class Application
         //初始化数据库
         $params = Zilf::$container->getShare('config')->get('db');
         foreach ($params as $key => $row) {
-            Zilf::$container->register($key, 'Zilf\Db\Connection', $row);
+            Zilf::$container->register('db.'.$key, function () use ($row){
+                $connect = new Connection($row);
+                $connect->open();
+                return $connect;
+            });
         }
     }
 
@@ -278,7 +283,9 @@ class Application
 
     /**
      * 支持db，获取数据库对象
-     * @return Connection
+     *
+     * @param string $databaseName
+     * @return $this
      */
     public function getDb($databaseName = '')
     {
@@ -341,9 +348,16 @@ class Application
             case 'dev':
             case 'development':
                 ini_set('display_errors', 1);
+                error_reporting(-1);
+                $this->is_debug = true;
                 break;
 
             case 'testing':
+                ini_set('display_errors', 1);
+                error_reporting(E_ALL & ~E_NOTICE);
+                $this->is_debug = true;
+                break;
+
             case 'pro':
             case 'prod':
             case 'production':
