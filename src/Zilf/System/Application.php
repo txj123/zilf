@@ -35,6 +35,7 @@ class Application
     public $request;
 
     public $environment;  //开发环境
+    public $is_debug = false;  //调试模式是否开启
     /**
      * @var Route
      */
@@ -282,7 +283,9 @@ class Application
 
     /**
      * 支持db，获取数据库对象
-     * @return Connection
+     *
+     * @param string $databaseName
+     * @return $this
      */
     public function getDb($databaseName = '')
     {
@@ -345,9 +348,16 @@ class Application
             case 'dev':
             case 'development':
                 ini_set('display_errors', 1);
+                error_reporting(-1);
+                $this->is_debug = true;
                 break;
 
             case 'testing':
+                ini_set('display_errors', 1);
+                error_reporting(E_ALL & ~E_NOTICE);
+                $this->is_debug = true;
+                break;
+
             case 'pro':
             case 'prod':
             case 'production':
