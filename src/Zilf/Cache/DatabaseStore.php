@@ -36,9 +36,9 @@ class DatabaseStore implements Store
     /**
      * Create a new database store.
      *
-     * @param  \Zilf\Database\ConnectionInterface  $connection
-     * @param  string  $table
-     * @param  string  $prefix
+     * @param  \Zilf\Database\ConnectionInterface $connection
+     * @param  string                             $table
+     * @param  string                             $prefix
      * @return void
      */
     public function __construct(ConnectionInterface $connection, $table, $prefix = '')
@@ -51,7 +51,7 @@ class DatabaseStore implements Store
     /**
      * Retrieve an item from the cache by key.
      *
-     * @param  string|array  $key
+     * @param  string|array $key
      * @return mixed
      */
     public function get($key)
@@ -84,9 +84,9 @@ class DatabaseStore implements Store
     /**
      * Store an item in the cache for a given number of minutes.
      *
-     * @param  string  $key
-     * @param  mixed   $value
-     * @param  float|int  $minutes
+     * @param  string    $key
+     * @param  mixed     $value
+     * @param  float|int $minutes
      * @return void
      */
     public function put($key, $value, $minutes)
@@ -107,76 +107,84 @@ class DatabaseStore implements Store
     /**
      * Increment the value of an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return int|bool
      */
     public function increment($key, $value = 1)
     {
-        return $this->incrementOrDecrement($key, $value, function ($current, $value) {
-            return $current + $value;
-        });
+        return $this->incrementOrDecrement(
+            $key, $value, function ($current, $value) {
+                return $current + $value;
+            }
+        );
     }
 
     /**
      * Decrement the value of an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return int|bool
      */
     public function decrement($key, $value = 1)
     {
-        return $this->incrementOrDecrement($key, $value, function ($current, $value) {
-            return $current - $value;
-        });
+        return $this->incrementOrDecrement(
+            $key, $value, function ($current, $value) {
+                return $current - $value;
+            }
+        );
     }
 
     /**
      * Increment or decrement an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed  $value
-     * @param  \Closure  $callback
+     * @param  string   $key
+     * @param  mixed    $value
+     * @param  \Closure $callback
      * @return int|bool
      */
     protected function incrementOrDecrement($key, $value, Closure $callback)
     {
-        return $this->connection->transaction(function () use ($key, $value, $callback) {
-            $prefixed = $this->prefix.$key;
+        return $this->connection->transaction(
+            function () use ($key, $value, $callback) {
+                $prefixed = $this->prefix.$key;
 
-            $cache = $this->table()->where('key', $prefixed)
-                        ->lockForUpdate()->first();
+                $cache = $this->table()->where('key', $prefixed)
+                    ->lockForUpdate()->first();
 
-            // If there is no value in the cache, we will return false here. Otherwise the
-            // value will be decrypted and we will proceed with this function to either
-            // increment or decrement this value based on the given action callbacks.
-            if (is_null($cache)) {
-                return false;
+                // If there is no value in the cache, we will return false here. Otherwise the
+                // value will be decrypted and we will proceed with this function to either
+                // increment or decrement this value based on the given action callbacks.
+                if (is_null($cache)) {
+                    return false;
+                }
+
+                $cache = is_array($cache) ? (object) $cache : $cache;
+
+                $current = unserialize($cache->value);
+
+                // Here we'll call this callback function that was given to the function which
+                // is used to either increment or decrement the function. We use a callback
+                // so we do not have to recreate all this logic in each of the functions.
+                $new = $callback((int) $current, $value);
+
+                if (! is_numeric($current)) {
+                    return false;
+                }
+
+                // Here we will update the values in the table. We will also encrypt the value
+                // since database cache values are encrypted by default with secure storage
+                // that can't be easily read. We will return the new value after storing.
+                $this->table()->where('key', $prefixed)->update(
+                    [
+                    'value' => serialize($new),
+                    ]
+                );
+
+                return $new;
             }
-
-            $cache = is_array($cache) ? (object) $cache : $cache;
-
-            $current = unserialize($cache->value);
-
-            // Here we'll call this callback function that was given to the function which
-            // is used to either increment or decrement the function. We use a callback
-            // so we do not have to recreate all this logic in each of the functions.
-            $new = $callback((int) $current, $value);
-
-            if (! is_numeric($current)) {
-                return false;
-            }
-
-            // Here we will update the values in the table. We will also encrypt the value
-            // since database cache values are encrypted by default with secure storage
-            // that can't be easily read. We will return the new value after storing.
-            $this->table()->where('key', $prefixed)->update([
-                'value' => serialize($new),
-            ]);
-
-            return $new;
-        });
+        );
     }
 
     /**
@@ -192,8 +200,8 @@ class DatabaseStore implements Store
     /**
      * Store an item in the cache indefinitely.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return void
      */
     public function forever($key, $value)
@@ -204,7 +212,7 @@ class DatabaseStore implements Store
     /**
      * Remove an item from the cache.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function forget($key)

@@ -22,7 +22,7 @@ use Zilf\HttpFoundation\Session\Attribute\AttributeBag;
  * These tests require separate processes.
  *
  * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+ * @preserveGlobalState         disabled
  */
 class PhpBridgeSessionStorageTest extends \PHPUnit_Framework_TestCase
 {

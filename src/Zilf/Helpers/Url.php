@@ -25,7 +25,7 @@ class Url
     /**
      * @param string $url
      * @param string $params
-     * @param bool $scheme
+     * @param bool   $scheme
      * @return string
      */
     public static function toRoute($url = '', $params = '', $scheme = true)
@@ -73,22 +73,22 @@ class Url
     /**
      * 获取当前请求的bundle controller action 的信息
      *
-     * @param $key
+     * @param  $key
      * @return string
      * @throws \Exception
      */
     public static function routeInfo($key)
     {
         switch (strtolower($key)) {
-            case 'bundle':
-                return Zilf::$app->bundle;
-            case 'controller':
-                return Zilf::$app->controller;
-            case 'method':
-            case 'action':
-                return Zilf::$app->action;
-            default:
-                return (Zilf::$app->params[$key]) ?? '';
+        case 'bundle':
+            return Zilf::$app->bundle;
+        case 'controller':
+            return Zilf::$app->controller;
+        case 'method':
+        case 'action':
+            return Zilf::$app->action;
+        default:
+            return (Zilf::$app->params[$key]) ?? '';
         }
     }
 }

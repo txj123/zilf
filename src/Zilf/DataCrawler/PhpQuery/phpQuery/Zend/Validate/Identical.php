@@ -12,14 +12,16 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Identical.php 8118 2008-02-18 16:10:32Z matthew $
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: Identical.php 8118 2008-02-18 16:10:32Z matthew $
  */
 
-/** Zend_Validate_Abstract */
+/**
+ * Zend_Validate_Abstract 
+ */
 require_once 'Zend/Validate/Abstract.php';
 
 /**
@@ -30,16 +32,21 @@ require_once 'Zend/Validate/Abstract.php';
  */
 class Zend_Validate_Identical extends Zend_Validate_Abstract
 {
-    /**#@+
+    /**
+* #@+
      * Error codes
+     *
      * @const string
      */
     const NOT_SAME      = 'notSame';
     const MISSING_TOKEN = 'missingToken';
-    /**#@-*/
+    /**
+     * #@-
+     */
 
     /**
      * Error messages
+     *
      * @var array
      */
     protected $_messageTemplates = array(
@@ -49,6 +56,7 @@ class Zend_Validate_Identical extends Zend_Validate_Abstract
 
     /**
      * Original token against which to validate
+     *
      * @var string
      */
     protected $_token;
@@ -107,7 +115,7 @@ class Zend_Validate_Identical extends Zend_Validate_Abstract
             return false;
         }
 
-        if ($value !== $token)  {
+        if ($value !== $token) {
             $this->_error(self::NOT_SAME);
             return false;
         }

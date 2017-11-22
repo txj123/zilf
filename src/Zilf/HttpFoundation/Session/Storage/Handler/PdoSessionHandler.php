@@ -212,28 +212,28 @@ class PdoSessionHandler implements \SessionHandlerInterface
         $this->getConnection();
 
         switch ($this->driver) {
-            case 'mysql':
-                // We use varbinary for the ID column because it prevents unwanted conversions:
-                // - character set conversions between server and client
-                // - trailing space removal
-                // - case-insensitivity
-                // - language processing like é == e
-                $sql = "CREATE TABLE $this->table ($this->idCol VARBINARY(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol MEDIUMINT NOT NULL, $this->timeCol INTEGER UNSIGNED NOT NULL) COLLATE utf8_bin, ENGINE = InnoDB";
-                break;
-            case 'sqlite':
-                $sql = "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
-                break;
-            case 'pgsql':
-                $sql = "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol BYTEA NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
-                break;
-            case 'oci':
-                $sql = "CREATE TABLE $this->table ($this->idCol VARCHAR2(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
-                break;
-            case 'sqlsrv':
-                $sql = "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol VARBINARY(MAX) NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
-                break;
-            default:
-                throw new \DomainException(sprintf('Creating the session table is currently not implemented for PDO driver "%s".', $this->driver));
+        case 'mysql':
+            // We use varbinary for the ID column because it prevents unwanted conversions:
+            // - character set conversions between server and client
+            // - trailing space removal
+            // - case-insensitivity
+            // - language processing like é == e
+            $sql = "CREATE TABLE $this->table ($this->idCol VARBINARY(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol MEDIUMINT NOT NULL, $this->timeCol INTEGER UNSIGNED NOT NULL) COLLATE utf8_bin, ENGINE = InnoDB";
+            break;
+        case 'sqlite':
+            $sql = "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
+            break;
+        case 'pgsql':
+            $sql = "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol BYTEA NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
+            break;
+        case 'oci':
+            $sql = "CREATE TABLE $this->table ($this->idCol VARCHAR2(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
+            break;
+        case 'sqlsrv':
+            $sql = "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol VARBINARY(MAX) NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)";
+            break;
+        default:
+            throw new \DomainException(sprintf('Creating the session table is currently not implemented for PDO driver "%s".', $this->driver));
         }
 
         try {
@@ -567,49 +567,49 @@ class PdoSessionHandler implements \SessionHandlerInterface
     private function doAdvisoryLock($sessionId)
     {
         switch ($this->driver) {
-            case 'mysql':
-                // should we handle the return value? 0 on timeout, null on error
-                // we use a timeout of 50 seconds which is also the default for innodb_lock_wait_timeout
-                $stmt = $this->pdo->prepare('SELECT GET_LOCK(:key, 50)');
-                $stmt->bindValue(':key', $sessionId, \PDO::PARAM_STR);
+        case 'mysql':
+            // should we handle the return value? 0 on timeout, null on error
+            // we use a timeout of 50 seconds which is also the default for innodb_lock_wait_timeout
+            $stmt = $this->pdo->prepare('SELECT GET_LOCK(:key, 50)');
+            $stmt->bindValue(':key', $sessionId, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            $releaseStmt = $this->pdo->prepare('DO RELEASE_LOCK(:key)');
+            $releaseStmt->bindValue(':key', $sessionId, \PDO::PARAM_STR);
+
+            return $releaseStmt;
+        case 'pgsql':
+            // Obtaining an exclusive session level advisory lock requires an integer key.
+            // So we convert the HEX representation of the session id to an integer.
+            // Since integers are signed, we have to skip one hex char to fit in the range.
+            if (4 === PHP_INT_SIZE) {
+                $sessionInt1 = hexdec(substr($sessionId, 0, 7));
+                $sessionInt2 = hexdec(substr($sessionId, 7, 7));
+
+                $stmt = $this->pdo->prepare('SELECT pg_advisory_lock(:key1, :key2)');
+                $stmt->bindValue(':key1', $sessionInt1, \PDO::PARAM_INT);
+                $stmt->bindValue(':key2', $sessionInt2, \PDO::PARAM_INT);
                 $stmt->execute();
 
-                $releaseStmt = $this->pdo->prepare('DO RELEASE_LOCK(:key)');
-                $releaseStmt->bindValue(':key', $sessionId, \PDO::PARAM_STR);
+                $releaseStmt = $this->pdo->prepare('SELECT pg_advisory_unlock(:key1, :key2)');
+                $releaseStmt->bindValue(':key1', $sessionInt1, \PDO::PARAM_INT);
+                $releaseStmt->bindValue(':key2', $sessionInt2, \PDO::PARAM_INT);
+            } else {
+                $sessionBigInt = hexdec(substr($sessionId, 0, 15));
 
-                return $releaseStmt;
-            case 'pgsql':
-                // Obtaining an exclusive session level advisory lock requires an integer key.
-                // So we convert the HEX representation of the session id to an integer.
-                // Since integers are signed, we have to skip one hex char to fit in the range.
-                if (4 === PHP_INT_SIZE) {
-                    $sessionInt1 = hexdec(substr($sessionId, 0, 7));
-                    $sessionInt2 = hexdec(substr($sessionId, 7, 7));
+                $stmt = $this->pdo->prepare('SELECT pg_advisory_lock(:key)');
+                $stmt->bindValue(':key', $sessionBigInt, \PDO::PARAM_INT);
+                $stmt->execute();
 
-                    $stmt = $this->pdo->prepare('SELECT pg_advisory_lock(:key1, :key2)');
-                    $stmt->bindValue(':key1', $sessionInt1, \PDO::PARAM_INT);
-                    $stmt->bindValue(':key2', $sessionInt2, \PDO::PARAM_INT);
-                    $stmt->execute();
+                $releaseStmt = $this->pdo->prepare('SELECT pg_advisory_unlock(:key)');
+                $releaseStmt->bindValue(':key', $sessionBigInt, \PDO::PARAM_INT);
+            }
 
-                    $releaseStmt = $this->pdo->prepare('SELECT pg_advisory_unlock(:key1, :key2)');
-                    $releaseStmt->bindValue(':key1', $sessionInt1, \PDO::PARAM_INT);
-                    $releaseStmt->bindValue(':key2', $sessionInt2, \PDO::PARAM_INT);
-                } else {
-                    $sessionBigInt = hexdec(substr($sessionId, 0, 15));
-
-                    $stmt = $this->pdo->prepare('SELECT pg_advisory_lock(:key)');
-                    $stmt->bindValue(':key', $sessionBigInt, \PDO::PARAM_INT);
-                    $stmt->execute();
-
-                    $releaseStmt = $this->pdo->prepare('SELECT pg_advisory_unlock(:key)');
-                    $releaseStmt->bindValue(':key', $sessionBigInt, \PDO::PARAM_INT);
-                }
-
-                return $releaseStmt;
-            case 'sqlite':
-                throw new \DomainException('SQLite does not support advisory locks.');
-            default:
-                throw new \DomainException(sprintf('Advisory locks are currently not implemented for PDO driver "%s".', $this->driver));
+            return $releaseStmt;
+        case 'sqlite':
+            throw new \DomainException('SQLite does not support advisory locks.');
+        default:
+            throw new \DomainException(sprintf('Advisory locks are currently not implemented for PDO driver "%s".', $this->driver));
         }
     }
 
@@ -626,17 +626,17 @@ class PdoSessionHandler implements \SessionHandlerInterface
             $this->beginTransaction();
 
             switch ($this->driver) {
-                case 'mysql':
-                case 'oci':
-                case 'pgsql':
-                    return "SELECT $this->dataCol, $this->lifetimeCol, $this->timeCol FROM $this->table WHERE $this->idCol = :id FOR UPDATE";
-                case 'sqlsrv':
-                    return "SELECT $this->dataCol, $this->lifetimeCol, $this->timeCol FROM $this->table WITH (UPDLOCK, ROWLOCK) WHERE $this->idCol = :id";
-                case 'sqlite':
-                    // we already locked when starting transaction
-                    break;
-                default:
-                    throw new \DomainException(sprintf('Transactional locks are currently not implemented for PDO driver "%s".', $this->driver));
+            case 'mysql':
+            case 'oci':
+            case 'pgsql':
+                return "SELECT $this->dataCol, $this->lifetimeCol, $this->timeCol FROM $this->table WHERE $this->idCol = :id FOR UPDATE";
+            case 'sqlsrv':
+                return "SELECT $this->dataCol, $this->lifetimeCol, $this->timeCol FROM $this->table WITH (UPDLOCK, ROWLOCK) WHERE $this->idCol = :id";
+            case 'sqlite':
+                // we already locked when starting transaction
+                break;
+            default:
+                throw new \DomainException(sprintf('Transactional locks are currently not implemented for PDO driver "%s".', $this->driver));
             }
         }
 
@@ -656,30 +656,30 @@ class PdoSessionHandler implements \SessionHandlerInterface
     {
         $mergeSql = null;
         switch (true) {
-            case 'mysql' === $this->driver:
-                $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time) ".
-                    "ON DUPLICATE KEY UPDATE $this->dataCol = VALUES($this->dataCol), $this->lifetimeCol = VALUES($this->lifetimeCol), $this->timeCol = VALUES($this->timeCol)";
-                break;
-            case 'oci' === $this->driver:
-                // DUAL is Oracle specific dummy table
-                $mergeSql = "MERGE INTO $this->table USING DUAL ON ($this->idCol = ?) ".
-                    "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?) ".
-                    "WHEN MATCHED THEN UPDATE SET $this->dataCol = ?, $this->lifetimeCol = ?, $this->timeCol = ?";
-                break;
-            case 'sqlsrv' === $this->driver && version_compare($this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '10', '>='):
-                // MERGE is only available since SQL Server 2008 and must be terminated by semicolon
-                // It also requires HOLDLOCK according to http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
-                $mergeSql = "MERGE INTO $this->table WITH (HOLDLOCK) USING (SELECT 1 AS dummy) AS src ON ($this->idCol = ?) ".
-                    "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?) ".
-                    "WHEN MATCHED THEN UPDATE SET $this->dataCol = ?, $this->lifetimeCol = ?, $this->timeCol = ?;";
-                break;
-            case 'sqlite' === $this->driver:
-                $mergeSql = "INSERT OR REPLACE INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time)";
-                break;
-            case 'pgsql' === $this->driver && version_compare($this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '9.5', '>='):
-                $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time) ".
-                    "ON CONFLICT ($this->idCol) DO UPDATE SET ($this->dataCol, $this->lifetimeCol, $this->timeCol) = (EXCLUDED.$this->dataCol, EXCLUDED.$this->lifetimeCol, EXCLUDED.$this->timeCol)";
-                break;
+        case 'mysql' === $this->driver:
+            $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time) ".
+                "ON DUPLICATE KEY UPDATE $this->dataCol = VALUES($this->dataCol), $this->lifetimeCol = VALUES($this->lifetimeCol), $this->timeCol = VALUES($this->timeCol)";
+            break;
+        case 'oci' === $this->driver:
+            // DUAL is Oracle specific dummy table
+            $mergeSql = "MERGE INTO $this->table USING DUAL ON ($this->idCol = ?) ".
+                "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?) ".
+                "WHEN MATCHED THEN UPDATE SET $this->dataCol = ?, $this->lifetimeCol = ?, $this->timeCol = ?";
+            break;
+        case 'sqlsrv' === $this->driver && version_compare($this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '10', '>='):
+            // MERGE is only available since SQL Server 2008 and must be terminated by semicolon
+            // It also requires HOLDLOCK according to http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
+            $mergeSql = "MERGE INTO $this->table WITH (HOLDLOCK) USING (SELECT 1 AS dummy) AS src ON ($this->idCol = ?) ".
+                "WHEN NOT MATCHED THEN INSERT ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?) ".
+                "WHEN MATCHED THEN UPDATE SET $this->dataCol = ?, $this->lifetimeCol = ?, $this->timeCol = ?;";
+            break;
+        case 'sqlite' === $this->driver:
+            $mergeSql = "INSERT OR REPLACE INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time)";
+            break;
+        case 'pgsql' === $this->driver && version_compare($this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '9.5', '>='):
+            $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time) ".
+                "ON CONFLICT ($this->idCol) DO UPDATE SET ($this->dataCol, $this->lifetimeCol, $this->timeCol) = (EXCLUDED.$this->dataCol, EXCLUDED.$this->lifetimeCol, EXCLUDED.$this->timeCol)";
+            break;
         }
 
         if (null !== $mergeSql) {

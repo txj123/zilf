@@ -31,7 +31,6 @@ class Route implements \IteratorAggregate
      *  - 'id'
      *  - 'requirements'
      *  - 'mount_path': the mounted path.
-     *
      */
     public $routes = array();
 
@@ -159,8 +158,7 @@ class Route implements \IteratorAggregate
         if ($pcre) {
             $routeArgs = is_integer($callback)
                 ? PatternCompiler::compilePrefix($pattern, $options)
-                : PatternCompiler::compile($pattern, $options)
-            ;
+                : PatternCompiler::compile($pattern, $options);
 
             // generate a pcre pattern route
             $route = array(
@@ -235,22 +233,22 @@ class Route implements \IteratorAggregate
     public static function convertRequestMethodConstant($method)
     {
         switch (strtoupper($method)) {
-            case 'POST':
-                return REQUEST_METHOD_POST;
-            case 'GET':
-                return REQUEST_METHOD_GET;
-            case 'PUT':
-                return REQUEST_METHOD_PUT;
-            case 'DELETE':
-                return REQUEST_METHOD_DELETE;
-            case 'PATCH':
-                return REQUEST_METHOD_PATCH;
-            case 'HEAD':
-                return REQUEST_METHOD_HEAD;
-            case 'OPTIONS':
-                return REQUEST_METHOD_OPTIONS;
-            default:
-                return 0;
+        case 'POST':
+            return REQUEST_METHOD_POST;
+        case 'GET':
+            return REQUEST_METHOD_GET;
+        case 'PUT':
+            return REQUEST_METHOD_PUT;
+        case 'DELETE':
+            return REQUEST_METHOD_DELETE;
+        case 'PATCH':
+            return REQUEST_METHOD_PATCH;
+        case 'HEAD':
+            return REQUEST_METHOD_HEAD;
+        case 'OPTIONS':
+            return REQUEST_METHOD_OPTIONS;
+        default:
+            return 0;
         }
     }
 
@@ -299,10 +297,9 @@ class Route implements \IteratorAggregate
             } else {
                 // prefix match is used when expanding is not enabled.
                 // TODO: Handle full match here..
-                if ((
-                        (is_int($route[2]) || $route[2] instanceof self || $route[2] instanceof \PHPSGI\App)
-                        && strncmp($route[1], $path, strlen($route[1])) === 0
-                    ) || $route[1] == $path) {
+                if ((                    (is_int($route[2]) || $route[2] instanceof self || $route[2] instanceof \PHPSGI\App)
+                    && strncmp($route[1], $path, strlen($route[1])) === 0) || $route[1] == $path
+                ) {
                     // validate request method
                     if (isset($route[3]['method']) && $route[3]['method'] != $requestMethod) {
                         continue;

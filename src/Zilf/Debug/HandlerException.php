@@ -14,7 +14,7 @@ class HandlerException
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return void
      *
      * @throws \Exception
@@ -28,8 +28,8 @@ class HandlerException
     /**
      * Render an exception into a response.
      *
-     * @param $request
-     * @param Exception $e
+     * @param  $request
+     * @param  Exception $e
      * @return \Zilf\HttpFoundation\Response
      */
     public function render($request, Exception $e)
@@ -46,7 +46,7 @@ class HandlerException
     /**
      * Prepare exception for rendering.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return \Exception
      */
     protected function prepareException(Exception $e)
@@ -61,8 +61,8 @@ class HandlerException
     /**
      * Prepare response containing exception render.
      *
-     * @param $request
-     * @param Exception $e
+     * @param  $request
+     * @param  Exception $e
      * @return \Zilf\HttpFoundation\Response
      */
     protected function prepareResponse($request, Exception $e)
@@ -77,14 +77,14 @@ class HandlerException
     /**
      * Render the given HttpException.
      *
-     * @param HttpException $e
+     * @param  HttpException $e
      * @return \Zilf\HttpFoundation\Response
      */
     protected function renderHttpException(HttpException $e)
     {
         $status = $e->getStatusCode();
 
-       /* view()->replaceNamespace('errors', [
+        /* view()->replaceNamespace('errors', [
             resource_path('views/errors'),
             __DIR__.'/views',
         ]);
@@ -93,13 +93,13 @@ class HandlerException
             return response()->view("errors::{$status}", ['exception' => $e], $status, $e->getHeaders());
         } else {*/
             return $this->convertExceptionToResponse($e);
-//        }
+        //        }
     }
 
     /**
      * Create a Symfony response for the given exception.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return \Zilf\HttpFoundation\Response
      */
     protected function convertExceptionToResponse(Exception $e)
@@ -114,8 +114,8 @@ class HandlerException
     /**
      * Map the given exception into an Illuminate response.
      *
-     * @param  \Zilf\HttpFoundation\Response  $response
-     * @param  \Exception  $e
+     * @param  \Zilf\HttpFoundation\Response $response
+     * @param  \Exception                    $e
      * @return \Zilf\HttpFoundation\Response
      */
     protected function toIlluminateResponse($response, Exception $e)
@@ -132,8 +132,8 @@ class HandlerException
     /**
      * Render an exception to the console.
      *
-     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
-     * @param  \Exception  $e
+     * @param  \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Exception                                        $e
      * @return void
      */
     public function renderForConsole($output, Exception $e)
@@ -144,7 +144,7 @@ class HandlerException
     /**
      * Determine if the given exception is an HTTP exception.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return bool
      */
     protected function isHttpException(Exception $e)

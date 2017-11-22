@@ -7,7 +7,6 @@ namespace Zilf\Routing;
  *   /blog/:year/:month
  *   /blog/item/:id
  *   /blog/item/:id(.:format)
- *
  */
 class PatternCompiler
 {
@@ -19,7 +18,7 @@ class PatternCompiler
      * compile pattern
      *
      * @param string $pattern
-     * @param array $options
+     * @param array  $options
      */
     static function compilePattern($pattern, array $options = array())
     {
@@ -30,7 +29,6 @@ class PatternCompiler
          *
          *   array( 'text', $text ),
          *   array( 'variable', $match[0][0][0], $regexp, $var);
-         *
          */
         $tokens = array();
         $variables = array();
@@ -76,7 +74,7 @@ class PatternCompiler
                 // check if the next pattern is an optional pattern
                 if ($nextMatch[0][0][0] === '(') {
 
-                    $r = self::compilePattern($nextMatch[2][0] ,array());
+                    $r = self::compilePattern($nextMatch[2][0], array());
                     if (isset($r['tokens'][0][1])) {
                         $seps[] = $r['tokens'][0][1][0];
                     }
@@ -93,13 +91,15 @@ class PatternCompiler
 
 
             // generate optional pattern recursively
-            if ($match[0][0][0] == '(' ){
+            if ($match[0][0][0] == '(' ) {
                 $optional = $match[2][0];
-                $subroute = self::compilePattern($optional ,array(
+                $subroute = self::compilePattern(
+                    $optional, array(
                     'default'   => isset($options['default']) ? $options['default'] : null,
                     'require'   => isset($options['require']) ? $options['require'] : null,
                     'variables' => isset($options['variables']) ? $options['variables'] : null,
-                ));
+                    )
+                );
 
                 $tokens[] = array(
                     self::TOKEN_TYPE_OPTIONAL,
@@ -114,7 +114,7 @@ class PatternCompiler
                 $varName = $match[1][0];
 
                 // if we defined a pattern for this variable, we should use the given pattern..
-                if ( isset( $options['require'][$varName] ) && $req = $options['require'][$varName]) {
+                if (isset($options['require'][$varName]) && $req = $options['require'][$varName]) {
                     $regexp = $req;
                 } else {
                     if ($pos !== $len) {
@@ -142,9 +142,9 @@ class PatternCompiler
         // find the first optional token
         $firstOptional = INF;
         for ($i = count($tokens) - 1; $i >= 0; $i--) {
-            if ( self::TOKEN_TYPE_VARIABLE === $tokens[$i][0]
-                && isset($options['default'][ $tokens[$i][3] ]) )
-            {
+            if (self::TOKEN_TYPE_VARIABLE === $tokens[$i][0]
+                && isset($options['default'][ $tokens[$i][3] ]) 
+            ) {
                 $firstOptional = $i;
             }
             else
@@ -181,21 +181,21 @@ class PatternCompiler
             foreach ($tokens as $i => $token) {
 
                 switch ( $token[0] ) {
-                    case self::TOKEN_TYPE_TEXT:
-                        $regex .= str_repeat(' ', $indent * 4) . preg_quote($token[1], '#')."\n";
-                        break;
-                    case self::TOKEN_TYPE_OPTIONAL:
-                        // the question mark is for optional, the optional item may contains multiple tokens and patterns
-                        $regex .= str_repeat(' ', $indent * 4) . "(?:\n" . $token[2] . str_repeat(' ', $indent * 4) . ")?\n";
-                        break;
-                    default:
-                        // append new pattern group for the optional pattern
-                        if ($i >= $firstOptional) {
-                            $regex .= str_repeat(' ', $indent * 4) . "(?:\n";
-                            ++$indent;
-                        }
-                        $regex .= str_repeat(' ', $indent * 4). sprintf("%s(?P<%s>%s)\n", preg_quote($token[1], '#'), $token[3], $token[2]);
-                        break;
+                case self::TOKEN_TYPE_TEXT:
+                    $regex .= str_repeat(' ', $indent * 4) . preg_quote($token[1], '#')."\n";
+                    break;
+                case self::TOKEN_TYPE_OPTIONAL:
+                    // the question mark is for optional, the optional item may contains multiple tokens and patterns
+                    $regex .= str_repeat(' ', $indent * 4) . "(?:\n" . $token[2] . str_repeat(' ', $indent * 4) . ")?\n";
+                    break;
+                default:
+                    // append new pattern group for the optional pattern
+                    if ($i >= $firstOptional) {
+                        $regex .= str_repeat(' ', $indent * 4) . "(?:\n";
+                        ++$indent;
+                    }
+                    $regex .= str_repeat(' ', $indent * 4). sprintf("%s(?P<%s>%s)\n", preg_quote($token[1], '#'), $token[3], $token[2]);
+                    break;
                 }
             }
         }
@@ -223,14 +223,16 @@ class PatternCompiler
     static function splitTokens($string)
     {
         // split with ":variable" and path
-        preg_match_all('/(?:
+        preg_match_all(
+            '/(?:
             # parse variable token with separator
             .            # separator
             :([\w\d_]+)  # variable
             |
             # optional tokens
             \((.*)\)
-        )/x', $string, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+        )/x', $string, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+        );
         return $matches;
     }
 

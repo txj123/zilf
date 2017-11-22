@@ -16,7 +16,7 @@ use Zilf\Db\Transaction;
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema
 {
@@ -84,7 +84,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
@@ -95,7 +96,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
@@ -105,6 +107,7 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Creates a query builder for the CUBRID database.
+     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -114,7 +117,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return TableSchema driver dependent table metadata. Null if the table does not exist.
      */
     protected function loadTableSchema($name)
@@ -165,7 +169,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
+     *
+     * @param  array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -219,10 +224,10 @@ class Schema extends \Zilf\Db\Schema
             return $column;
         }
 
-        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
-            $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
-            $column->type === 'date' && $info['Default'] === 'SYS_DATE' ||
-            $column->type === 'time' && $info['Default'] === 'SYS_TIME'
+        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' 
+            || $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' 
+            || $column->type === 'date' && $info['Default'] === 'SYS_DATE' 
+            || $column->type === 'time' && $info['Default'] === 'SYS_TIME'
         ) {
             $column->defaultValue = new Expression($info['Default']);
         } elseif (isset($type) && $type === 'bit') {
@@ -236,7 +241,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     *
+     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')
@@ -256,9 +262,10 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Determines the PDO type for the given PHP data value.
-     * @param mixed $data the data whose PDO type is to be determined
+     *
+     * @param  mixed $data the data whose PDO type is to be determined
      * @return int the PDO type
-     * @see http://www.php.net/manual/en/pdo.constants.php
+     * @see    http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
     {
@@ -283,18 +290,18 @@ class Schema extends \Zilf\Db\Schema
     {
         // translate SQL92 levels to CUBRID levels:
         switch ($level) {
-            case Transaction::SERIALIZABLE:
-                $level = '6'; // SERIALIZABLE
-                break;
-            case Transaction::REPEATABLE_READ:
-                $level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
-                break;
-            case Transaction::READ_COMMITTED:
-                $level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
-                break;
-            case Transaction::READ_UNCOMMITTED:
-                $level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
-                break;
+        case Transaction::SERIALIZABLE:
+            $level = '6'; // SERIALIZABLE
+            break;
+        case Transaction::REPEATABLE_READ:
+            $level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
+            break;
+        case Transaction::READ_COMMITTED:
+            $level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
+            break;
+        case Transaction::READ_UNCOMMITTED:
+            $level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
+            break;
         }
         parent::setTransactionIsolationLevel($level);
     }

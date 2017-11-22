@@ -28,10 +28,10 @@ class Debug
     /**
      * Convert PHP errors to ErrorException instances.
      *
-     * @param  int  $level
-     * @param  string  $message
-     * @param  string  $file
-     * @param  int  $line
+     * @param  int    $level
+     * @param  string $message
+     * @param  string $file
+     * @param  int    $line
      * @param  array  $context
      * @return void
      *
@@ -51,7 +51,7 @@ class Debug
      * the HTTP and Console kernels. But, fatal error exceptions must
      * be handled differently since they are not normal exceptions.
      *
-     * @param  \Throwable  $e
+     * @param  \Throwable $e
      * @return void
      */
     public function handleException($e)
@@ -72,7 +72,7 @@ class Debug
     /**
      * Render an exception to the console.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return void
      */
     protected function renderForConsole(Exception $e)
@@ -83,7 +83,7 @@ class Debug
     /**
      * Render an exception as an HTTP response and send it.
      *
-     * @param  \Exception  $e
+     * @param  \Exception $e
      * @return void
      */
     protected function renderHttpResponse(Exception $e)
@@ -106,8 +106,8 @@ class Debug
     /**
      * Create a new fatal exception instance from an error array.
      *
-     * @param  array  $error
-     * @param  int|null  $traceOffset
+     * @param  array    $error
+     * @param  int|null $traceOffset
      * @return \Zilf\Debug\Exception\FatalErrorException
      */
     protected function fatalExceptionFromError(array $error, $traceOffset = null)
@@ -120,7 +120,7 @@ class Debug
     /**
      * Determine if the error type is fatal.
      *
-     * @param  int  $type
+     * @param  int $type
      * @return bool
      */
     protected function isFatal($type)

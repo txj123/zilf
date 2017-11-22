@@ -15,7 +15,7 @@ use Zilf\Db\Expression;
  * QueryBuilder is the query builder for MySQL databases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
@@ -48,9 +48,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
+     *
+     * @param  string $table   the table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param  string $oldName the old name of the column. The name will be properly quoted by the method.
+     * @param  string $newName the new name of the column. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB column.
      * @throws Exception
      */
@@ -98,8 +99,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping a foreign key constraint.
-     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+     *
+     * @param  string $name  the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+     * @param  string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping a foreign key constraint.
      */
     public function dropForeignKey($name, $table)
@@ -110,8 +112,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
+     *
+     * @param  string $name  the name of the primary key constraint to be removed.
+     * @param  string $table the table that the primary key constraint will be removed from.
      * @return string the SQL statement for removing a primary key constraint from an existing table.
      */
     public function dropPrimaryKey($name, $table)
@@ -123,9 +126,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     *
+     * @param  string $tableName the name of the table whose primary key sequence will be reset
+     * @param  mixed  $value     the value for the primary key of the next new row inserted. If this is not set,
+     *                           the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
@@ -151,9 +155,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Meaningless for MySQL.
-     * @param string $table the table name. Meaningless for MySQL.
+     *
+     * @param  bool   $check  whether to turn on or off the integrity check.
+     * @param  string $schema the schema of the tables. Meaningless for MySQL.
+     * @param  string $table  the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -295,8 +300,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Gets column definition.
      *
-     * @param string $table table name
-     * @param string $column column name
+     * @param  string $table  table name
+     * @param  string $column column name
      * @return null|string the column definition
      * @throws Exception in case when table does not contain column
      */

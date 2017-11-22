@@ -16,8 +16,8 @@ class PasswordHashing
     /**
      * Hash the given value.
      *
-     * @param  string  $value
-     * @param  array   $options
+     * @param  string $value
+     * @param  array  $options
      * @return string
      *
      * @throws \RuntimeException
@@ -38,9 +38,9 @@ class PasswordHashing
     /**
      * Check the given plain value against a hash.
      *
-     * @param  string  $value
-     * @param  string  $hashedValue
-     * @param  array   $options
+     * @param  string $value
+     * @param  string $hashedValue
+     * @param  array  $options
      * @return bool
      */
     public function check($value, $hashedValue, array $options = [])
@@ -55,8 +55,8 @@ class PasswordHashing
     /**
      * Check if the given hash has been hashed using the given options.
      *
-     * @param  string  $hashedValue
-     * @param  array   $options
+     * @param  string $hashedValue
+     * @param  array  $options
      * @return bool
      */
     public function needsRehash($hashedValue, array $options = [])
@@ -69,7 +69,7 @@ class PasswordHashing
     /**
      * Set the default password work factor.
      *
-     * @param  int  $rounds
+     * @param  int $rounds
      * @return $this
      */
     public function setRounds($rounds)

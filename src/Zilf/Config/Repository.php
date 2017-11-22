@@ -22,7 +22,7 @@ class Repository implements ArrayAccess
     /**
      * Create a new configuration repository.
      *
-     * @param  array  $items
+     * @param  array $items
      * @return void
      */
     public function __construct(array $items = [])
@@ -33,7 +33,7 @@ class Repository implements ArrayAccess
     /**
      * Determine if the given configuration value exists.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function has($key)
@@ -44,17 +44,17 @@ class Repository implements ArrayAccess
     /**
      * Get the specified configuration value.
      *
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function get($key, $default = null)
     {
-        if(substr_count($key,'.') > 0){
-            $paramArr = explode('.',$key);
+        if(substr_count($key, '.') > 0) {
+            $paramArr = explode('.', $key);
             $data = $this->items[$paramArr[0]];
 
-            if(isset($data[$paramArr[1]])){
+            if(isset($data[$paramArr[1]])) {
                 $data = $data[$paramArr[1]];
             }
 
@@ -67,8 +67,8 @@ class Repository implements ArrayAccess
     /**
      * Set a given configuration value.
      *
-     * @param  array|string  $key
-     * @param  mixed   $value
+     * @param  array|string $key
+     * @param  mixed        $value
      * @return void
      */
     public function set($key, $value = null)
@@ -85,7 +85,7 @@ class Repository implements ArrayAccess
     /**
      * Prepend a value onto an array configuration value.
      *
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
      * @return void
      */
@@ -101,7 +101,7 @@ class Repository implements ArrayAccess
     /**
      * Push a value onto an array configuration value.
      *
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
      * @return void
      */
@@ -127,7 +127,7 @@ class Repository implements ArrayAccess
     /**
      * Determine if the given configuration option exists.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function offsetExists($key)
@@ -138,7 +138,7 @@ class Repository implements ArrayAccess
     /**
      * Get a configuration option.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -149,7 +149,7 @@ class Repository implements ArrayAccess
     /**
      * Set a configuration option.
      *
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
      * @return void
      */
@@ -161,7 +161,7 @@ class Repository implements ArrayAccess
     /**
      * Unset a configuration option.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return void
      */
     public function offsetUnset($key)

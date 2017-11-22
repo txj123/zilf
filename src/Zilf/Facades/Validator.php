@@ -22,7 +22,8 @@ use Zilf\System\Zilf;
 
 class Validator extends Facade
 {
-    protected static function getFacadeAccessor(){
+    protected static function getFacadeAccessor()
+    {
         return 'validator';
     }
 }

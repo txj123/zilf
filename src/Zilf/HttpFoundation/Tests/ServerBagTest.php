@@ -35,36 +35,42 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
 
         $bag = new ServerBag($server);
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'CONTENT_TYPE' => 'text/html',
             'CONTENT_LENGTH' => '0',
             'ETAG' => 'asdf',
             'AUTHORIZATION' => 'Basic '.base64_encode('foo:bar'),
             'PHP_AUTH_USER' => 'foo',
             'PHP_AUTH_PW' => 'bar',
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testHttpPasswordIsOptional()
     {
         $bag = new ServerBag(array('PHP_AUTH_USER' => 'foo'));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => 'Basic '.base64_encode('foo:'),
             'PHP_AUTH_USER' => 'foo',
             'PHP_AUTH_PW' => '',
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testHttpBasicAuthWithPhpCgi()
     {
         $bag = new ServerBag(array('HTTP_AUTHORIZATION' => 'Basic '.base64_encode('foo:bar')));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => 'Basic '.base64_encode('foo:bar'),
             'PHP_AUTH_USER' => 'foo',
             'PHP_AUTH_PW' => 'bar',
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testHttpBasicAuthWithPhpCgiBogus()
@@ -81,22 +87,26 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
     {
         $bag = new ServerBag(array('REDIRECT_HTTP_AUTHORIZATION' => 'Basic '.base64_encode('username:pass:word')));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => 'Basic '.base64_encode('username:pass:word'),
             'PHP_AUTH_USER' => 'username',
             'PHP_AUTH_PW' => 'pass:word',
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testHttpBasicAuthWithPhpCgiEmptyPassword()
     {
         $bag = new ServerBag(array('HTTP_AUTHORIZATION' => 'Basic '.base64_encode('foo:')));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => 'Basic '.base64_encode('foo:'),
             'PHP_AUTH_USER' => 'foo',
             'PHP_AUTH_PW' => '',
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testHttpDigestAuthWithPhpCgi()
@@ -104,10 +114,12 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
         $digest = 'Digest username="foo", realm="acme", nonce="'.md5('secret').'", uri="/protected, qop="auth"';
         $bag = new ServerBag(array('HTTP_AUTHORIZATION' => $digest));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => $digest,
             'PHP_AUTH_DIGEST' => $digest,
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testHttpDigestAuthWithPhpCgiBogus()
@@ -126,10 +138,12 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
         $digest = 'Digest username="foo", realm="acme", nonce="'.md5('secret').'", uri="/protected, qop="auth"';
         $bag = new ServerBag(array('REDIRECT_HTTP_AUTHORIZATION' => $digest));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => $digest,
             'PHP_AUTH_DIGEST' => $digest,
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testOAuthBearerAuth()
@@ -137,9 +151,11 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
         $headerContent = 'Bearer L-yLEOr9zhmUYRkzN1jwwxwQ-PBNiKDc8dgfB4hTfvo';
         $bag = new ServerBag(array('HTTP_AUTHORIZATION' => $headerContent));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => $headerContent,
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     public function testOAuthBearerAuthWithRedirect()
@@ -147,9 +163,11 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
         $headerContent = 'Bearer L-yLEOr9zhmUYRkzN1jwwxwQ-PBNiKDc8dgfB4hTfvo';
         $bag = new ServerBag(array('REDIRECT_HTTP_AUTHORIZATION' => $headerContent));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => $headerContent,
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 
     /**
@@ -160,10 +178,12 @@ class ServerBagTest extends \PHPUnit_Framework_TestCase
         $headerContent = 'Bearer L-yLEOr9zhmUYRkzN1jwwxwQ-PBNiKDc8dgfB4hTfvo';
         $bag = new ServerBag(array('PHP_AUTH_USER' => 'foo', 'HTTP_AUTHORIZATION' => $headerContent));
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'AUTHORIZATION' => $headerContent,
             'PHP_AUTH_USER' => 'foo',
             'PHP_AUTH_PW' => '',
-        ), $bag->getHeaders());
+            ), $bag->getHeaders()
+        );
     }
 }

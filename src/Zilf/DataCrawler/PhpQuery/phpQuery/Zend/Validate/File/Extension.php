@@ -50,6 +50,7 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
 
     /**
      * Internal list of extensions
+     *
      * @var string
      */
     protected $_extension = '';
@@ -151,8 +152,8 @@ class Zend_Validate_File_Extension extends Zend_Validate_Abstract
      * Returns true if and only if the fileextension of $value is included in the
      * set extension list
      *
-     * @param  string  $value Real file to check for extension
-     * @param  array   $file  File data from Zend_File_Transfer
+     * @param  string $value Real file to check for extension
+     * @param  array  $file  File data from Zend_File_Transfer
      * @return boolean
      */
     public function isValid($value, $file = null)

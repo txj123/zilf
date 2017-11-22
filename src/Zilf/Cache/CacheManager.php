@@ -33,7 +33,6 @@ class CacheManager
 
     /**
      * Create a new Cache manager instance.
-     *
      */
     public function __construct()
     {
@@ -43,7 +42,7 @@ class CacheManager
     /**
      * Get a cache store instance by name.
      *
-     * @param  string|null  $name
+     * @param  string|null $name
      * @return \Zilf\Cache\Repository
      */
     public function store($name = null)
@@ -56,7 +55,7 @@ class CacheManager
     /**
      * Get a cache driver instance.
      *
-     * @param  string  $driver
+     * @param  string $driver
      * @return mixed
      */
     public function driver($driver = null)
@@ -67,7 +66,7 @@ class CacheManager
     /**
      * Attempt to get the store from the local cache.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return \Zilf\Cache\Repository
      */
     protected function get($name)
@@ -78,7 +77,7 @@ class CacheManager
     /**
      * Resolve the given store.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return \Zilf\Cache\Repository
      *
      * @throws \InvalidArgumentException
@@ -107,7 +106,7 @@ class CacheManager
     /**
      * Call a custom driver creator.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return mixed
      */
     protected function callCustomCreator(array $config)
@@ -118,7 +117,7 @@ class CacheManager
     /**
      * Create an instance of the APC cache driver.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return \Zilf\Cache\ApcStore
      */
     protected function createApcDriver(array $config)
@@ -141,7 +140,7 @@ class CacheManager
     /**
      * Create an instance of the file cache driver.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return \Zilf\Cache\FileStore
      */
     protected function createFileDriver(array $config)
@@ -152,7 +151,7 @@ class CacheManager
     /**
      * Create an instance of the Memcached cache driver.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return \Zilf\Cache\MemcachedStore
      */
     protected function createMemcachedDriver(array $config)
@@ -182,7 +181,7 @@ class CacheManager
     /**
      * Create an instance of the Redis cache driver.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return \Zilf\Cache\RedisStore
      */
     protected function createRedisDriver(array $config)
@@ -197,7 +196,7 @@ class CacheManager
     /**
      * Create an instance of the database cache driver.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return \Zilf\Cache\DatabaseStore
      */
     protected function createDatabaseDriver(array $config)
@@ -214,14 +213,14 @@ class CacheManager
     /**
      * Create a new cache repository with the given implementation.
      *
-     * @param  \Zilf\Cache\Store  $store
+     * @param  \Zilf\Cache\Store $store
      * @return \Zilf\Cache\Repository
      */
     public function repository(Store $store)
     {
         $repository = new Repository($store);
 
-       /* if ($this->app->bound(DispatcherContract::class)) {
+        /* if ($this->app->bound(DispatcherContract::class)) {
             $repository->setEventDispatcher(
                 $this->app[DispatcherContract::class]
             );
@@ -233,7 +232,7 @@ class CacheManager
     /**
      * Get the cache prefix.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return string
      */
     protected function getPrefix(array $config)
@@ -244,7 +243,7 @@ class CacheManager
     /**
      * Get the cache connection configuration.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return array
      */
     protected function getConfig($name)
@@ -265,7 +264,7 @@ class CacheManager
     /**
      * Set the default cache driver name.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return void
      */
     public function setDefaultDriver($name)
@@ -276,8 +275,8 @@ class CacheManager
     /**
      * Register a custom driver creator Closure.
      *
-     * @param  string    $driver
-     * @param  \Closure  $callback
+     * @param  string   $driver
+     * @param  \Closure $callback
      * @return $this
      */
     public function extend($driver, Closure $callback)
@@ -290,8 +289,8 @@ class CacheManager
     /**
      * Dynamically call the default driver instance.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param  string $method
+     * @param  array  $parameters
      * @return mixed
      */
     public function __call($method, $parameters)

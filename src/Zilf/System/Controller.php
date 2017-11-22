@@ -52,7 +52,7 @@ abstract class Controller
     /**
      * 获取数据库的对象
      *
-     * @param string $default
+     * @param  string $default
      * @return Query
      */
     public function getQuery($default = '')
@@ -88,8 +88,8 @@ abstract class Controller
     /**
      * Returns a RedirectResponse to the given URL.
      *
-     * @param string $url The URL to redirect to
-     * @param int $status The status code to use for the Response
+     * @param string $url    The URL to redirect to
+     * @param int    $status The status code to use for the Response
      *
      * @return RedirectResponse
      */
@@ -101,8 +101,8 @@ abstract class Controller
     /**
      * Returns a JsonResponse that uses the serializer component if enabled, or json_encode.
      *
-     * @param mixed $data The response data
-     * @param int $status The status code to use for the Response
+     * @param mixed $data    The response data
+     * @param int   $status  The status code to use for the Response
      * @param array $headers Array of extra headers to add
      * @param array $context Context to pass to serializer when using serializer component
      *
@@ -116,9 +116,9 @@ abstract class Controller
     /**
      * 渲染视图
      *
-     * @param string $viewFile
-     * @param array $parameters
-     * @param Response|null $response
+     * @param  string        $viewFile
+     * @param  array         $parameters
+     * @param  Response|null $response
      * @return Response
      * @throws \Exception
      */
@@ -133,7 +133,7 @@ abstract class Controller
 
     /**
      * @param $viewFile
-     * @param array $parameters
+     * @param array    $parameters
      * @return \Zilf\View\Contracts\View
      */
     public function view($viewFile, $parameters = [])
@@ -143,7 +143,7 @@ abstract class Controller
 
     /**
      * @param $viewFile
-     * @param array $parameters
+     * @param array    $parameters
      * @return \Zilf\View\Contracts\View
      */
     private function getContent($viewFile, $parameters = [])
@@ -154,7 +154,7 @@ abstract class Controller
          * @var $viewFactory Factory
          */
         $viewFactory = Zilf::$container->get('view');
-        if(!isset($parameters['app'])){
+        if(!isset($parameters['app'])) {
             $parameters['app'] = $this;
         }
 
@@ -179,9 +179,9 @@ abstract class Controller
     /**
      * 返回视图的流数据
      *
-     * @param string $view
-     * @param array $parameters
-     * @param Response|null $response
+     * @param  string        $view
+     * @param  array         $parameters
+     * @param  Response|null $response
      * @return string
      */
     public function stream($view = '', array $parameters = array(), Response $response = null)
@@ -200,7 +200,7 @@ abstract class Controller
     /**
      * 获取url的参数
      *
-     * @param int $n
+     * @param  int $n
      * @return array|string
      */
     public function getSegment(int $n = 0)

@@ -44,8 +44,8 @@ class Pluralizer
     /**
      * Get the plural form of an English word.
      *
-     * @param  string  $value
-     * @param  int     $count
+     * @param  string $value
+     * @param  int    $count
      * @return string
      */
     public static function plural($value, $count = 2)
@@ -62,7 +62,7 @@ class Pluralizer
     /**
      * Get the singular form of an English word.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return string
      */
     public static function singular($value)
@@ -75,7 +75,7 @@ class Pluralizer
     /**
      * Determine if the given value is uncountable.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return bool
      */
     protected static function uncountable($value)
@@ -86,8 +86,8 @@ class Pluralizer
     /**
      * Attempt to match the case on two strings.
      *
-     * @param  string  $value
-     * @param  string  $comparison
+     * @param  string $value
+     * @param  string $comparison
      * @return string
      */
     protected static function matchCase($value, $comparison)

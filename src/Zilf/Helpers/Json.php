@@ -7,7 +7,8 @@ class Json
 {
     /**
      * List of JSON Error messages assigned to constant names for better handling of version differences
-     * @var array
+     *
+     * @var   array
      * @since 2.0.7
      */
     public static $jsonErrorMessages = [
@@ -26,9 +27,10 @@ class Json
      * The method enhances `json_encode()` by supporting JavaScript expressions.
      * In particular, the method will not encode a JavaScript expression that is
      * represented in terms of a [[JsExpression]] object.
-     * @param mixed $value the data to be encoded.
-     * @param integer $options the encoding options. For more details please refer to
-     * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
+     *
+     * @param  mixed   $value   the data to be encoded.
+     * @param  integer $options the encoding options. For more details please refer to
+     *                          <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * @return string the encoding result.
      * @throws InvalidParamException if there is any encoding error.
      */
@@ -36,9 +38,11 @@ class Json
     {
         $expressions = [];
         $value = static::processData($value, $expressions, uniqid('', true));
-        set_error_handler(function () {
-            static::handleJsonError(JSON_ERROR_SYNTAX);
-        }, E_WARNING);
+        set_error_handler(
+            function () {
+                static::handleJsonError(JSON_ERROR_SYNTAX);
+            }, E_WARNING
+        );
         $json = json_encode($value, $options);
         restore_error_handler();
         static::handleJsonError(json_last_error());
@@ -52,9 +56,9 @@ class Json
      * In particular, the method will not encode a JavaScript expression that is
      * represented in terms of a [[JsExpression]] object.
      *
-     * @param mixed $value the data to be encoded
+     * @param  mixed $value the data to be encoded
      * @return string the encoding result
-     * @since 2.0.4
+     * @since  2.0.4
      * @throws InvalidParamException if there is any encoding error
      */
     public static function htmlEncode($value)
@@ -64,8 +68,9 @@ class Json
 
     /**
      * Decodes the given JSON string into a PHP data structure.
-     * @param string $json the JSON string to be decoded
-     * @param boolean $asArray whether to return objects in terms of associative arrays.
+     *
+     * @param  string  $json    the JSON string to be decoded
+     * @param  boolean $asArray whether to return objects in terms of associative arrays.
      * @return mixed the PHP data
      * @throws InvalidParamException if there is any decoding error
      */
@@ -85,9 +90,9 @@ class Json
     /**
      * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
      *
-     * @param integer $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
+     * @param  integer $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
      * @throws \yii\base\InvalidParamException if there is any encoding/decoding error.
-     * @since 2.0.6
+     * @since  2.0.6
      */
     protected static function handleJsonError($lastError)
     {
@@ -111,9 +116,10 @@ class Json
 
     /**
      * Pre-processes the data before sending it to `json_encode()`.
-     * @param mixed $data the data to be processed
-     * @param array $expressions collection of JavaScript expressions
-     * @param string $expPrefix a prefix internally used to handle JS expressions
+     *
+     * @param  mixed  $data        the data to be processed
+     * @param  array  $expressions collection of JavaScript expressions
+     * @param  string $expPrefix   a prefix internally used to handle JS expressions
      * @return mixed the processed data
      */
     protected static function processData($data, &$expressions, $expPrefix)

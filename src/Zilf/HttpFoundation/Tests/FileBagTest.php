@@ -35,26 +35,30 @@ class FileBagTest extends \PHPUnit_Framework_TestCase
         $tmpFile = $this->createTempFile();
         $file = new UploadedFile($tmpFile, basename($tmpFile), 'text/plain', 100, 0);
 
-        $bag = new FileBag(array('file' => array(
+        $bag = new FileBag(
+            array('file' => array(
             'name' => basename($tmpFile),
             'type' => 'text/plain',
             'tmp_name' => $tmpFile,
             'error' => 0,
             'size' => 100,
-        )));
+            ))
+        );
 
         $this->assertEquals($file, $bag->get('file'));
     }
 
     public function testShouldSetEmptyUploadedFilesToNull()
     {
-        $bag = new FileBag(array('file' => array(
+        $bag = new FileBag(
+            array('file' => array(
             'name' => '',
             'type' => '',
             'tmp_name' => '',
             'error' => UPLOAD_ERR_NO_FILE,
             'size' => 0,
-        )));
+            ))
+        );
 
         $this->assertNull($bag->get('file'));
     }
@@ -64,7 +68,8 @@ class FileBagTest extends \PHPUnit_Framework_TestCase
         $tmpFile = $this->createTempFile();
         $file = new UploadedFile($tmpFile, basename($tmpFile), 'text/plain', 100, 0);
 
-        $bag = new FileBag(array(
+        $bag = new FileBag(
+            array(
             'child' => array(
                 'name' => array(
                     'file' => basename($tmpFile),
@@ -82,7 +87,8 @@ class FileBagTest extends \PHPUnit_Framework_TestCase
                     'file' => 100,
                 ),
             ),
-        ));
+            )
+        );
 
         $files = $bag->all();
         $this->assertEquals($file, $files['child']['file']);
@@ -93,7 +99,8 @@ class FileBagTest extends \PHPUnit_Framework_TestCase
         $tmpFile = $this->createTempFile();
         $file = new UploadedFile($tmpFile, basename($tmpFile), 'text/plain', 100, 0);
 
-        $bag = new FileBag(array(
+        $bag = new FileBag(
+            array(
             'child' => array(
                 'name' => array(
                     'sub' => array('file' => basename($tmpFile)),
@@ -111,7 +118,8 @@ class FileBagTest extends \PHPUnit_Framework_TestCase
                     'sub' => array('file' => 100),
                 ),
             ),
-        ));
+            )
+        );
 
         $files = $bag->all();
         $this->assertEquals($file, $files['child']['sub']['file']);

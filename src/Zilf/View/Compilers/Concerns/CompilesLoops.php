@@ -14,7 +14,7 @@ trait CompilesLoops
     /**
      * Compile the for-else statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileForelse($expression)
@@ -37,7 +37,7 @@ trait CompilesLoops
     /**
      * Compile the for-else-empty and empty statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileEmpty($expression)
@@ -74,7 +74,7 @@ trait CompilesLoops
     /**
      * Compile the for statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileFor($expression)
@@ -85,7 +85,7 @@ trait CompilesLoops
     /**
      * Compile the for-each statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileForeach($expression)
@@ -106,7 +106,7 @@ trait CompilesLoops
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileBreak($expression)
@@ -123,7 +123,7 @@ trait CompilesLoops
     /**
      * Compile the continue statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileContinue($expression)
@@ -160,7 +160,7 @@ trait CompilesLoops
     /**
      * Compile the while statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileWhile($expression)

@@ -173,14 +173,22 @@ class PdoSessionHandlerTest extends \PHPUnit_Framework_TestCase
         $exception = null;
 
         $selectStmt->expects($this->atLeast(2))->method('fetchAll')
-            ->will($this->returnCallback(function () use (&$exception, $stream) {
-                return $exception ? array(array($stream, 42, time())) : array();
-            }));
+            ->will(
+                $this->returnCallback(
+                    function () use (&$exception, $stream) {
+                        return $exception ? array(array($stream, 42, time())) : array();
+                    }
+                )
+            );
 
         $insertStmt->expects($this->once())->method('execute')
-            ->will($this->returnCallback(function () use (&$exception) {
-                throw $exception = new \PDOException('', '23');
-            }));
+            ->will(
+                $this->returnCallback(
+                    function () use (&$exception) {
+                        throw $exception = new \PDOException('', '23');
+                    }
+                )
+            );
 
         $storage = new PdoSessionHandler($pdo);
         $result = $storage->read('foo');

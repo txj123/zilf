@@ -32,25 +32,25 @@ class SortableIteratorTest extends RealIteratorTestCase
     {
         if (!is_callable($mode)) {
             switch ($mode) {
-                case SortableIterator::SORT_BY_ACCESSED_TIME :
-                    if ('\\' === DIRECTORY_SEPARATOR) {
-                        touch(self::toAbsolute('.git'));
-                    } else {
-                        file_get_contents(self::toAbsolute('.git'));
-                    }
-                    sleep(1);
-                    file_get_contents(self::toAbsolute('.bar'));
-                    break;
-                case SortableIterator::SORT_BY_CHANGED_TIME :
-                    file_put_contents(self::toAbsolute('test.php'), 'foo');
-                    sleep(1);
-                    file_put_contents(self::toAbsolute('test.py'), 'foo');
-                    break;
-                case SortableIterator::SORT_BY_MODIFIED_TIME :
-                    file_put_contents(self::toAbsolute('test.php'), 'foo');
-                    sleep(1);
-                    file_put_contents(self::toAbsolute('test.py'), 'foo');
-                    break;
+            case SortableIterator::SORT_BY_ACCESSED_TIME :
+                if ('\\' === DIRECTORY_SEPARATOR) {
+                    touch(self::toAbsolute('.git'));
+                } else {
+                    file_get_contents(self::toAbsolute('.git'));
+                }
+                sleep(1);
+                file_get_contents(self::toAbsolute('.bar'));
+                break;
+            case SortableIterator::SORT_BY_CHANGED_TIME :
+                file_put_contents(self::toAbsolute('test.php'), 'foo');
+                sleep(1);
+                file_put_contents(self::toAbsolute('test.py'), 'foo');
+                break;
+            case SortableIterator::SORT_BY_MODIFIED_TIME :
+                file_put_contents(self::toAbsolute('test.php'), 'foo');
+                sleep(1);
+                file_put_contents(self::toAbsolute('test.py'), 'foo');
+                break;
             }
         }
 
@@ -177,7 +177,9 @@ class SortableIteratorTest extends RealIteratorTestCase
             array(SortableIterator::SORT_BY_ACCESSED_TIME, $this->toAbsolute($sortByAccessedTime)),
             array(SortableIterator::SORT_BY_CHANGED_TIME, $this->toAbsolute($sortByChangedTime)),
             array(SortableIterator::SORT_BY_MODIFIED_TIME, $this->toAbsolute($sortByModifiedTime)),
-            array(function (\SplFileInfo $a, \SplFileInfo $b) { return strcmp($a->getRealPath(), $b->getRealPath()); }, $this->toAbsolute($customComparison)),
+            array(function (\SplFileInfo $a, \SplFileInfo $b) {
+                return strcmp($a->getRealPath(), $b->getRealPath()); 
+            }, $this->toAbsolute($customComparison)),
         );
     }
 }

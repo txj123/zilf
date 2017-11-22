@@ -54,11 +54,17 @@ class Controller
         return $cls->newInstance($this->environment);
     }
 
-    public function init() { }
+    public function init() 
+    { 
+    }
 
-    public function prepare() {  }
+    public function prepare() 
+    {  
+    }
 
-    public function finalize() {  }
+    public function finalize() 
+    {  
+    }
 
 
     public function getEnvironment()
@@ -92,7 +98,7 @@ class Controller
     /**
      * Create and Return HttpRequest object from the environment
      *
-     * @param boolean $recreate
+     * @param  boolean $recreate
      * @return Universal\Http\HttpRequest
      */
     public function getRequest($recreate = false)
@@ -115,31 +121,31 @@ class Controller
     /**
      * Run controller action
      *
-     * @param string $action Action name, the action name should not include "Action" as its suffix.
-     * @param array $vars    Action method parameters, which will be applied to the method parameters by their names.
+     * @param  string $action Action name, the action name should not include "Action" as its suffix.
+     * @param  array  $vars   Action method parameters, which will be applied to the method parameters by their names.
      * @return string        Return execution result in string format.
      */
     public function runAction($action, array $vars = array())
     {
         $method = $action . 'Action';
-        if ( ! method_exists($this,$method) ) {
+        if (! method_exists($this, $method) ) {
             throw new Exception("Controller method $method does not exist.");
         }
 
         $this->prepare();
 
-        $ro = new ReflectionObject( $this );
+        $ro = new ReflectionObject($this);
         $rm = $ro->getMethod($method);
 
         // Map vars to function arguments
         $parameters = $rm->getParameters();
         $arguments = array();
         foreach ($parameters as $param) {
-            if ( isset( $vars[ $param->getName() ] ) ) {
+            if (isset($vars[ $param->getName() ]) ) {
                 $arguments[] = $vars[ $param->getName() ];
             }
         }
-        $ret = call_user_func_array( array($this,$method) , $arguments );
+        $ret = call_user_func_array(array($this,$method), $arguments);
 
         // Trigger the after action
         $this->finalize();
@@ -155,11 +161,11 @@ class Controller
      * @param array             $parameters Parameters for the action method
      *
      *
-     *  return $this->forward('\OAuthPlugin\Controller\AuthenticationErrorPage','index',array(
-     *      'vars' => array(
-     *          'message' => $e->lastResponse
-     *      )
-     *  ));
+     *                                      return $this->forward('\OAuthPlugin\Controller\AuthenticationErrorPage','index',array(
+     *                                      'vars' => array(
+     *                                      'message' => $e->lastResponse
+     *                                      )
+     *                                      ));
      */
     public function forward($controller, $actionName = 'index' , $parameters = array())
     {
@@ -172,7 +178,7 @@ class Controller
     /**
      * Check if the controller action exists
      *
-     * @param  string  $action action name
+     * @param  string $action action name
      * @return boolean
      */
     public function hasAction($action)

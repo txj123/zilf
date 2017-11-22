@@ -45,6 +45,7 @@ class Application
 
     /**
      * Application constructor.
+     *
      * @param $environment //配置文件
      */
     public function __construct($environment)
@@ -81,17 +82,19 @@ class Application
         //加载服务信息
         $services = APP_PATH . '/config/services.php';
         if (file_exists($services)) {
-            require $services;
+            include $services;
         }
 
         //初始化数据库
         $params = Zilf::$container->getShare('config')->get('db');
         foreach ($params as $key => $row) {
-            Zilf::$container->register('db.'.$key, function () use ($row){
-                $connect = new Connection($row);
-                $connect->open();
-                return $connect;
-            });
+            Zilf::$container->register(
+                'db.'.$key, function () use ($row) {
+                    $connect = new Connection($row);
+                    $connect->open();
+                    return $connect;
+                }
+            );
         }
     }
 
@@ -195,10 +198,10 @@ class Application
             if ($class_exec) {
 
                 list($pcre, $pattern, $cb, $options) = $class_exec;
-                $segments = explode('\\',$cb[0]);
+                $segments = explode('\\', $cb[0]);
 
                 $this->bundle = $segments[1];
-                $this->controller = rtrim($segments[3],$this->controller_suffix);
+                $this->controller = rtrim($segments[3], $this->controller_suffix);
                 $this->action = $cb[1] . $this->action_suffix;
                 $this->params = isset($options['vars']) ? $options['vars'] : [];
 
@@ -284,7 +287,7 @@ class Application
     /**
      * 支持db，获取数据库对象
      *
-     * @param string $databaseName
+     * @param  string $databaseName
      * @return $this
      */
     public function getDb($databaseName = '')
@@ -299,6 +302,7 @@ class Application
 
     /**
      * 获取缓存文件夹的路径
+     *
      * @return string
      */
     public function getRuntime()
@@ -345,29 +349,29 @@ class Application
         $handle->bootstrap();
 
         switch ($this->environment) {
-            case 'dev':
-            case 'development':
-                ini_set('display_errors', 1);
-                error_reporting(-1);
-                $this->is_debug = true;
-                break;
+        case 'dev':
+        case 'development':
+            ini_set('display_errors', 1);
+            error_reporting(-1);
+            $this->is_debug = true;
+            break;
 
-            case 'testing':
-                ini_set('display_errors', 1);
-                error_reporting(E_ALL & ~E_NOTICE);
-                $this->is_debug = true;
-                break;
+        case 'testing':
+            ini_set('display_errors', 1);
+            error_reporting(E_ALL & ~E_NOTICE);
+            $this->is_debug = true;
+            break;
 
-            case 'pro':
-            case 'prod':
-            case 'production':
-                ini_set('display_errors', 0);
-                break;
+        case 'pro':
+        case 'prod':
+        case 'production':
+            ini_set('display_errors', 0);
+            break;
 
-            default:
-                header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
-                echo 'The application environment is not set correctly.';
-                exit(1); // EXIT_ERROR
+        default:
+            header('HTTP/1.1 503 Service Unavailable.', true, 503);
+            echo 'The application environment is not set correctly.';
+            exit(1); // EXIT_ERROR
         }
     }
 

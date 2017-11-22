@@ -51,8 +51,8 @@ function array_get($array, $key, $default = null)
 /**
  * Flatten a multi-dimensional associative array with dots.
  *
- * @param  array   $array
- * @param  string  $prepend
+ * @param  array  $array
+ * @param  string $prepend
  * @return array
  */
 function array_dot($array, $prepend = '')
@@ -131,7 +131,7 @@ function studly_case($string)
 /**
  * Return the default value of the given value.
  *
- * @param  mixed  $value
+ * @param  mixed $value
  * @return mixed
  */
 function value($value)

@@ -38,7 +38,7 @@ class Container implements ArrayAccess, ContainerInterface
      */
     private $_alias = [];
 
-    private $_objects = [];
+    public $_objects = [];
     private $_id;
 
     const TYPE_DEFINITION_OBJ = 1;  //参数类型是对象
@@ -49,8 +49,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取类的对象
      *
-     * @param $id
-     * @param array $params
+     * @param  $id
+     * @param  array $params
      * @return $this
      * @throws \Exception
      */
@@ -113,8 +113,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取共享的对象，类仅仅实例化一次
      *
-     * @param $id
-     * @param array $params
+     * @param  $id
+     * @param  array $params
      * @return mixed|null
      * @throws \Exception
      */
@@ -152,9 +152,9 @@ class Container implements ArrayAccess, ContainerInterface
      *      return new \Zilf\Curl\Curl();
      * });
      *
-     * @param string $id 为别名,或者类的对象字符串
-     * @param string $definition 支持类的对象,类的对象字符串，回调函数
-     * @param array $params 传递的参数，数组或者字符串，允许为空
+     * @param  string $id         为别名,或者类的对象字符串
+     * @param  string $definition 支持类的对象,类的对象字符串，回调函数
+     * @param  array  $params     传递的参数，数组或者字符串，允许为空
      * @return $this
      * @throws \Exception
      */
@@ -225,9 +225,10 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * 函数register的别名
-     * @param $id
-     * @param $definition
-     * @param array $params
+     *
+     * @param  $id
+     * @param  $definition
+     * @param  array      $params
      * @return $this
      */
     public function set(string $id, $definition, $params = [])
@@ -239,7 +240,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 判断注册的对象或者回调函数是否存在
      *
-     * @param $id
+     * @param  $id
      * @return bool
      */
     public function has(string $id)
@@ -250,6 +251,7 @@ class Container implements ArrayAccess, ContainerInterface
 
     /**
      * 获取定义的所有的数据信息数组
+     *
      * @return array
      */
     public function getDefinitions()
@@ -261,8 +263,10 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 设置类的别名
      *
-     * @param string|array $aliasName
-     * @param string $definition //回调函数 字符串 对象
+     * @param  string|array $aliasName
+     * @param  string       $definition //回调函数
+     *                                  字符串
+     *                                  对象
      * @return $this
      */
     public function setAlias($aliasName, $definition = '')
@@ -291,7 +295,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取别名的value值
      *
-     * @param $aliasName
+     * @param  $aliasName
      * @return mixed|string
      */
     public function getAlias(string $aliasName)
@@ -313,7 +317,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 判断别名是否存在
      *
-     * @param string $aliasName 别名
+     * @param  string $aliasName 别名
      * @return bool
      */
     public function hasAlias(string $aliasName)
@@ -325,8 +329,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 重新命名别名的名称
      *
-     * @param string $aliasName 原来的别名
-     * @param string $newAliasName 新的别名
+     * @param  string $aliasName    原来的别名
+     * @param  string $newAliasName 新的别名
      * @return $this
      * @throws \Exception
      */
@@ -348,7 +352,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取类文件的绝对路径
      *
-     * @param string $class
+     * @param  string $class
      * @return string
      */
     public function getClassFilePath($class)
@@ -361,8 +365,8 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 根绝类的字符串，返回类的对象
      *
-     * @param string $definition 字符串
-     * @param array $params 传递的参数
+     * @param  string $definition 字符串
+     * @param  array  $params     传递的参数
      * @return mixed
      * @throws \Exception
      */
@@ -413,7 +417,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取类的构造函数的参数，以及reflections对象
      *
-     * @param $class
+     * @param  $class
      * @return array
      */
     private function getDependencies($class)
@@ -477,7 +481,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * Whether a offset exists
      *
-     * @param string $id
+     * @param  string $id
      * @return Container
      */
     public function offsetGet($id)
@@ -489,7 +493,7 @@ class Container implements ArrayAccess, ContainerInterface
      * Offset to set
      *
      * @param string $id
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function offsetSet($id, $value)
     {

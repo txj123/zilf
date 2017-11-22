@@ -19,7 +19,7 @@ use Zilf\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
  * @author Drak <drak@zikula.org>
  *
  * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+ * @preserveGlobalState         disabled
  */
 class NativeSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {

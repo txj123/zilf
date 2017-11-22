@@ -11,7 +11,7 @@ namespace Zilf\Db\Exception;
  * InvalidParamException represents an exception caused by invalid parameters passed to a method.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class InvalidParamException extends \BadMethodCallException
 {

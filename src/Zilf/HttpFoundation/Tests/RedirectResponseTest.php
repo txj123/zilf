@@ -19,10 +19,12 @@ class RedirectResponseTest extends \PHPUnit_Framework_TestCase
     {
         $response = new RedirectResponse('foo.bar');
 
-        $this->assertEquals(1, preg_match(
-            '#<meta http-equiv="refresh" content="\d+;url=foo\.bar" />#',
-            preg_replace(array('/\s+/', '/\'/'), array(' ', '"'), $response->getContent())
-        ));
+        $this->assertEquals(
+            1, preg_match(
+                '#<meta http-equiv="refresh" content="\d+;url=foo\.bar" />#',
+                preg_replace(array('/\s+/', '/\'/'), array(' ', '"'), $response->getContent())
+            )
+        );
     }
 
     /**

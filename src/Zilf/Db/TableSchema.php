@@ -16,7 +16,7 @@ use Zilf\Db\Exception\InvalidParamException;
  * @property array $columnNames List of column names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class TableSchema extends Object
 {
@@ -63,7 +63,8 @@ class TableSchema extends Object
     /**
      * Gets the named column metadata.
      * This is a convenient method for retrieving a named column even if it does not exist.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return ColumnSchema metadata of the named column. Null if the named column does not exist.
      */
     public function getColumn($name)
@@ -73,6 +74,7 @@ class TableSchema extends Object
 
     /**
      * Returns the names of all columns in this table.
+     *
      * @return array list of column names
      */
     public function getColumnNames()
@@ -82,7 +84,8 @@ class TableSchema extends Object
 
     /**
      * Manually specifies the primary key for this table.
-     * @param string|array $keys the primary key (can be composite)
+     *
+     * @param  string|array $keys the primary key (can be composite)
      * @throws InvalidParamException if the specified key cannot be found in the table.
      */
     public function fixPrimaryKey($keys)

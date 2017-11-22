@@ -16,30 +16,35 @@ class CurlResponse
 {
     /**
      * 返回的结果
+     *
      * @var string
      */
     private $_response;
 
     /**
      * 错误编码
+     *
      * @var int
      */
     private $_curl_errno;
 
     /**
      * 错误信息
+     *
      * @var string
      */
     private $_curl_error;
 
     /**
      * 响应信息
+     *
      * @var mixed
      */
     private $_curl_getinfo;
 
     /**
      * 响应头信息
+     *
      * @var array
      */
     private $_response_header;
@@ -58,7 +63,7 @@ class CurlResponse
     {
         $this->client = $client;
 
-        if($async_content){
+        if($async_content) {
             $this->_response = $async_content;
         }else{
             $this->_response = curl_exec($curl_init);
@@ -76,7 +81,8 @@ class CurlResponse
     /**
      * @return Client
      */
-    public function getClient(){
+    public function getClient()
+    {
         return $this->client;
     }
 
@@ -107,6 +113,7 @@ class CurlResponse
 
     /**
      * 返回body信息
+     *
      * @return string
      */
     function get_content()
@@ -120,7 +127,8 @@ class CurlResponse
      *
      * @return mixed
      */
-    function toArray(){
+    function toArray()
+    {
         return json_decode($this->_response);
     }
 
@@ -130,7 +138,8 @@ class CurlResponse
      *
      * @return string
      */
-    function toJson(){
+    function toJson()
+    {
         return json_encode($this->_response);
     }
 
@@ -138,15 +147,17 @@ class CurlResponse
      * 返回body信息
      * 转为jsonp格式返回
      *
-     * @param string $callback
+     * @param  string $callback
      * @return string
      */
-    function toJsonp($callback='parent.callback_func'){
+    function toJsonp($callback='parent.callback_func')
+    {
         return $callback . '(' . $this->_response . ')';
     }
 
     /**
      * 返回curl的请求状态
+     *
      * @return mixed
      */
     function get_curl_error_code()
@@ -156,6 +167,7 @@ class CurlResponse
 
     /**
      * 返回curl请求的错误信息
+     *
      * @return mixed
      */
     function get_curl_error_message()
@@ -165,6 +177,7 @@ class CurlResponse
 
     /**
      * 返回页面响应信息的状态
+     *
      * @return mixed
      */
     function get_http_code()
@@ -174,6 +187,7 @@ class CurlResponse
 
     /**
      * 获取返回的 ContentType
+     *
      * @return mixed
      */
     function get_content_type()
@@ -210,7 +224,7 @@ class CurlResponse
      */
     function get_info($name='')
     {
-        if(!empty($name)){
+        if(!empty($name)) {
             return $this->_curl_getinfo[$name];
         }else{
             return $this->_curl_getinfo;
@@ -251,7 +265,7 @@ class CurlResponse
             'charset' => $this->get_charset(),
             'curl_getInfo' => $this->get_info(),
             'response_headers' => $this->get_response_headers(),
-//            'response' => $this->get_content()
+        //            'response' => $this->get_content()
         );
     }
 }

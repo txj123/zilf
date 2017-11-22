@@ -30,4 +30,6 @@ require_once 'Zend/Http/Client/Exception.php';
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Http_Client_Adapter_Exception extends Zend_Http_Client_Exception
-{}
+{
+
+}

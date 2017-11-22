@@ -82,10 +82,12 @@ class ResponseHeaderBagTest extends \PHPUnit_Framework_TestCase
         $bag = new ResponseHeaderBag(array('Expires' => 'Wed, 16 Feb 2011 14:17:43 GMT'));
         $this->assertEquals('private, must-revalidate', $bag->get('Cache-Control'));
 
-        $bag = new ResponseHeaderBag(array(
+        $bag = new ResponseHeaderBag(
+            array(
             'Expires' => 'Wed, 16 Feb 2011 14:17:43 GMT',
             'Cache-Control' => 'max-age=3600',
-        ));
+            )
+        );
         $this->assertEquals('max-age=3600, private', $bag->get('Cache-Control'));
 
         $bag = new ResponseHeaderBag(array('Last-Modified' => 'abcde'));

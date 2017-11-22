@@ -35,7 +35,7 @@ use Zilf\System\Zilf;
  * syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 abstract class Schema extends Object
 {
@@ -111,15 +111,17 @@ abstract class Schema extends Object
 
     /**
      * Loads the metadata for the specified table.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return null|TableSchema DBMS-dependent table metadata, null if the table does not exist.
      */
     abstract protected function loadTableSchema($name);
 
     /**
      * Obtains the metadata for the named table.
-     * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param bool $refresh whether to reload the table schema even if it is found in the cache.
+     *
+     * @param  string $name    table name. The table name may contain schema name if any. Do not quote the table name.
+     * @param  bool   $refresh whether to reload the table schema even if it is found in the cache.
      * @return null|TableSchema table metadata. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
@@ -154,40 +156,49 @@ abstract class Schema extends Object
 
     /**
      * Returns the cache key for the specified table name.
-     * @param string $name the table name
+     *
+     * @param  string $name the table name
      * @return mixed the cache key
      */
     protected function getCacheKey($name)
     {
-        return md5(json_encode(
-            [
+        return md5(
+            json_encode(
+                [
                 __CLASS__,
                 $this->db->dsn,
                 $this->db->username,
                 $name,
-            ]
-        ));
+                ]
+            )
+        );
     }
 
     /**
      * Returns the cache tag name.
      * This allows [[refresh()]] to invalidate all cached table schemas.
+     *
      * @return string the cache tag name
      */
     protected function getCacheTag()
     {
-        return md5(serialize([
-            __CLASS__,
-            $this->db->dsn,
-            $this->db->username,
-        ]));
+        return md5(
+            serialize(
+                [
+                __CLASS__,
+                $this->db->dsn,
+                $this->db->username,
+                ]
+            )
+        );
     }
 
     /**
      * Returns the metadata for all tables in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
-     * cached data may be returned if available.
+     *
+     * @param  string $schema  the schema of the tables. Defaults to empty string, meaning the current or default schema name.
+     * @param  bool   $refresh whether to fetch the latest available table schemas. If this is false,
+     *                         cached data may be returned if available.
      * @return TableSchema[] the metadata for all tables in the database.
      * Each array element is an instance of [[TableSchema]] or its child class.
      */
@@ -208,10 +219,11 @@ abstract class Schema extends Object
 
     /**
      * Returns all schema names in the database, except system schemas.
-     * @param bool $refresh whether to fetch the latest available schema names. If this is false,
-     * schema names fetched previously (if available) will be returned.
+     *
+     * @param  bool $refresh whether to fetch the latest available schema names. If this is false,
+     *                       schema names fetched previously (if available) will be returned.
      * @return string[] all schema names in the database, except system schemas.
-     * @since 2.0.4
+     * @since  2.0.4
      */
     public function getSchemaNames($refresh = false)
     {
@@ -224,10 +236,11 @@ abstract class Schema extends Object
 
     /**
      * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * If not empty, the returned table names will be prefixed with the schema name.
-     * @param bool $refresh whether to fetch the latest available table names. If this is false,
-     * table names fetched previously (if available) will be returned.
+     *
+     * @param  string $schema  the schema of the tables. Defaults to empty string, meaning the current or default schema name.
+     *                         If not empty, the returned table names will be prefixed with the schema name.
+     * @param  bool   $refresh whether to fetch the latest available table names. If this is false,
+     *                         table names fetched previously (if available) will be returned.
      * @return string[] all table names in the database.
      */
     public function getTableNames($schema = '', $refresh = false)
@@ -253,9 +266,10 @@ abstract class Schema extends Object
 
     /**
      * Determines the PDO type for the given PHP data value.
-     * @param mixed $data the data whose PDO type is to be determined
+     *
+     * @param  mixed $data the data whose PDO type is to be determined
      * @return int the PDO type
-     * @see http://www.php.net/manual/en/pdo.constants.php
+     * @see    http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
     {
@@ -292,6 +306,7 @@ abstract class Schema extends Object
      * Refreshes the particular table schema.
      * This method cleans up cached table schema so that it can be re-created later
      * to reflect the database schema change.
+     *
      * @param string $name table name.
      * @since 2.0.6
      */
@@ -309,6 +324,7 @@ abstract class Schema extends Object
     /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
+     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -321,10 +337,10 @@ abstract class Schema extends Object
      *
      * This method may be overridden by child classes to create a DBMS-specific column schema builder.
      *
-     * @param string $type type of the column. See [[ColumnSchemaBuilder::$type]].
-     * @param int|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
+     * @param  string           $type   type of the column. See [[ColumnSchemaBuilder::$type]].
+     * @param  int|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
      * @return ColumnSchemaBuilder column schema builder instance
-     * @since 2.0.6
+     * @since  2.0.6
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
@@ -335,9 +351,10 @@ abstract class Schema extends Object
      * Returns all schema names in the database, including the default one but not system schemas.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
+     *
      * @return array all schema names in the database, except system schemas
      * @throws NotSupportedException if this method is called
-     * @since 2.0.4
+     * @since  2.0.4
      */
     protected function findSchemaNames()
     {
@@ -348,7 +365,8 @@ abstract class Schema extends Object
      * Returns all table names in the database.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     *
+     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
      * @throws NotSupportedException if this method is called
      */
@@ -370,7 +388,8 @@ abstract class Schema extends Object
      *
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      * @throws NotSupportedException if this method is called
      */
@@ -381,10 +400,11 @@ abstract class Schema extends Object
 
     /**
      * Returns the ID of the last inserted row or sequence value.
-     * @param string $sequenceName name of the sequence object (required by some DBMS)
+     *
+     * @param  string $sequenceName name of the sequence object (required by some DBMS)
      * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
      * @throws InvalidCallException if the DB connection is not active
-     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
+     * @see    http://www.php.net/manual/en/function.PDO-lastInsertId.php
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -405,6 +425,7 @@ abstract class Schema extends Object
 
     /**
      * Creates a new savepoint.
+     *
      * @param string $name the savepoint name
      */
     public function createSavepoint($name)
@@ -414,6 +435,7 @@ abstract class Schema extends Object
 
     /**
      * Releases an existing savepoint.
+     *
      * @param string $name the savepoint name
      */
     public function releaseSavepoint($name)
@@ -423,6 +445,7 @@ abstract class Schema extends Object
 
     /**
      * Rolls back to a previously created savepoint.
+     *
      * @param string $name the savepoint name
      */
     public function rollBackSavepoint($name)
@@ -432,11 +455,12 @@ abstract class Schema extends Object
 
     /**
      * Sets the isolation level of the current transaction.
+     *
      * @param string $level The transaction isolation level to use for this transaction.
-     * This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]], [[Transaction::REPEATABLE_READ]]
-     * and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific syntax to be used
-     * after `SET TRANSACTION ISOLATION LEVEL`.
-     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     *                      This can be one of [[Transaction::READ_UNCOMMITTED]], [[Transaction::READ_COMMITTED]], [[Transaction::REPEATABLE_READ]]
+     *                      and [[Transaction::SERIALIZABLE]] but also a string containing DBMS specific syntax to be used
+     *                      after `SET TRANSACTION ISOLATION LEVEL`.
+     * @see   http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     public function setTransactionIsolationLevel($level)
     {
@@ -445,10 +469,11 @@ abstract class Schema extends Object
 
     /**
      * Executes the INSERT command, returning primary key values.
-     * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column data (name => value) to be inserted into the table.
+     *
+     * @param  string $table   the table that new rows will be inserted into.
+     * @param  array  $columns the column data (name => value) to be inserted into the table.
      * @return array|false primary key values or false if the command fails
-     * @since 2.0.4
+     * @since  2.0.4
      */
     public function insert($table, $columns)
     {
@@ -472,9 +497,10 @@ abstract class Schema extends Object
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
-     * @param string $str string to be quoted
+     *
+     * @param  string $str string to be quoted
      * @return string the properly quoted string
-     * @see http://www.php.net/manual/en/function.PDO-quote.php
+     * @see    http://www.php.net/manual/en/function.PDO-quote.php
      */
     public function quoteValue($str)
     {
@@ -495,9 +521,10 @@ abstract class Schema extends Object
      * If the table name contains schema prefix, the prefix will also be properly quoted.
      * If the table name is already quoted or contains '(' or '{{',
      * then this method will do nothing.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
-     * @see quoteSimpleTableName()
+     * @see    quoteSimpleTableName()
      */
     public function quoteTableName($name)
     {
@@ -521,9 +548,10 @@ abstract class Schema extends Object
      * If the column name contains prefix, the prefix will also be properly quoted.
      * If the column name is already quoted or contains '(', '[[' or '{{',
      * then this method will do nothing.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return string the properly quoted column name
-     * @see quoteSimpleColumnName()
+     * @see    quoteSimpleColumnName()
      */
     public function quoteColumnName($name)
     {
@@ -546,7 +574,8 @@ abstract class Schema extends Object
      * Quotes a simple table name for use in a query.
      * A simple table name should contain the table name only without any schema prefix.
      * If the table name is already quoted, this method will do nothing.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
@@ -558,7 +587,8 @@ abstract class Schema extends Object
      * Quotes a simple column name for use in a query.
      * A simple column name should contain the column name only without any prefix.
      * If the column name is already quoted or is the asterisk character '*', this method will do nothing.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
@@ -570,7 +600,8 @@ abstract class Schema extends Object
      * Returns the actual name of a given table name.
      * This method will strip off curly brackets from the given table name
      * and replace the percentage character '%' with [[Connection::tablePrefix]].
-     * @param string $name the table name to be converted
+     *
+     * @param  string $name the table name to be converted
      * @return string the real name of the given table name
      */
     public function getRawTableName($name)
@@ -586,7 +617,8 @@ abstract class Schema extends Object
 
     /**
      * Extracts the PHP type from abstract DB type.
-     * @param ColumnSchema $column the column schema information
+     *
+     * @param  ColumnSchema $column the column schema information
      * @return string PHP type name
      */
     protected function getColumnPhpType($column)
@@ -617,8 +649,8 @@ abstract class Schema extends Object
     /**
      * Converts a DB exception to a more concrete one if possible.
      *
-     * @param \Exception $e
-     * @param string $rawSql SQL that produced exception
+     * @param  \Exception $e
+     * @param  string     $rawSql SQL that produced exception
      * @return Exception
      */
     public function convertException(\Exception $e, $rawSql)
@@ -640,7 +672,8 @@ abstract class Schema extends Object
 
     /**
      * Returns a value indicating whether a SQL statement is for read purpose.
-     * @param string $sql the SQL statement
+     *
+     * @param  string $sql the SQL statement
      * @return bool whether a SQL statement is for read purpose.
      */
     public function isReadQuery($sql)

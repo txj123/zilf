@@ -41,7 +41,7 @@ class Repository implements ArrayAccess
     /**
      * Create a new cache repository instance.
      *
-     * @param  \Zilf\Cache\Store  $store
+     * @param  \Zilf\Cache\Store $store
      * @return void
      */
     public function __construct(Store $store)
@@ -52,7 +52,7 @@ class Repository implements ArrayAccess
     /**
      * Determine if an item exists in the cache.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function has($key)
@@ -63,8 +63,8 @@ class Repository implements ArrayAccess
     /**
      * Retrieve an item from the cache by key.
      *
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -94,25 +94,31 @@ class Repository implements ArrayAccess
      *
      * Items not found in the cache will have a null value.
      *
-     * @param  array  $keys
+     * @param  array $keys
      * @return array
      */
     public function many(array $keys)
     {
-        $values = $this->store->many(collect($keys)->map(function ($value, $key) {
-            return is_string($key) ? $key : $value;
-        })->values()->all());
+        $values = $this->store->many(
+            collect($keys)->map(
+                function ($value, $key) {
+                    return is_string($key) ? $key : $value;
+                }
+            )->values()->all()
+        );
 
-        return collect($values)->map(function ($value, $key) use ($keys) {
-            return $this->handleManyResult($keys, $key, $value);
-        })->all();
+        return collect($values)->map(
+            function ($value, $key) use ($keys) {
+                return $this->handleManyResult($keys, $key, $value);
+            }
+        )->all();
     }
 
     /**
      * Handle a result for the "many" method.
      *
      * @param  array  $keys
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
      * @return mixed
      */
@@ -138,23 +144,25 @@ class Repository implements ArrayAccess
     /**
      * Retrieve an item from the cache and delete it.
      *
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function pull($key, $default = null)
     {
-        return tap($this->get($key, $default), function ($value) use ($key) {
-            $this->forget($key);
-        });
+        return tap(
+            $this->get($key, $default), function ($value) use ($key) {
+                $this->forget($key);
+            }
+        );
     }
 
     /**
      * Store an item in the cache.
      *
-     * @param  string  $key
-     * @param  mixed   $value
-     * @param  \DateTime|float|int  $minutes
+     * @param  string              $key
+     * @param  mixed               $value
+     * @param  \DateTime|float|int $minutes
      * @return void
      */
     public function put($key, $value, $minutes = null)
@@ -173,8 +181,8 @@ class Repository implements ArrayAccess
     /**
      * Store multiple items in the cache for a given number of minutes.
      *
-     * @param  array  $values
-     * @param  float|int  $minutes
+     * @param  array     $values
+     * @param  float|int $minutes
      * @return void
      */
     public function putMany(array $values, $minutes)
@@ -191,9 +199,9 @@ class Repository implements ArrayAccess
     /**
      * Store an item in the cache if the key does not exist.
      *
-     * @param  string  $key
-     * @param  mixed   $value
-     * @param  \DateTime|float|int  $minutes
+     * @param  string              $key
+     * @param  mixed               $value
+     * @param  \DateTime|float|int $minutes
      * @return bool
      */
     public function add($key, $value, $minutes)
@@ -226,7 +234,7 @@ class Repository implements ArrayAccess
     /**
      * Increment the value of an item in the cache.
      *
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
      * @return int|bool
      */
@@ -238,7 +246,7 @@ class Repository implements ArrayAccess
     /**
      * Decrement the value of an item in the cache.
      *
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
      * @return int|bool
      */
@@ -250,8 +258,8 @@ class Repository implements ArrayAccess
     /**
      * Store an item in the cache indefinitely.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return void
      */
     public function forever($key, $value)
@@ -264,9 +272,9 @@ class Repository implements ArrayAccess
     /**
      * Get an item from the cache, or store the default value.
      *
-     * @param  string  $key
-     * @param  \DateTime|float|int  $minutes
-     * @param  \Closure  $callback
+     * @param  string              $key
+     * @param  \DateTime|float|int $minutes
+     * @param  \Closure            $callback
      * @return mixed
      */
     public function remember($key, $minutes, Closure $callback)
@@ -289,7 +297,7 @@ class Repository implements ArrayAccess
      * Get an item from the cache, or store the default value forever.
      *
      * @param  string   $key
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return mixed
      */
     public function sear($key, Closure $callback)
@@ -301,7 +309,7 @@ class Repository implements ArrayAccess
      * Get an item from the cache, or store the default value forever.
      *
      * @param  string   $key
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return mixed
      */
     public function rememberForever($key, Closure $callback)
@@ -323,20 +331,22 @@ class Repository implements ArrayAccess
     /**
      * Remove an item from the cache.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function forget($key)
     {
-        return tap($this->store->forget($this->itemKey($key)), function () use ($key) {
-            $this->event(new KeyForgotten($key));
-        });
+        return tap(
+            $this->store->forget($this->itemKey($key)), function () use ($key) {
+                $this->event(new KeyForgotten($key));
+            }
+        );
     }
 
     /**
      * Begin executing a new tags operation if the store supports it.
      *
-     * @param  array|mixed  $names
+     * @param  array|mixed $names
      * @return \Zilf\Cache\TaggedCache
      *
      * @throws \BadMethodCallException
@@ -359,7 +369,7 @@ class Repository implements ArrayAccess
     /**
      * Format the key for a cache item.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return string
      */
     protected function itemKey($key)
@@ -380,7 +390,7 @@ class Repository implements ArrayAccess
     /**
      * Set the default cache time in minutes.
      *
-     * @param  float|int  $minutes
+     * @param  float|int $minutes
      * @return $this
      */
     public function setDefaultCacheTime($minutes)
@@ -403,7 +413,7 @@ class Repository implements ArrayAccess
     /**
      * Fire an event for this cache instance.
      *
-     * @param  string  $event
+     * @param  string $event
      * @return void
      */
     protected function event($event)
@@ -416,7 +426,7 @@ class Repository implements ArrayAccess
     /**
      * Set the event dispatcher instance.
      *
-     * @param  \Zilf\Contracts\Events\Dispatcher  $events
+     * @param  \Zilf\Contracts\Events\Dispatcher $events
      * @return void
      */
     public function setEventDispatcher(Dispatcher $events)
@@ -427,7 +437,7 @@ class Repository implements ArrayAccess
     /**
      * Determine if a cached value exists.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return bool
      */
     public function offsetExists($key)
@@ -438,7 +448,7 @@ class Repository implements ArrayAccess
     /**
      * Retrieve an item from the cache by key.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -449,8 +459,8 @@ class Repository implements ArrayAccess
     /**
      * Store an item in the cache for the default time.
      *
-     * @param  string  $key
-     * @param  mixed   $value
+     * @param  string $key
+     * @param  mixed  $value
      * @return void
      */
     public function offsetSet($key, $value)
@@ -461,7 +471,7 @@ class Repository implements ArrayAccess
     /**
      * Remove an item from the cache.
      *
-     * @param  string  $key
+     * @param  string $key
      * @return void
      */
     public function offsetUnset($key)
@@ -472,7 +482,7 @@ class Repository implements ArrayAccess
     /**
      * Calculate the number of minutes with the given duration.
      *
-     * @param  \DateTime|float|int  $duration
+     * @param  \DateTime|float|int $duration
      * @return float|int|null
      */
     protected function getMinutes($duration)
@@ -487,8 +497,8 @@ class Repository implements ArrayAccess
     /**
      * Handle dynamic calls into macros or pass missing methods to the store.
      *
-     * @param  string  $method
-     * @param  array   $parameters
+     * @param  string $method
+     * @param  array  $parameters
      * @return mixed
      */
     public function __call($method, $parameters)

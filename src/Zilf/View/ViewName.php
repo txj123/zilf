@@ -7,7 +7,7 @@ class ViewName
     /**
      * Normalize the given event name.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return string
      */
     public static function normalize($name)

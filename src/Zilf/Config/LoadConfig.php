@@ -4,6 +4,7 @@ namespace Zilf\Config;
 
 /**
  * Class Config
+ *
  * @package Zilf\Config
  */
 class LoadConfig extends Repository
@@ -12,7 +13,8 @@ class LoadConfig extends Repository
 
     /**
      * LoadConfig constructor.
-     * @param array $config  配置信息
+     *
+     * @param array $config 配置信息
      */
     function __construct($config)
     {

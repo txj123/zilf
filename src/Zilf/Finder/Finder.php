@@ -643,20 +643,20 @@ class Finder implements \IteratorAggregate, \Countable
 
         foreach ($this->depths as $comparator) {
             switch ($comparator->getOperator()) {
-                case '>':
-                    $minDepth = $comparator->getTarget() + 1;
-                    break;
-                case '>=':
-                    $minDepth = $comparator->getTarget();
-                    break;
-                case '<':
-                    $maxDepth = $comparator->getTarget() - 1;
-                    break;
-                case '<=':
-                    $maxDepth = $comparator->getTarget();
-                    break;
-                default:
-                    $minDepth = $maxDepth = $comparator->getTarget();
+            case '>':
+                $minDepth = $comparator->getTarget() + 1;
+                break;
+            case '>=':
+                $minDepth = $comparator->getTarget();
+                break;
+            case '<':
+                $maxDepth = $comparator->getTarget() - 1;
+                break;
+            case '<=':
+                $maxDepth = $comparator->getTarget();
+                break;
+            default:
+                $minDepth = $maxDepth = $comparator->getTarget();
             }
         }
 

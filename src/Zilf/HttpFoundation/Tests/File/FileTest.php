@@ -171,8 +171,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('guess')
             ->with($this->equalTo($path))
-            ->will($this->returnValue($mimeType))
-        ;
+            ->will($this->returnValue($mimeType));
 
         return $guesser;
     }

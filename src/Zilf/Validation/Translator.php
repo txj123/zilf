@@ -93,7 +93,7 @@ class Translator implements TranslatorInterface
      */
     public function __construct(array $messages = [])
     {
-        if(($lang = config_helper('language'))  && $lang){
+        if(($lang = config_helper('language'))  && $lang) {
             $messages = include APP_PATH.'/lang/'.$lang.'/validation.php';
         }
         $this->messages = ['validation' => array_merge($this->defaultMessages, $messages)];

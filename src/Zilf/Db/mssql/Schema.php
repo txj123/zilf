@@ -14,7 +14,7 @@ use Zilf\Db\ViewFinderTrait;
  * Schema is the class for retrieving metadata from a MS SQL Server databases (version 2008 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema
 {
@@ -99,7 +99,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param string $name table name.
+     *
+     * @param  string $name table name.
      * @return string the properly quoted table name.
      */
     public function quoteSimpleTableName($name)
@@ -110,7 +111,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param string $name column name.
+     *
+     * @param  string $name column name.
      * @return string the properly quoted column name.
      */
     public function quoteSimpleColumnName($name)
@@ -120,6 +122,7 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Creates a query builder for the MSSQL database.
+     *
      * @return QueryBuilder query builder interface.
      */
     public function createQueryBuilder()
@@ -129,7 +132,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return TableSchema|null driver dependent table metadata. Null if the table does not exist.
      */
     public function loadTableSchema($name)
@@ -148,8 +152,9 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Resolves the table name and schema name (if any).
+     *
      * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * @param string      $name  the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -181,7 +186,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
+     *
+     * @param  array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -235,7 +241,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
@@ -299,10 +306,11 @@ SQL;
 
     /**
      * Collects the constraint details for the given table and constraint type.
-     * @param TableSchema $table
-     * @param string $type either PRIMARY KEY or UNIQUE
+     *
+     * @param  TableSchema $table
+     * @param  string      $type  either PRIMARY KEY or UNIQUE
      * @return array each entry contains index_name and field_name
-     * @since 2.0.4
+     * @since  2.0.4
      */
     protected function findTableConstraints($table, $type)
     {
@@ -331,16 +339,19 @@ WHERE
 SQL;
 
         return $this->db
-            ->createCommand($sql, [
+            ->createCommand(
+                $sql, [
                 ':tableName' => $table->name,
                 ':schemaName' => $table->schemaName,
                 ':type' => $type,
-            ])
+                ]
+            )
             ->queryAll();
     }
 
     /**
      * Collects the primary key column details for the given table.
+     *
      * @param TableSchema $table the table metadata
      */
     protected function findPrimaryKeys($table)
@@ -354,6 +365,7 @@ SQL;
 
     /**
      * Collects the foreign key column details for the given table.
+     *
      * @param TableSchema $table the table metadata
      */
     protected function findForeignKeys($table)
@@ -388,9 +400,11 @@ WHERE
 	[fk].[parent_object_id] = OBJECT_ID(:object)
 SQL;
 
-        $rows = $this->db->createCommand($sql, [
+        $rows = $this->db->createCommand(
+            $sql, [
             ':object' => $object,
-        ])->queryAll();
+            ]
+        )->queryAll();
 
         $table->foreignKeys = [];
         foreach ($rows as $row) {
@@ -400,7 +414,8 @@ SQL;
 
     /**
      * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     *
+     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')
@@ -449,9 +464,9 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
-     * @since 2.0.4
+     * @since  2.0.4
      */
     public function findUniqueIndexes($table)
     {

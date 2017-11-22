@@ -13,11 +13,11 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Between.php 8064 2008-02-16 10:58:39Z thomas $
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: Between.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
 
@@ -100,8 +100,8 @@ class Zend_Validate_Between extends Zend_Validate_Abstract
     public function __construct($min, $max, $inclusive = true)
     {
         $this->setMin($min)
-             ->setMax($max)
-             ->setInclusive($inclusive);
+            ->setMax($max)
+            ->setInclusive($inclusive);
     }
 
     /**

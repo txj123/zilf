@@ -24,8 +24,8 @@ abstract class Compiler
     /**
      * Create a new compiler instance.
      *
-     * @param  \Zilf\Filesystem\Filesystem  $files
-     * @param  string  $cachePath
+     * @param  \Zilf\Filesystem\Filesystem $files
+     * @param  string                      $cachePath
      * @return void
      *
      * @throws \InvalidArgumentException
@@ -43,7 +43,7 @@ abstract class Compiler
     /**
      * Get the path to the compiled version of a view.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function getCompiledPath($path)
@@ -54,7 +54,7 @@ abstract class Compiler
     /**
      * Determine if the view at the given path is expired.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return bool
      */
     public function isExpired($path)

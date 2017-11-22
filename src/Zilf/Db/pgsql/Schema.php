@@ -19,7 +19,7 @@ use Zilf\Db\ViewFinderTrait;
  * @property string[] $viewNames All view names in the database. This property is read-only.
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema
 {
@@ -116,6 +116,7 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Creates a query builder for the PostgreSQL database.
+     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -125,8 +126,9 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Resolves the table name and schema name (if any).
+     *
      * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * @param string      $name  the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -146,7 +148,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
@@ -156,7 +159,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return TableSchema|null driver dependent table metadata. Null if the table does not exist.
      */
     public function loadTableSchema($name)
@@ -175,8 +179,9 @@ class Schema extends \Zilf\Db\Schema
      * Returns all schema names in the database, including the default one but not system schemas.
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception.
+     *
      * @return array all schema names in the database, except system schemas
-     * @since 2.0.4
+     * @since  2.0.4
      */
     protected function findSchemaNames()
     {
@@ -191,7 +196,8 @@ SQL;
 
     /**
      * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     *
+     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')
@@ -229,6 +235,7 @@ SQL;
 
     /**
      * Collects the foreign key column details for the given table.
+     *
      * @param TableSchema $table the table metadata
      */
     protected function findConstraints($table)
@@ -290,7 +297,8 @@ SQL;
 
     /**
      * Gets information about given table unique indexes.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return array with index and column names
      */
     protected function getUniqueIndexInformation($table)
@@ -311,10 +319,12 @@ AND c.relname = :tableName AND ns.nspname = :schemaName
 ORDER BY i.relname, k
 SQL;
 
-        return $this->db->createCommand($sql, [
+        return $this->db->createCommand(
+            $sql, [
             ':schemaName' => $table->schemaName,
             ':tableName' => $table->name,
-        ])->queryAll();
+            ]
+        )->queryAll();
     }
 
     /**
@@ -328,7 +338,7 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
@@ -354,7 +364,8 @@ SQL;
 
     /**
      * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
@@ -458,7 +469,8 @@ SQL;
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
+     *
+     * @param  array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)

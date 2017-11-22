@@ -13,7 +13,7 @@ use Zilf\Db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
  * ColumnSchemaBuilder is the schema builder for MySQL databases.
  *
  * @author Chris Harris <chris@buckshotsoftware.com>
- * @since 2.0.8
+ * @since  2.0.8
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -57,14 +57,14 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{length}{check}{comment}{append}{pos}';
-                break;
-            case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{append}{pos}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
+        case self::CATEGORY_PK:
+            $format = '{type}{length}{check}{comment}{append}{pos}';
+            break;
+        case self::CATEGORY_NUMERIC:
+            $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{append}{pos}';
+            break;
+        default:
+            $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
         }
         return $this->buildCompleteString($format);
     }

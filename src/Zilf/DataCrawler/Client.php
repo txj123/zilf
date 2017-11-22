@@ -37,7 +37,7 @@ class Client
     {
         set_time_limit(0);
 
-        if($curl){
+        if($curl) {
             $this->curl = $curl;
         }else{
             $this->curl = new Curl();
@@ -48,7 +48,8 @@ class Client
      * @param $urls
      * @param $rules
      */
-    function request($urls,$rules,$curl_config=array(),$charset=''){
+    function request($urls,$rules,$curl_config=array(),$charset='')
+    {
         $this->urls = (new CaijiUrl($urls))->getUrls();
         $this->rules = (new CaijiRules($rules))->getRules();
         $this->curl_config = $curl_config;
@@ -57,46 +58,47 @@ class Client
         return $this;
     }
 
-    function exec(){
+    function exec()
+    {
         $data = array();
 
         foreach ($this->urls as $url){
-            if($url){
+            if($url) {
                 //curl请求配置设置
-                if($this->curl_config){
+                if($this->curl_config) {
                     $type = isset($this->curl_config['type']) ? $this->curl_config['type'] :'';
                     $params = isset($this->curl_config['params']) ? $this->curl_config['params'] :'';
                     $options = isset($this->curl_config['options']) ? $this->curl_config['options'] :'';
 
-                    if($type == 'POST'){
-                        $curl = $this->curl->post($url,$params,$options);
-                    }elseif($type == 'GET'){
-                        $curl = $this->curl->get($url,$params,$options);
+                    if($type == 'POST') {
+                        $curl = $this->curl->post($url, $params, $options);
+                    }elseif($type == 'GET') {
+                        $curl = $this->curl->get($url, $params, $options);
                     }else{
                         $class = strtolower($type);
-                        $curl = $this->curl->$class($url,$params,$options);
+                        $curl = $this->curl->$class($url, $params, $options);
                     }
                 }else{  //默认请求方式是get请求
                     $curl = $this->curl->get($url);
                 }
 
                 $content = $curl->getResponse();
-//                var_dump($content);
-                if(empty($this->charset)){
+                //                var_dump($content);
+                if(empty($this->charset)) {
                     $this->charset = $curl->getCharset();
                 }
 
-                if($curl->getHttpCode() != 200){
+                if($curl->getHttpCode() != 200) {
                     $this->msg[] = '网址：'.$url.' 抓取失败，原因：'.$curl->getCurlErrorMessage().'，错误码：'.$curl->getCurlErrorCode();
                     continue;
                 }
 
                 //住区数据
-                $crawler = new Crawler($content,$this->rules,$url,$this->charset);
+                $crawler = new Crawler($content, $this->rules, $url, $this->charset);
                 $result = $crawler->get();
-                $this->msg = array_merge($this->msg,$crawler->msg);
+                $this->msg = array_merge($this->msg, $crawler->msg);
 
-                $data[] = array_merge($result,$this->_default($url));
+                $data[] = array_merge($result, $this->_default($url));
             }
         }
 
@@ -104,7 +106,8 @@ class Client
     }
 
 
-    private function _default($url){
+    private function _default($url)
+    {
         $params = array();
 
         $params['_url'] = $url;
@@ -118,7 +121,8 @@ class Client
      * @return Curl
      * 返回采集器curl
      */
-    function getCurl(){
+    function getCurl()
+    {
         return $this->curl;
     }
 

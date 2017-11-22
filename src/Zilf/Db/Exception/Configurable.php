@@ -24,7 +24,7 @@ namespace Zilf\Db\Exception;
  * last parameter to the implementing class' constructor.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0.3
+ * @since  2.0.3
  */
 interface Configurable
 {

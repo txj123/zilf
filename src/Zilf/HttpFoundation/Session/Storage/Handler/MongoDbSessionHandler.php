@@ -79,12 +79,14 @@ class MongoDbSessionHandler implements \SessionHandlerInterface
 
         $this->mongo = $mongo;
 
-        $this->options = array_merge(array(
+        $this->options = array_merge(
+            array(
             'id_field' => '_id',
             'data_field' => 'data',
             'time_field' => 'time',
             'expiry_field' => 'expires_at',
-        ), $options);
+            ), $options
+        );
     }
 
     /**
@@ -110,9 +112,11 @@ class MongoDbSessionHandler implements \SessionHandlerInterface
     {
         $methodName = $this->mongo instanceof \MongoDB\Client ? 'deleteOne' : 'remove';
 
-        $this->getCollection()->$methodName(array(
+        $this->getCollection()->$methodName(
+            array(
             $this->options['id_field'] => $sessionId,
-        ));
+            )
+        );
 
         return true;
     }
@@ -124,9 +128,11 @@ class MongoDbSessionHandler implements \SessionHandlerInterface
     {
         $methodName = $this->mongo instanceof \MongoDB\Client ? 'deleteOne' : 'remove';
 
-        $this->getCollection()->$methodName(array(
+        $this->getCollection()->$methodName(
+            array(
             $this->options['expiry_field'] => array('$lt' => $this->createDateTime()),
-        ));
+            )
+        );
 
         return true;
     }
@@ -168,10 +174,12 @@ class MongoDbSessionHandler implements \SessionHandlerInterface
      */
     public function read($sessionId)
     {
-        $dbData = $this->getCollection()->findOne(array(
+        $dbData = $this->getCollection()->findOne(
+            array(
             $this->options['id_field'] => $sessionId,
             $this->options['expiry_field'] => array('$gte' => $this->createDateTime()),
-        ));
+            )
+        );
 
         if (null === $dbData) {
             return '';

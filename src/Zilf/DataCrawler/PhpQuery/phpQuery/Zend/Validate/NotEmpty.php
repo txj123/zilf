@@ -13,11 +13,11 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: NotEmpty.php 10356 2008-07-24 15:14:56Z matthew $
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: NotEmpty.php 10356 2008-07-24 15:14:56Z matthew $
  */
 
 
@@ -59,7 +59,7 @@ class Zend_Validate_NotEmpty extends Zend_Validate_Abstract
 
         if (is_string($value)
             && (('' === $value) 
-                || preg_match('/^\s+$/s', $value))
+            || preg_match('/^\s+$/s', $value))
         ) {
             $this->_error();
             return false;

@@ -29,12 +29,13 @@ class CaijiUrl
      * 解析url [a-z]  [0-9],生成多条url
      * 获取所有的替换规则的数组
      */
-    function parseUrl($url){
+    function parseUrl($url)
+    {
         $all_url = array($url);
 
-        preg_match_all('/\{(.*?)\}/',$url,$arr);
+        preg_match_all('/\{(.*?)\}/', $url, $arr);
 
-        if(!empty($arr[0])){
+        if(!empty($arr[0])) {
             $num = count($arr[0]);
             for ($i=0; $i < $num; $i++){
                 $all_url = $this->getNeedUrls($all_url);
@@ -50,13 +51,14 @@ class CaijiUrl
      * @return array
      * 获取替换之后的url数组
      */
-    function getNeedUrls($urls){
+    function getNeedUrls($urls)
+    {
         $new_url = array();
         foreach ($urls as $url){
-            preg_match('/\{(.*?)\}/',$url,$arr);
+            preg_match('/\{(.*?)\}/', $url, $arr);
             $param = $arr[0];
-            $url_arr = $this->replace_urls($url,$param);
-            $new_url = array_merge($new_url,$url_arr);
+            $url_arr = $this->replace_urls($url, $param);
+            $new_url = array_merge($new_url, $url_arr);
         }
 
         return $new_url;
@@ -68,12 +70,13 @@ class CaijiUrl
      * @return array
      * 替换参数
      */
-    private function replace_urls($url,$param){
+    private function replace_urls($url,$param)
+    {
         $urls = array();
         $url_index = $this->get_params($param);
 
         foreach ($url_index as $value){
-            $urls[] = preg_replace('/\{(.*?)\}/',$value,$url,1);
+            $urls[] = preg_replace('/\{(.*?)\}/', $value, $url, 1);
         }
 
         return $urls;
@@ -85,13 +88,14 @@ class CaijiUrl
      * @return array
      * 获取参数的数组 {a-c}  返回 array(a,b,c)
      */
-    function get_params($param){
+    function get_params($param)
+    {
         $name = array();
 
-        $param = ltrim($param,'{');
-        $param = rtrim($param,'}');
+        $param = ltrim($param, '{');
+        $param = rtrim($param, '}');
 
-        $arr = explode('-',$param);
+        $arr = explode('-', $param);
 
         $start = ord($arr[0]);
         $end = ord($arr[1]);
@@ -106,9 +110,10 @@ class CaijiUrl
     /**
      * @param $url
      */
-    function setUrls($url){
-        if(is_array($url)){
-            array_merge($this->caiji_urls,$url);
+    function setUrls($url)
+    {
+        if(is_array($url)) {
+            array_merge($this->caiji_urls, $url);
         }else{
             $this->caiji_urls[] = $url;
         }
@@ -117,7 +122,8 @@ class CaijiUrl
     /**
      * @return array
      */
-    function getUrls(){
+    function getUrls()
+    {
         return $this->caiji_urls;
     }
 

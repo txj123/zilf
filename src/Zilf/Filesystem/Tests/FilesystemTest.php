@@ -200,9 +200,11 @@ class FilesystemTest extends FilesystemTestCase
     public function testMkdirCreatesDirectoriesFromTraversableObject()
     {
         $basePath = $this->workspace.DIRECTORY_SEPARATOR;
-        $directories = new \ArrayObject(array(
+        $directories = new \ArrayObject(
+            array(
             $basePath.'1', $basePath.'2', $basePath.'3',
-        ));
+            )
+        );
 
         $this->filesystem->mkdir($directories);
 
@@ -260,9 +262,11 @@ class FilesystemTest extends FilesystemTestCase
     public function testTouchCreatesEmptyFilesFromTraversableObject()
     {
         $basePath = $this->workspace.DIRECTORY_SEPARATOR;
-        $files = new \ArrayObject(array(
+        $files = new \ArrayObject(
+            array(
             $basePath.'1', $basePath.'2', $basePath.'3',
-        ));
+            )
+        );
 
         $this->filesystem->touch($files);
 
@@ -308,9 +312,11 @@ class FilesystemTest extends FilesystemTestCase
         mkdir($basePath.'dir');
         touch($basePath.'file');
 
-        $files = new \ArrayObject(array(
+        $files = new \ArrayObject(
+            array(
             $basePath.'dir', $basePath.'file',
-        ));
+            )
+        );
 
         $this->filesystem->remove($files);
 
@@ -398,9 +404,11 @@ class FilesystemTest extends FilesystemTestCase
         mkdir($basePath.'dir');
         touch($basePath.'file');
 
-        $files = new \ArrayObject(array(
+        $files = new \ArrayObject(
+            array(
             $basePath.'dir', $basePath.'file',
-        ));
+            )
+        );
 
         $this->assertTrue($this->filesystem->exists($files));
     }
@@ -413,9 +421,11 @@ class FilesystemTest extends FilesystemTestCase
         touch($basePath.'file');
         touch($basePath.'file2');
 
-        $files = new \ArrayObject(array(
+        $files = new \ArrayObject(
+            array(
             $basePath.'dir', $basePath.'file', $basePath.'file2',
-        ));
+            )
+        );
 
         unlink($basePath.'file');
 

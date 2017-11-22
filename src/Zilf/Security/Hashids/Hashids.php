@@ -72,7 +72,7 @@ class Hashids implements HashidsInterface
      * Create a new hashids instance.
      *
      * @param string $salt
-     * @param int $minHashLength
+     * @param int    $minHashLength
      * @param string $alphabet
      *
      * @throws \Zilf\Security\Hashids\HashidsException

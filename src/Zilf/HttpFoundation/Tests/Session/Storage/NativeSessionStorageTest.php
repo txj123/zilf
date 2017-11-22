@@ -26,7 +26,7 @@ use Zilf\HttpFoundation\Session\Storage\Proxy\SessionHandlerProxy;
  * These tests require separate processes.
  *
  * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+ * @preserveGlobalState         disabled
  */
 class NativeSessionStorageTest extends \PHPUnit_Framework_TestCase
 {

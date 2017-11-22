@@ -40,19 +40,19 @@ class VendorsTest extends PHPUnit_Framework_TestCase
                     } // 'version',
 
                     switch ($condition) {
-                        case 'version':
-                            // Android, iOS, Chrome, Build, etc.
-                            foreach ($assert as $assertKey => $assertValue) {
-                                //if ($brand == 'Apple') {
-                                //	echo 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent . "\n";
-                                //}
-                                $this->assertTrue( $this->detect->$condition( $assertKey ) == $assertValue, 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent);
-                            }
-                            break;
+                    case 'version':
+                        // Android, iOS, Chrome, Build, etc.
+                        foreach ($assert as $assertKey => $assertValue) {
+                            //if ($brand == 'Apple') {
+                            //	echo 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent . "\n";
+                            //}
+                            $this->assertTrue($this->detect->$condition($assertKey) == $assertValue, 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent);
+                        }
+                        break;
 
-                        default:
-                            $this->assertTrue($this->detect->$condition() === $assert, 'UA ('.$condition.'): '.$userAgent);
-                            break;
+                    default:
+                        $this->assertTrue($this->detect->$condition() === $assert, 'UA ('.$condition.'): '.$userAgent);
+                        break;
                     }
 
                 }
@@ -69,13 +69,14 @@ class VendorsTest extends PHPUnit_Framework_TestCase
 
             foreach ($deviceArr as $userAgent => $conditions) {
 
-                if ( !is_array($conditions) || !isset($conditions['version']) ) { continue; }
+                if (!is_array($conditions) || !isset($conditions['version']) ) { continue; 
+                }
 
                 $this->detect->setUserAgent($userAgent);
 
                 foreach ($conditions['version'] as $condition => $assertion) {
 
-                    $this->assertEquals( $this->detect->version($condition), $assertion, 'UA (version("'.$condition.'")): '.$userAgent );
+                    $this->assertEquals($this->detect->version($condition), $assertion, 'UA (version("'.$condition.'")): '.$userAgent);
 
                 }
 

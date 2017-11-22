@@ -21,7 +21,7 @@ use Zilf\HttpFoundation\Session\Session;
  * @author Drak <drak@zikula.org>
  *
  * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+ * @preserveGlobalState         disabled
  */
 class NullSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {

@@ -33,7 +33,8 @@ namespace Zilf\Facades;
 
 class Log extends Facade
 {
-    protected static function getFacadeAccessor(){
+    protected static function getFacadeAccessor()
+    {
         return 'log';
     }
 }

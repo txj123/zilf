@@ -26,17 +26,17 @@ class Crypt
     /**
      * Create a new encrypter instance.
      *
-     * @param  string  $key
-     * @param  string  $cipher
+     * @param  string $key
+     * @param  string $cipher
      * @return void
      *
      * @throws \RuntimeException
      */
     public function __construct($key='', $cipher = 'AES-128-CBC')
     {
-        if(empty($key)){
+        if(empty($key)) {
             $key = config_helper('app_key');
-            if(empty($key)){
+            if(empty($key)) {
                 throw new RuntimeException('请在配置文件中设置app_key.');
             }
         }
@@ -54,8 +54,8 @@ class Crypt
     /**
      * Determine if the given key and cipher combination is valid.
      *
-     * @param  string  $key
-     * @param  string  $cipher
+     * @param  string $key
+     * @param  string $cipher
      * @return bool
      */
     public static function supported($key, $cipher)
@@ -68,7 +68,7 @@ class Crypt
     /**
      * Encrypt the given value.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return string
      *
      * @throws \Illuminate\Contracts\Encryption\EncryptException
@@ -100,7 +100,7 @@ class Crypt
     /**
      * Decrypt the given value.
      *
-     * @param  string  $payload
+     * @param  string $payload
      * @return string
      *
      * @throws \Illuminate\Contracts\Encryption\DecryptException
@@ -123,8 +123,8 @@ class Crypt
     /**
      * Create a MAC for the given value.
      *
-     * @param  string  $iv
-     * @param  string  $value
+     * @param  string $iv
+     * @param  string $value
      * @return string
      */
     protected function hash($iv, $value)
@@ -135,7 +135,7 @@ class Crypt
     /**
      * Get the JSON array from the given payload.
      *
-     * @param  string  $payload
+     * @param  string $payload
      * @return array
      *
      * @throws \Illuminate\Contracts\Encryption\DecryptException
@@ -161,7 +161,7 @@ class Crypt
     /**
      * Verify that the encryption payload is valid.
      *
-     * @param  mixed  $payload
+     * @param  mixed $payload
      * @return bool
      */
     protected function validPayload($payload)
@@ -172,7 +172,7 @@ class Crypt
     /**
      * Determine if the MAC for the given payload is valid.
      *
-     * @param  array  $payload
+     * @param  array $payload
      * @return bool
      */
     protected function validMac(array $payload)

@@ -126,14 +126,16 @@ class ParameterBagTest extends \PHPUnit_Framework_TestCase
 
     public function testFilter()
     {
-        $bag = new ParameterBag(array(
+        $bag = new ParameterBag(
+            array(
             'digits' => '0123ab',
             'email' => 'example@example.com',
             'url' => 'http://example.com/foo',
             'dec' => '256',
             'hex' => '0x100',
             'array' => array('bang'),
-            ));
+            )
+        );
 
         $this->assertEmpty($bag->filter('nokey'), '->filter() should return empty by default if no key is found');
 
@@ -146,15 +148,23 @@ class ParameterBagTest extends \PHPUnit_Framework_TestCase
         // This test is repeated for code-coverage
         $this->assertEquals('http://example.com/foo', $bag->filter('url', '', FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED), '->filter() gets a value of parameter as URL with a path');
 
-        $this->assertFalse($bag->filter('dec', '', FILTER_VALIDATE_INT, array(
-            'flags' => FILTER_FLAG_ALLOW_HEX,
-            'options' => array('min_range' => 1, 'max_range' => 0xff),
-        )), '->filter() gets a value of parameter as integer between boundaries');
+        $this->assertFalse(
+            $bag->filter(
+                'dec', '', FILTER_VALIDATE_INT, array(
+                'flags' => FILTER_FLAG_ALLOW_HEX,
+                'options' => array('min_range' => 1, 'max_range' => 0xff),
+                )
+            ), '->filter() gets a value of parameter as integer between boundaries'
+        );
 
-        $this->assertFalse($bag->filter('hex', '', FILTER_VALIDATE_INT, array(
-            'flags' => FILTER_FLAG_ALLOW_HEX,
-            'options' => array('min_range' => 1, 'max_range' => 0xff),
-        )), '->filter() gets a value of parameter as integer between boundaries');
+        $this->assertFalse(
+            $bag->filter(
+                'hex', '', FILTER_VALIDATE_INT, array(
+                'flags' => FILTER_FLAG_ALLOW_HEX,
+                'options' => array('min_range' => 1, 'max_range' => 0xff),
+                )
+            ), '->filter() gets a value of parameter as integer between boundaries'
+        );
 
         $this->assertEquals(array('bang'), $bag->filter('array', ''), '->filter() gets a value of parameter as an array');
     }

@@ -13,32 +13,37 @@ use Zilf\Db\Exception\InvalidParamException;
  * QueryBuilder is the query builder for PostgreSQL databases.
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
     /**
      * Defines a UNIQUE index for [[createIndex()]].
+     *
      * @since 2.0.6
      */
     const INDEX_UNIQUE = 'unique';
     /**
      * Defines a B-tree index for [[createIndex()]].
+     *
      * @since 2.0.6
      */
     const INDEX_B_TREE = 'btree';
     /**
      * Defines a hash index for [[createIndex()]].
+     *
      * @since 2.0.6
      */
     const INDEX_HASH = 'hash';
     /**
      * Defines a GiST index for [[createIndex()]].
+     *
      * @since 2.0.6
      */
     const INDEX_GIST = 'gist';
     /**
      * Defines a GIN index for [[createIndex()]].
+     *
      * @since 2.0.6
      */
     const INDEX_GIN = 'gin';
@@ -96,16 +101,18 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for creating a new index.
-     * @param string $name the name of the index. The name will be properly quoted by the method.
-     * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
-     * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
-     * separate them with commas or use an array to represent them. Each column name will be properly quoted
-     * by the method, unless a parenthesis is found in the name.
-     * @param bool|string $unique whether to make this a UNIQUE index constraint. You can pass `true` or [[INDEX_UNIQUE]] to create
-     * a unique index, `false` to make a non-unique index using the default index type, or one of the following constants to specify
-     * the index method to use: [[INDEX_B_TREE]], [[INDEX_HASH]], [[INDEX_GIST]], [[INDEX_GIN]].
+     *
+     * @param  string       $name    the name of the index. The name will be properly quoted by the method.
+     * @param  string       $table   the table that the new index will be created for. The table name will be properly quoted by the method.
+     * @param  string|array $columns the column(s) that should be included in the index. If there are multiple columns,
+     *                               separate them with commas or use an array to represent them. Each column name will be properly quoted
+     *                               by the method, unless a parenthesis is found in the name.
+     * @param  bool|string  $unique  whether to make this a UNIQUE index constraint. You can pass `true` or [[INDEX_UNIQUE]] to create
+     *                               a unique index, `false` to make a non-unique index using the default index type, or one of the
+     *                               following constants to specify the index method to use: [[INDEX_B_TREE]], [[INDEX_HASH]],
+     *                               [[INDEX_GIST]], [[INDEX_GIN]].
      * @return string the SQL statement for creating a new index.
-     * @see http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+     * @see    http://www.postgresql.org/docs/8.2/static/sql-createindex.html
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
@@ -126,8 +133,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping an index.
-     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     *
+     * @param  string $name  the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param  string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping an index.
      */
     public function dropIndex($name, $table)
@@ -137,8 +145,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
+     *
+     * @param  string $oldName the table to be renamed. The name will be properly quoted by the method.
+     * @param  string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($oldName, $newName)
@@ -150,9 +159,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     *
+     * @param  string $tableName the name of the table whose primary key sequence will be reset
+     * @param  mixed  $value     the value for the primary key of the next new row inserted. If this is not set,
+     *                           the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
@@ -180,9 +190,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table the table name.
+     *
+     * @param  bool   $check  whether to turn on or off the integrity check.
+     * @param  string $schema the schema of the tables.
+     * @param  string $table  the table name.
      * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -208,7 +219,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Builds a SQL statement for truncating a DB table.
      * Explicitly restarts identity for PGSQL to be consistent with other databases which all do this by default.
-     * @param string $table the table to be truncated. The name will be properly quoted by the method.
+     *
+     * @param  string $table the table to be truncated. The name will be properly quoted by the method.
      * @return string the SQL statement for truncating a DB table.
      */
     public function truncateTable($table)
@@ -218,12 +230,14 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
+     *
+     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param  string $type   the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+     *                        column type (if any) into the physical one. Anything that is not recognized as abstract
+     *                        type will be kept in the generated SQL. For example, 'string' will be turned into
+     *                        'varchar(255)', while 'string not null' will become 'varchar(255) not null'. You can
+     *                        also use PostgreSQL-specific syntax such as `SET NOT NULL`.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
@@ -255,12 +269,13 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     * @param string $table the table that data will be saved into.
-     * @param array|\Zilf\Db\Query $columns the column data (name => value) to be saved into the table or instance
-     * of [[Zilf\Db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
-     * Passing of [[ZIlf\Db\Query|Query]] is available since version 2.0.11.
+     *
+     * @param  string               $table   the table that data will be saved into.
+     * @param  array|\Zilf\Db\Query $columns the column data (name => value) to be saved into the table or instance
+     *                                       of [[Zilf\Db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
+     *                                       Passing of [[ZIlf\Db\Query|Query]] is available since version 2.0.11.
      * @return array normalized columns
-     * @since 2.0.9
+     * @since  2.0.9
      */
     private function normalizeTableRowData($table, $columns)
     {

@@ -34,12 +34,16 @@ require_once 'Zend/Validate/Abstract.php';
  */
 class Zend_Validate_File_Count extends Zend_Validate_Abstract
 {
-    /**#@+
+    /**
+* #@+
+     *
      * @const string Error constants
      */
     const TOO_MUCH = 'fileCountTooMuch';
     const TOO_LESS = 'fileCountTooLess';
-    /**#@-*/
+    /**
+     * #@-
+     */
 
     /**
      * @var array Error message templates
@@ -77,6 +81,7 @@ class Zend_Validate_File_Count extends Zend_Validate_Abstract
 
     /**
      * Internal file array
+     *
      * @var array
      */
     protected $_files;
@@ -138,7 +143,7 @@ class Zend_Validate_File_Count extends Zend_Validate_Abstract
     /**
      * Sets the minimum file count
      *
-     * @param  integer $min            The minimum file count
+     * @param  integer $min The minimum file count
      * @return Zend_Validate_File_Size Provides a fluent interface
      * @throws Zend_Validate_Exception When min is greater than max
      */
@@ -147,9 +152,11 @@ class Zend_Validate_File_Count extends Zend_Validate_Abstract
         if ($min === null) {
             $this->_min = null;
         } else if (($this->_max !== null) and ($min > $this->_max)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception('The minimum must be less than or equal to the maximum file count, but '
-                . " {$min} > {$this->_max}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                'The minimum must be less than or equal to the maximum file count, but '
+                . " {$min} > {$this->_max}"
+            );
         } else {
             $this->_min = max(0, (integer) $min);
         }
@@ -170,7 +177,7 @@ class Zend_Validate_File_Count extends Zend_Validate_Abstract
     /**
      * Sets the maximum file count
      *
-     * @param  integer|null $max       The maximum file count
+     * @param  integer|null $max The maximum file count
      * @throws Zend_Validate_Exception When max is smaller than min
      * @return Zend_Validate_StringLength Provides a fluent interface
      */
@@ -179,9 +186,11 @@ class Zend_Validate_File_Count extends Zend_Validate_Abstract
         if ($max === null) {
             $this->_max = null;
         } else if (($this->_min !== null) and ($max < $this->_min)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The maximum must be greater than or equal to the minimum file count, but "
-                . "{$max} < {$this->_min}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The maximum must be greater than or equal to the minimum file count, but "
+                . "{$max} < {$this->_min}"
+            );
         } else {
             $this->_max = (integer) $max;
         }

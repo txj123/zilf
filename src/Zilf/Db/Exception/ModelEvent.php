@@ -11,7 +11,7 @@ namespace Zilf\Db\Exception;
  * ModelEvent represents the parameter needed by [[Model]] events.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class ModelEvent extends Event
 {

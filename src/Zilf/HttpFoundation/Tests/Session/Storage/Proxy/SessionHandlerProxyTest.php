@@ -19,7 +19,7 @@ use Zilf\HttpFoundation\Session\Storage\Proxy\SessionHandlerProxy;
  * @author Drak <drak@zikula.org>
  *
  * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+ * @preserveGlobalState         disabled
  */
 class SessionHandlerProxyTest extends \PHPUnit_Framework_TestCase
 {

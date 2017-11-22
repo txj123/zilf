@@ -54,24 +54,24 @@ class NumberComparator extends Comparator
         if (isset($matches[3])) {
             // magnitude
             switch (strtolower($matches[3])) {
-                case 'k':
-                    $target *= 1000;
-                    break;
-                case 'ki':
-                    $target *= 1024;
-                    break;
-                case 'm':
-                    $target *= 1000000;
-                    break;
-                case 'mi':
-                    $target *= 1024 * 1024;
-                    break;
-                case 'g':
-                    $target *= 1000000000;
-                    break;
-                case 'gi':
-                    $target *= 1024 * 1024 * 1024;
-                    break;
+            case 'k':
+                $target *= 1000;
+                break;
+            case 'ki':
+                $target *= 1024;
+                break;
+            case 'm':
+                $target *= 1000000;
+                break;
+            case 'mi':
+                $target *= 1024 * 1024;
+                break;
+            case 'g':
+                $target *= 1000000000;
+                break;
+            case 'gi':
+                $target *= 1024 * 1024 * 1024;
+                break;
             }
         }
 

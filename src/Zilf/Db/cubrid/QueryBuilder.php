@@ -14,7 +14,7 @@ use Zilf\Db\Exception;
  * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since 2.0
+ * @since  2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
@@ -61,9 +61,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     *
+     * @param  string $tableName the name of the table whose primary key sequence will be reset
+     * @param  mixed  $value     the value for the primary key of the next new row inserted. If this is not set,
+     *                           the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
@@ -164,11 +165,11 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Gets column definition.
      *
-     * @param string $table table name
-     * @param string $column column name
+     * @param  string $table  table name
+     * @param  string $column column name
      * @return null|string the column definition
      * @throws Exception in case when table does not contain column
-     * @since 2.0.8
+     * @since  2.0.8
      */
     private function getColumnDefinition($table, $column)
     {

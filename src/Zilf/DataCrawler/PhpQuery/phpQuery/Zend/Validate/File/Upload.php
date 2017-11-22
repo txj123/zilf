@@ -34,7 +34,8 @@ require_once 'Zend/Validate/Abstract.php';
  */
 class Zend_Validate_File_Upload extends Zend_Validate_Abstract
 {
-    /**@#+
+    /**
+* @#+
      * @const string Error constants
      */
     const INI_SIZE       = 'fileUploadErrorIniSize';
@@ -47,7 +48,9 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
     const ATTACK         = 'fileUploadErrorAttack';
     const FILE_NOT_FOUND = 'fileUploadErrorFileNotFound';
     const UNKNOWN        = 'fileUploadErrorUnknown';
-    /**@#-*/
+    /**
+     * @#-
+     */
 
     /**
      * @var array Error message templates
@@ -67,6 +70,7 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
 
     /**
      * Internal array of files
+     *
      * @var array
      */
     protected $_files = array();
@@ -108,7 +112,7 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
             }
 
             if (count($return) === 0) {
-                require_once 'Zend/Validate/Exception.php';
+                include_once 'Zend/Validate/Exception.php';
                 throw new Zend_Validate_Exception("The file '$file' was not found");
             }
 
@@ -167,43 +171,43 @@ class Zend_Validate_File_Upload extends Zend_Validate_Abstract
         foreach ($files as $file => $content) {
             $this->_value = $file;
             switch($content['error']) {
-                case 0:
-                    if (!is_uploaded_file($content['tmp_name'])) {
-                        $this->_error(self::ATTACK);
-                    }
-                    break;
+            case 0:
+                if (!is_uploaded_file($content['tmp_name'])) {
+                    $this->_error(self::ATTACK);
+                }
+                break;
 
-                case 1:
-                    $this->_error(self::INI_SIZE);
-                    break;
+            case 1:
+                $this->_error(self::INI_SIZE);
+                break;
 
-                case 2:
-                    $this->_error(self::FORM_SIZE);
-                    break;
+            case 2:
+                $this->_error(self::FORM_SIZE);
+                break;
 
-                case 3:
-                    $this->_error(self::PARTIAL);
-                    break;
+            case 3:
+                $this->_error(self::PARTIAL);
+                break;
 
-                case 4:
-                    $this->_error(self::NO_FILE);
-                    break;
+            case 4:
+                $this->_error(self::NO_FILE);
+                break;
 
-                case 6:
-                    $this->_error(self::NO_TMP_DIR);
-                    break;
+            case 6:
+                $this->_error(self::NO_TMP_DIR);
+                break;
 
-                case 7:
-                    $this->_error(self::CANT_WRITE);
-                    break;
+            case 7:
+                $this->_error(self::CANT_WRITE);
+                break;
 
-                case 8:
-                    $this->_error(self::EXTENSION);
-                    break;
+            case 8:
+                $this->_error(self::EXTENSION);
+                break;
 
-                default:
-                    $this->_error(self::UNKNOWN);
-                    break;
+            default:
+                $this->_error(self::UNKNOWN);
+                break;
             }
         }
 
