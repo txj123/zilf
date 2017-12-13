@@ -10,14 +10,31 @@ class Url
 {
     public static function assetUrl($url, $version = '', $urlName = 'default')
     {
+        // 协议头：http/https....
+        $protocol = config('assets.protocol', '');
+
+        // TODO 由于框架config获取protocol级数据时，如果没有protocol会把assets数据返回,而不是返回''
+        if (is_array($protocol)) {
+            $protocol = '';
+        }
+
         //获取设置的url信息，如果不存在，则使用当前默认地址
         $staticUrl = config('assets.' . $urlName, Request::getSchemeAndHttpHost());
 
+        // 版本号
         $strVersion = (stripos($url, '?') == 0) ? $version ? '?' . $version : '' : '&' . $version;
 
         if (strncmp($url, '//', 2) === 0) {
+            if ($protocol) {
+                $url = $protocol . ':' . $url;
+            }
+
             return $url . $strVersion;
         } else {
+            if ($protocol) {
+                $pos = strpos($staticUrl, '://');
+                $staticUrl = $protocol . substr($staticUrl, $pos);
+            }
             return $staticUrl . '/' . ltrim($url, '/') . $strVersion;
         }
     }
