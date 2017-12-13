@@ -11,6 +11,7 @@ namespace Zilf\System;
 
 use Zilf\Cache\CacheManager;
 use Zilf\Config\LoadConfig;
+use Zilf\Helpers\Arr;
 use Zilf\Log\Writer;
 use Zilf\Support\Request;
 use Zilf\View\Compilers\BladeCompiler;
@@ -43,7 +44,7 @@ class Services
     public function setRegister()
     {
 
-        $config = include_once APP_PATH.'/config/config.php';
+        $config = require_once(APP_PATH.'/config/config.php');
 
         /**
          * 注册配置信息类
@@ -105,9 +106,36 @@ class Services
                 $finder = Zilf::$container['view.finder'];
                 $env = new Factory($resolver, $finder);
 
-                return $env;
-            }
-        );
+            return $env;
+        });
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /**
+         * redis 的连接对象
+         */
+        Zilf::$container->register('redis',function (){
+            $config = Zilf::$container->getShare('config')->get('cache.redis');
+
+            return new \Zilf\Redis\RedisManager(Arr::pull($config, 'client', 'predis'), $config);
+        });
+
+        /**
+         * redis的连接服务
+         */
+        Zilf::$container->register('redis.connection',function (){
+            return Zilf::$container->get('redis')->connection();
+        });
+
+        Zilf::$container->register('cache.store', function ($app) {
+            return Zilf::$container['cache']->driver();
+        });
+
+        Zilf::$container->register('memcached.connector', function () {
+            return new \Zilf\Cache\MemcachedConnector();
+        });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
@@ -123,16 +151,16 @@ class Services
             'validator' => 'Zilf\Validation\Factory',
             'files' => 'Zilf\Filesystem\Filesystem',
             'cache' => 'Zilf\Cache\CacheManager',
-        //            'Mail',
-        //            'Redis',
-        //            'Request',
-        //            'Response',
-        //            'Session',
-        //            'Cookie',
-        //            'view',
-        //            'Cache',
-        //            'DB',
-        //            'File',
+//            'Mail',
+//            'Redis',
+//            'Request',
+//            'Response',
+//            'Session',
+//            'Cookie',
+//            'view',
+//            'Cache',
+//            'DB',
+//            'File',
         ];
     }
 
