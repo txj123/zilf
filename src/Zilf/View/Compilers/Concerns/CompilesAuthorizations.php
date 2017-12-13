@@ -7,7 +7,7 @@ trait CompilesAuthorizations
     /**
      * Compile the can statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileCan($expression)
@@ -18,7 +18,7 @@ trait CompilesAuthorizations
     /**
      * Compile the cannot statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileCannot($expression)
@@ -29,7 +29,7 @@ trait CompilesAuthorizations
     /**
      * Compile the else-can statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileElsecan($expression)
@@ -40,7 +40,7 @@ trait CompilesAuthorizations
     /**
      * Compile the else-cannot statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileElsecannot($expression)

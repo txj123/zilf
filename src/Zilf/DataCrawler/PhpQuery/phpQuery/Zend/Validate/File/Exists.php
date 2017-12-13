@@ -48,6 +48,7 @@ class Zend_Validate_File_Exists extends Zend_Validate_Abstract
 
     /**
      * Internal list of directories
+     *
      * @var string
      */
     protected $_directory = '';
@@ -139,8 +140,8 @@ class Zend_Validate_File_Exists extends Zend_Validate_Abstract
      *
      * Returns true if and only if the file already exists in the set directories
      *
-     * @param  string  $value Real file to check for existance
-     * @param  array   $file  File data from Zend_File_Transfer
+     * @param  string $value Real file to check for existance
+     * @param  array  $file  File data from Zend_File_Transfer
      * @return boolean
      */
     public function isValid($value, $file = null)

@@ -12,10 +12,10 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Json
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @category  Zend
+ * @package   Zend_Json
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 
 /**
@@ -32,10 +32,10 @@ require_once 'Zend/Json/Exception.php';
 /**
  * Decode JSON encoded string to PHP variable constructs
  *
- * @category   Zend
- * @package    Zend_Json
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @category  Zend
+ * @package   Zend_Json
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Json_Decoder
 {
@@ -71,7 +71,6 @@ class Zend_Json_Decoder
      * The offset within the souce being decoded
      *
      * @var int
-     *
      */
     protected $_offset;
 
@@ -85,7 +84,7 @@ class Zend_Json_Decoder
     /**
      * Flag indicating how objects should be decoded
      *
-     * @var int
+     * @var    int
      * @access protected
      */
     protected $_decodeType;
@@ -93,10 +92,11 @@ class Zend_Json_Decoder
     /**
      * Constructor
      *
-     * @param string $source String source to decode
-     * @param int $decodeType How objects should be decoded -- see
-     * {@link Zend_Json::TYPE_ARRAY} and {@link Zend_Json::TYPE_OBJECT} for
-     * valid values
+     * @param  string $source     String source to decode
+     * @param  int    $decodeType How objects should be decoded -- see
+     *                            {@link Zend_Json::TYPE_ARRAY} and
+     *                            {@link Zend_Json::TYPE_OBJECT} for
+     *                            valid values
      * @return void
      */
     protected function __construct($source, $decodeType)
@@ -108,8 +108,7 @@ class Zend_Json_Decoder
         $this->_offset       = 0;
 
         // Normalize and set $decodeType
-        if (!in_array($decodeType, array(Zend_Json::TYPE_ARRAY, Zend_Json::TYPE_OBJECT)))
-        {
+        if (!in_array($decodeType, array(Zend_Json::TYPE_ARRAY, Zend_Json::TYPE_OBJECT))) {
             $decodeType = Zend_Json::TYPE_ARRAY;
         }
         $this->_decodeType   = $decodeType;
@@ -139,10 +138,11 @@ class Zend_Json_Decoder
      *
      * @static
      * @access public
-     * @param string $source String to be decoded
-     * @param int $objectDecodeType How objects should be decoded; should be
-     * either or {@link Zend_Json::TYPE_ARRAY} or
-     * {@link Zend_Json::TYPE_OBJECT}; defaults to TYPE_ARRAY
+     * @param  string $source           String to be decoded
+     * @param  int    $objectDecodeType How objects should be decoded; should be
+     *                                  either or {@link Zend_Json::TYPE_ARRAY}
+     *                                  or {@link Zend_Json::TYPE_OBJECT};
+     *                                  defaults to TYPE_ARRAY
      * @return mixed
      * @throws Zend_Json_Exception
      */
@@ -168,19 +168,19 @@ class Zend_Json_Decoder
     protected function _decodeValue()
     {
         switch ($this->_token) {
-            case self::DATUM:
-                $result  = $this->_tokenValue;
-                $this->_getNextToken();
-                return($result);
+        case self::DATUM:
+            $result  = $this->_tokenValue;
+            $this->_getNextToken();
+            return($result);
                 break;
-            case self::LBRACE:
-                return($this->_decodeObject());
+        case self::LBRACE:
+            return($this->_decodeObject());
                 break;
-            case self::LBRACKET:
-                return($this->_decodeArray());
+        case self::LBRACKET:
+            return($this->_decodeArray());
                 break;
-            default:
-                return null;
+        default:
+            return null;
                 break;
         }
     }
@@ -232,17 +232,17 @@ class Zend_Json_Decoder
         }
 
         switch ($this->_decodeType) {
-            case Zend_Json::TYPE_OBJECT:
-                // Create new StdClass and populate with $members
-                $result = new StdClass();
-                foreach ($members as $key => $value) {
-                    $result->$key = $value;
-                }
-                break;
-            case Zend_Json::TYPE_ARRAY:
-            default:
-                $result = $members;
-                break;
+        case Zend_Json::TYPE_OBJECT:
+            // Create new StdClass and populate with $members
+            $result = new StdClass();
+            foreach ($members as $key => $value) {
+                $result->$key = $value;
+            }
+            break;
+        case Zend_Json::TYPE_ARRAY:
+        default:
+            $result = $members;
+            break;
         }
 
         $this->_getNextToken();
@@ -288,13 +288,14 @@ class Zend_Json_Decoder
     protected function _eatWhitespace()
     {
         if (preg_match(
-                '/([\t\b\f\n\r ])*/s',
-                $this->_source,
-                $matches,
-                PREG_OFFSET_CAPTURE,
-                $this->_offset)
-            && $matches[0][1] == $this->_offset)
-        {
+            '/([\t\b\f\n\r ])*/s',
+            $this->_source,
+            $matches,
+            PREG_OFFSET_CAPTURE,
+            $this->_offset
+        )
+            && $matches[0][1] == $this->_offset
+        ) {
             $this->_offset += strlen($matches[0][0]);
         }
     }
@@ -321,103 +322,105 @@ class Zend_Json_Decoder
         $start      = $i;
 
         switch ($str{$i}) {
-            case '{':
-               $this->_token = self::LBRACE;
-               break;
-            case '}':
-                $this->_token = self::RBRACE;
-                break;
-            case '[':
-                $this->_token = self::LBRACKET;
-                break;
-            case ']':
-                $this->_token = self::RBRACKET;
-                break;
-            case ',':
-                $this->_token = self::COMMA;
-                break;
-            case ':':
-                $this->_token = self::COLON;
-                break;
-            case  '"':
-                $result = '';
-                do {
+        case '{':
+            $this->_token = self::LBRACE;
+            break;
+        case '}':
+            $this->_token = self::RBRACE;
+            break;
+        case '[':
+            $this->_token = self::LBRACKET;
+            break;
+        case ']':
+            $this->_token = self::RBRACKET;
+            break;
+        case ',':
+            $this->_token = self::COMMA;
+            break;
+        case ':':
+            $this->_token = self::COLON;
+            break;
+        case  '"':
+            $result = '';
+            do {
+                $i++;
+                if ($i >= $str_length) {
+                    break;
+                }
+
+                $chr = $str{$i};
+                if ($chr == '\\') {
                     $i++;
                     if ($i >= $str_length) {
                         break;
                     }
-
                     $chr = $str{$i};
-                    if ($chr == '\\') {
-                        $i++;
-                        if ($i >= $str_length) {
-                            break;
-                        }
-                        $chr = $str{$i};
-                        switch ($chr) {
-                            case '"' :
-                                $result .= '"';
-                                break;
-                            case '\\':
-                                $result .= '\\';
-                                break;
-                            case '/' :
-                                $result .= '/';
-                                break;
-                            case 'b' :
-                                $result .= chr(8);
-                                break;
-                            case 'f' :
-                                $result .= chr(12);
-                                break;
-                            case 'n' :
-                                $result .= chr(10);
-                                break;
-                            case 'r' :
-                                $result .= chr(13);
-                                break;
-                            case 't' :
-                                $result .= chr(9);
-                                break;
-                            case '\'' :
-                                $result .= '\'';
-                                break;
-                            default:
-                                throw new Zend_Json_Exception("Illegal escape "
-                                    .  "sequence '" . $chr . "'");
-                            }
-                    } elseif ($chr == '"') {
+                    switch ($chr) {
+                    case '"' :
+                        $result .= '"';
                         break;
-                    } else {
-                        $result .= $chr;
+                    case '\\':
+                        $result .= '\\';
+                        break;
+                    case '/' :
+                        $result .= '/';
+                        break;
+                    case 'b' :
+                        $result .= chr(8);
+                        break;
+                    case 'f' :
+                        $result .= chr(12);
+                        break;
+                    case 'n' :
+                        $result .= chr(10);
+                        break;
+                    case 'r' :
+                        $result .= chr(13);
+                        break;
+                    case 't' :
+                        $result .= chr(9);
+                        break;
+                    case '\'' :
+                        $result .= '\'';
+                        break;
+                    default:
+                        throw new Zend_Json_Exception(
+                            "Illegal escape "
+                                .  "sequence '" . $chr . "'"
+                        );
                     }
-                } while ($i < $str_length);
+                } elseif ($chr == '"') {
+                    break;
+                } else {
+                    $result .= $chr;
+                }
+            } while ($i < $str_length);
 
+            $this->_token = self::DATUM;
+            //$this->_tokenValue = substr($str, $start + 1, $i - $start - 1);
+            $this->_tokenValue = $result;
+            break;
+        case 't':
+            if (($i+ 3) < $str_length && substr($str, $start, 4) == "true") {
                 $this->_token = self::DATUM;
-                //$this->_tokenValue = substr($str, $start + 1, $i - $start - 1);
-                $this->_tokenValue = $result;
-                break;
-            case 't':
-                if (($i+ 3) < $str_length && substr($str, $start, 4) == "true") {
-                    $this->_token = self::DATUM;
-                }
-                $this->_tokenValue = true;
-                $i += 3;
-                break;
-            case 'f':
-                if (($i+ 4) < $str_length && substr($str, $start, 5) == "false") {
-                    $this->_token = self::DATUM;
-                }
-                $this->_tokenValue = false;
-                $i += 4;
-                break;
-            case 'n':
-                if (($i+ 3) < $str_length && substr($str, $start, 4) == "null") {
-                    $this->_token = self::DATUM;
-                }
-                $this->_tokenValue = NULL;
-                $i += 3;
-                break;
+            }
+            $this->_tokenValue = true;
+            $i += 3;
+            break;
+        case 'f':
+            if (($i+ 4) < $str_length && substr($str, $start, 5) == "false") {
+                $this->_token = self::DATUM;
+            }
+            $this->_tokenValue = false;
+            $i += 4;
+            break;
+        case 'n':
+            if (($i+ 3) < $str_length && substr($str, $start, 4) == "null") {
+                $this->_token = self::DATUM;
+            }
+            $this->_tokenValue = null;
+            $i += 3;
+            break;
         }
 
         if ($this->_token != self::EOF) {
@@ -427,8 +430,11 @@ class Zend_Json_Decoder
 
         $chr = $str{$i};
         if ($chr == '-' || $chr == '.' || ($chr >= '0' && $chr <= '9')) {
-            if (preg_match('/-?([0-9])*(\.[0-9]*)?((e|E)((-|\+)?)[0-9]+)?/s',
-                $str, $matches, PREG_OFFSET_CAPTURE, $start) && $matches[0][1] == $start) {
+            if (preg_match(
+                '/-?([0-9])*(\.[0-9]*)?((e|E)((-|\+)?)[0-9]+)?/s',
+                $str, $matches, PREG_OFFSET_CAPTURE, $start
+            ) && $matches[0][1] == $start
+            ) {
 
                 $datum = $matches[0][0];
 

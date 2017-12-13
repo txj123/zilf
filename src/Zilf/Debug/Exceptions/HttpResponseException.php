@@ -17,7 +17,7 @@ class HttpResponseException extends RuntimeException
     /**
      * Create a new HTTP response exception instance.
      *
-     * @param  \Zilf\HttpFoundation\Response  $response
+     * @param  \Zilf\HttpFoundation\Response $response
      * @return void
      */
     public function __construct(Response $response)

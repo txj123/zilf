@@ -211,9 +211,11 @@ class NativeSessionStorage implements SessionStorageInterface
     public function save()
     {
         // Register custom error handler to catch a possible failure warning during session write
-        set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext) {
-            throw new ContextErrorException($errstr, $errno, E_WARNING, $errfile, $errline, $errcontext);
-        }, E_WARNING);
+        set_error_handler(
+            function ($errno, $errstr, $errfile, $errline, $errcontext) {
+                throw new ContextErrorException($errstr, $errno, E_WARNING, $errfile, $errline, $errcontext);
+            }, E_WARNING
+        );
 
         try {
             session_write_close();
@@ -325,7 +327,8 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function setOptions(array $options)
     {
-        $validOptions = array_flip(array(
+        $validOptions = array_flip(
+            array(
             'cache_limiter', 'cookie_domain', 'cookie_httponly',
             'cookie_lifetime', 'cookie_path', 'cookie_secure',
             'entropy_file', 'entropy_length', 'gc_divisor',
@@ -335,7 +338,8 @@ class NativeSessionStorage implements SessionStorageInterface
             'use_only_cookies', 'use_trans_sid', 'upload_progress.enabled',
             'upload_progress.cleanup', 'upload_progress.prefix', 'upload_progress.name',
             'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags',
-        ));
+            )
+        );
 
         foreach ($options as $key => $value) {
             if (isset($validOptions[$key])) {
@@ -368,10 +372,11 @@ class NativeSessionStorage implements SessionStorageInterface
      */
     public function setSaveHandler($saveHandler = null)
     {
-        if (!$saveHandler instanceof AbstractProxy &&
-            !$saveHandler instanceof NativeSessionHandler &&
-            !$saveHandler instanceof \SessionHandlerInterface &&
-            null !== $saveHandler) {
+        if (!$saveHandler instanceof AbstractProxy 
+            && !$saveHandler instanceof NativeSessionHandler 
+            && !$saveHandler instanceof \SessionHandlerInterface 
+            && null !== $saveHandler
+        ) {
             throw new \InvalidArgumentException('Must be instance of AbstractProxy or NativeSessionHandler; implement \SessionHandlerInterface; or be null.');
         }
 

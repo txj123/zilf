@@ -20,7 +20,7 @@ use Zilf\Db\Transaction;
  * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema
 {
@@ -62,7 +62,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
@@ -73,7 +74,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
@@ -84,6 +86,7 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Creates a query builder for the MySQL database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
+     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -102,7 +105,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     *
+     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')
@@ -114,7 +118,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return TableSchema driver dependent table metadata. Null if the table does not exist.
      */
     protected function loadTableSchema($name)
@@ -134,7 +139,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Collects the table column metadata.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
@@ -162,6 +168,7 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Collects the foreign key column details for the given table.
+     *
      * @param TableSchema $table the table metadata
      */
     protected function findConstraints($table)
@@ -190,7 +197,7 @@ class Schema extends \Zilf\Db\Schema
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
@@ -216,7 +223,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
+     *
+     * @param  array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -271,23 +279,24 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Sets the isolation level of the current transaction.
-     * @param string $level The transaction isolation level to use for this transaction.
-     * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
+     *
+     * @param  string $level The transaction isolation level to use for this transaction.
+     *                       This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
      * @throws \Zilf\Db\Exception\NotSupportedException when unsupported isolation levels are used.
      * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
-     * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
+     * @see    http://www.sqlite.org/pragma.html#pragma_read_uncommitted
      */
     public function setTransactionIsolationLevel($level)
     {
         switch ($level) {
-            case Transaction::SERIALIZABLE:
-                $this->db->createCommand('PRAGMA read_uncommitted = False;')->execute();
-                break;
-            case Transaction::READ_UNCOMMITTED:
-                $this->db->createCommand('PRAGMA read_uncommitted = True;')->execute();
-                break;
-            default:
-                throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
+        case Transaction::SERIALIZABLE:
+            $this->db->createCommand('PRAGMA read_uncommitted = False;')->execute();
+            break;
+        case Transaction::READ_UNCOMMITTED:
+            $this->db->createCommand('PRAGMA read_uncommitted = True;')->execute();
+            break;
+        default:
+            throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
         }
     }
 }

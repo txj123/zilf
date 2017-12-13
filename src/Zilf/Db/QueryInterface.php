@@ -18,22 +18,24 @@ namespace Zilf\Db;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
- * @since 2.0
+ * @since  2.0
  */
 interface QueryInterface
 {
     /**
      * Executes the query and returns all results as an array.
-     * @param Connection $db the database connection used to execute the query.
-     * If this parameter is not given, the `db` application component will be used.
+     *
+     * @param  Connection $db the database connection used to execute the query.
+     *                        If this parameter is not given, the `db` application component will be used.
      * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null);
 
     /**
      * Executes the query and returns a single row of result.
-     * @param Connection $db the database connection used to execute the query.
-     * If this parameter is not given, the `db` application component will be used.
+     *
+     * @param  Connection $db the database connection used to execute the query.
+     *                        If this parameter is not given, the `db` application component will be used.
      * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      */
@@ -41,33 +43,36 @@ interface QueryInterface
 
     /**
      * Returns the number of records.
-     * @param string $q the COUNT expression. Defaults to '*'.
-     * @param Connection $db the database connection used to execute the query.
-     * If this parameter is not given, the `db` application component will be used.
+     *
+     * @param  string     $q  the COUNT expression. Defaults to '*'.
+     * @param  Connection $db the database connection used to execute the query.
+     *                        If this parameter is not given, the `db` application component will be used.
      * @return int number of records.
      */
     public function count($q = '*', $db = null);
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param Connection $db the database connection used to execute the query.
-     * If this parameter is not given, the `db` application component will be used.
+     *
+     * @param  Connection $db the database connection used to execute the query.
+     *                        If this parameter is not given, the `db` application component will be used.
      * @return bool whether the query result contains any row of data.
      */
     public function exists($db = null);
 
     /**
      * Sets the [[indexBy]] property.
-     * @param string|callable $column the name of the column by which the query results should be indexed by.
-     * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-     * row data. The signature of the callable should be:
      *
-     * ```php
-     * function ($row)
-     * {
-     *     // return the index value corresponding to $row
-     * }
-     * ```
+     * @param string|callable $column the name of the column by which the query results should be indexed by.
+     *                                This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+     *                                row data. The signature of the callable should be:
+     *
+     *                                ```php
+     *                                function ($row)
+     *                                {
+     *                                // return the index value corresponding to $row
+     *                                }
+     *                                ```
      *
      * @return $this the query object itself
      */
@@ -153,102 +158,110 @@ interface QueryInterface
      * - Additionally you can specify arbitrary operators as follows: A condition of `['>=', 'id', 10]` will result in the
      *   following SQL expression: `id >= 10`.
      *
-     * @param string|array $condition the conditions that should be put in the WHERE part.
+     * @param  string|array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
-     * @see andWhere()
-     * @see orWhere()
+     * @see    andWhere()
+     * @see    orWhere()
      */
     public function where($condition);
 
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
+     *
+     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
+     *                                 on how to specify this parameter.
      * @return $this the query object itself
-     * @see where()
-     * @see orWhere()
+     * @see    where()
+     * @see    orWhere()
      */
     public function andWhere($condition);
 
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
+     *
+     * @param  string|array $condition the new WHERE condition. Please refer to [[where()]]
+     *                                 on how to specify this parameter.
      * @return $this the query object itself
-     * @see where()
-     * @see andWhere()
+     * @see    where()
+     * @see    andWhere()
      */
     public function orWhere($condition);
 
     /**
      * Sets the WHERE part of the query ignoring empty parameters.
      *
-     * @param array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
-     * on how to specify this parameter.
+     * @param  array $condition the conditions that should be put in the WHERE part. Please refer to [[where()]]
+     *                          on how to specify this parameter.
      * @return $this the query object itself
-     * @see andFilterWhere()
-     * @see orFilterWhere()
+     * @see    andFilterWhere()
+     * @see    orFilterWhere()
      */
     public function filterWhere(array $condition);
 
     /**
      * Adds an additional WHERE condition to the existing one ignoring empty parameters.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     * @param array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
+     *
+     * @param  array $condition the new WHERE condition. Please refer to [[where()]]
+     *                          on how to specify this parameter.
      * @return $this the query object itself
-     * @see filterWhere()
-     * @see orFilterWhere()
+     * @see    filterWhere()
+     * @see    orFilterWhere()
      */
     public function andFilterWhere(array $condition);
 
     /**
      * Adds an additional WHERE condition to the existing one ignoring empty parameters.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     * @param array $condition the new WHERE condition. Please refer to [[where()]]
-     * on how to specify this parameter.
+     *
+     * @param  array $condition the new WHERE condition. Please refer to [[where()]]
+     *                          on how to specify this parameter.
      * @return $this the query object itself
-     * @see filterWhere()
-     * @see andFilterWhere()
+     * @see    filterWhere()
+     * @see    andFilterWhere()
      */
     public function orFilterWhere(array $condition);
 
     /**
      * Sets the ORDER BY part of the query.
-     * @param string|array $columns the columns (and the directions) to be ordered by.
-     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
-     * The method will automatically quote the column names unless a column contains some parenthesis
-     * (which means the column contains a DB expression).
+     *
+     * @param  string|array $columns the columns (and the directions) to be ordered by.
+     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     *                               (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     *                               The method will automatically quote the column names unless a column contains some parenthesis
+     *                               (which means the column contains a DB expression).
      * @return $this the query object itself
-     * @see addOrderBy()
+     * @see    addOrderBy()
      */
     public function orderBy($columns);
 
     /**
      * Adds additional ORDER BY columns to the query.
-     * @param string|array $columns the columns (and the directions) to be ordered by.
-     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
-     * The method will automatically quote the column names unless a column contains some parenthesis
-     * (which means the column contains a DB expression).
+     *
+     * @param  string|array $columns the columns (and the directions) to be ordered by.
+     *                               Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     *                               (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     *                               The method will automatically quote the column names unless a column contains some parenthesis
+     *                               (which means the column contains a DB expression).
      * @return $this the query object itself
-     * @see orderBy()
+     * @see    orderBy()
      */
     public function addOrderBy($columns);
 
     /**
      * Sets the LIMIT part of the query.
-     * @param int|null $limit the limit. Use null or negative value to disable limit.
+     *
+     * @param  int|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit);
 
     /**
      * Sets the OFFSET part of the query.
-     * @param int|null $offset the offset. Use null or negative value to disable offset.
+     *
+     * @param  int|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset);
@@ -259,9 +272,10 @@ interface QueryInterface
      * and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
-     * @param bool $value whether to prevent query execution.
+     *
+     * @param  bool $value whether to prevent query execution.
      * @return $this the query object itself.
-     * @since 2.0.11
+     * @since  2.0.11
      */
     public function emulateExecution($value = true);
 }

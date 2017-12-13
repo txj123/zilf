@@ -24,10 +24,13 @@ class FilterIteratorTest extends RealIteratorTestCase
         $i = $this->getMockForAbstractClass('Zilf\Finder\Iterator\FilterIterator', array($i));
         $i->expects($this->any())
             ->method('accept')
-            ->will($this->returnCallback(function () use ($i) {
-                return (bool) preg_match('/\.php/', (string) $i->current());
-            })
-        );
+            ->will(
+                $this->returnCallback(
+                    function () use ($i) {
+                        return (bool) preg_match('/\.php/', (string) $i->current());
+                    }
+                )
+            );
 
         $c = 0;
         foreach ($i as $item) {

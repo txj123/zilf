@@ -589,8 +589,7 @@ class Filesystem
                 && substr($file, 1, 1) === ':'
                 && strspn($file, '/\\', 2, 1)
             )
-            || null !== parse_url($file, PHP_URL_SCHEME)
-        ;
+            || null !== parse_url($file, PHP_URL_SCHEME);
     }
 
     /**
@@ -736,8 +735,8 @@ class Filesystem
     /**
      * Get the contents of a file.
      *
-     * @param  string  $path
-     * @param  bool  $lock
+     * @param  string $path
+     * @param  bool   $lock
      * @return string
      *
      * @throws FileNotFoundException
@@ -754,7 +753,7 @@ class Filesystem
     /**
      * Get contents of a file with shared access.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function sharedGet($path)
@@ -783,7 +782,7 @@ class Filesystem
     /**
      * Get the returned value of a file.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return mixed
      *
      * @throws FileNotFoundException
@@ -791,7 +790,7 @@ class Filesystem
     public function getRequire($path)
     {
         if ($this->isFile($path)) {
-            return require $path;
+            return include $path;
         }
 
         throw new FileNotFoundException("File does not exist at path {$path}");
@@ -800,20 +799,20 @@ class Filesystem
     /**
      * Require the given file once.
      *
-     * @param  string  $file
+     * @param  string $file
      * @return mixed
      */
     public function requireOnce($file)
     {
-        require_once $file;
+        include_once $file;
     }
 
     /**
      * Write the contents of a file.
      *
-     * @param  string  $path
-     * @param  string  $contents
-     * @param  bool  $lock
+     * @param  string $path
+     * @param  string $contents
+     * @param  bool   $lock
      * @return int
      */
     public function put($path, $contents, $lock = false)
@@ -824,8 +823,8 @@ class Filesystem
     /**
      * Prepend to a file.
      *
-     * @param  string  $path
-     * @param  string  $data
+     * @param  string $path
+     * @param  string $data
      * @return int
      */
     public function prepend($path, $data)
@@ -840,8 +839,8 @@ class Filesystem
     /**
      * Append to a file.
      *
-     * @param  string  $path
-     * @param  string  $data
+     * @param  string $path
+     * @param  string $data
      * @return int
      */
     public function append($path, $data)
@@ -852,7 +851,7 @@ class Filesystem
     /**
      * Delete the file at a given path.
      *
-     * @param  string|array  $paths
+     * @param  string|array $paths
      * @return bool
      */
     public function delete($paths)
@@ -877,8 +876,8 @@ class Filesystem
     /**
      * Move a file to a new location.
      *
-     * @param  string  $path
-     * @param  string  $target
+     * @param  string $path
+     * @param  string $target
      * @return bool
      */
     public function move($path, $target)
@@ -889,7 +888,7 @@ class Filesystem
     /**
      * Extract the file name from a file path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function name($path)
@@ -900,7 +899,7 @@ class Filesystem
     /**
      * Extract the trailing name component from a file path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function basename($path)
@@ -911,7 +910,7 @@ class Filesystem
     /**
      * Extract the parent directory from a file path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function dirname($path)
@@ -922,7 +921,7 @@ class Filesystem
     /**
      * Extract the file extension from a file path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function extension($path)
@@ -933,7 +932,7 @@ class Filesystem
     /**
      * Get the file type of a given file.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     public function type($path)
@@ -944,7 +943,7 @@ class Filesystem
     /**
      * Get the mime-type of a given file.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string|false
      */
     public function mimeType($path)
@@ -955,7 +954,7 @@ class Filesystem
     /**
      * Get the file size of a given file.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return int
      */
     public function size($path)
@@ -966,7 +965,7 @@ class Filesystem
     /**
      * Get the file's last modification time.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return int
      */
     public function lastModified($path)
@@ -977,7 +976,7 @@ class Filesystem
     /**
      * Determine if the given path is a directory.
      *
-     * @param  string  $directory
+     * @param  string $directory
      * @return bool
      */
     public function isDirectory($directory)
@@ -988,7 +987,7 @@ class Filesystem
     /**
      * Determine if the given path is writable.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return bool
      */
     public function isWritable($path)
@@ -999,7 +998,7 @@ class Filesystem
     /**
      * Determine if the given path is a file.
      *
-     * @param  string  $file
+     * @param  string $file
      * @return bool
      */
     public function isFile($file)
@@ -1010,8 +1009,8 @@ class Filesystem
     /**
      * Find path names matching a given pattern.
      *
-     * @param  string  $pattern
-     * @param  int     $flags
+     * @param  string $pattern
+     * @param  int    $flags
      * @return array
      */
     public function glob($pattern, $flags = 0)
@@ -1022,7 +1021,7 @@ class Filesystem
     /**
      * Get an array of all files in a directory.
      *
-     * @param  string  $directory
+     * @param  string $directory
      * @return array
      */
     public function files($directory)
@@ -1036,16 +1035,18 @@ class Filesystem
         // To get the appropriate files, we'll simply glob the directory and filter
         // out any "files" that are not truly files so we do not end up with any
         // directories in our list, but only true files within the directory.
-        return array_filter($glob, function ($file) {
-            return filetype($file) == 'file';
-        });
+        return array_filter(
+            $glob, function ($file) {
+                return filetype($file) == 'file';
+            }
+        );
     }
 
     /**
      * Get all of the files from the given directory (recursive).
      *
-     * @param  string  $directory
-     * @param  bool  $hidden
+     * @param  string $directory
+     * @param  bool   $hidden
      * @return array
      */
     public function allFiles($directory, $hidden = false)
@@ -1056,7 +1057,7 @@ class Filesystem
     /**
      * Get all of the directories within a given directory.
      *
-     * @param  string  $directory
+     * @param  string $directory
      * @return array
      */
     public function directories($directory)
@@ -1073,10 +1074,10 @@ class Filesystem
     /**
      * Create a directory.
      *
-     * @param  string  $path
-     * @param  int     $mode
-     * @param  bool    $recursive
-     * @param  bool    $force
+     * @param  string $path
+     * @param  int    $mode
+     * @param  bool   $recursive
+     * @param  bool   $force
      * @return bool
      */
     public function makeDirectory($path, $mode = 0755, $recursive = false, $force = false)
@@ -1091,9 +1092,9 @@ class Filesystem
     /**
      * Move a directory.
      *
-     * @param  string  $from
-     * @param  string  $to
-     * @param  bool  $overwrite
+     * @param  string $from
+     * @param  string $to
+     * @param  bool   $overwrite
      * @return bool
      */
     public function moveDirectory($from, $to, $overwrite = false)
@@ -1110,9 +1111,9 @@ class Filesystem
     /**
      * Copy a directory from one location to another.
      *
-     * @param  string  $directory
-     * @param  string  $destination
-     * @param  int     $options
+     * @param  string $directory
+     * @param  string $destination
+     * @param  int    $options
      * @return bool
      */
     public function copyDirectory($directory, $destination, $options = null)
@@ -1164,8 +1165,8 @@ class Filesystem
      *
      * The directory itself may be optionally preserved.
      *
-     * @param  string  $directory
-     * @param  bool    $preserve
+     * @param  string $directory
+     * @param  bool   $preserve
      * @return bool
      */
     public function deleteDirectory($directory, $preserve = false)
@@ -1202,7 +1203,7 @@ class Filesystem
     /**
      * Empty the specified directory of all files and folders.
      *
-     * @param  string  $directory
+     * @param  string $directory
      * @return bool
      */
     public function cleanDirectory($directory)

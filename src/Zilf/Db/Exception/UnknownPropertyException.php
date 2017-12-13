@@ -11,7 +11,7 @@ namespace Zilf\Db\Exception;
  * UnknownPropertyException represents an exception caused by accessing unknown object properties.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class UnknownPropertyException extends Exception
 {

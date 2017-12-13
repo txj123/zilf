@@ -7,7 +7,7 @@ trait CompilesComponents
     /**
      * Compile the component statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileComponent($expression)
@@ -28,7 +28,7 @@ trait CompilesComponents
     /**
      * Compile the slot statements into valid PHP.
      *
-     * @param  string  $expression
+     * @param  string $expression
      * @return string
      */
     protected function compileSlot($expression)

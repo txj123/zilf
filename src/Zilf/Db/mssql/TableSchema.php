@@ -11,7 +11,7 @@ namespace Zilf\Db\mssql;
  * TableSchema represents the metadata of a database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class TableSchema extends \Zilf\Db\TableSchema
 {

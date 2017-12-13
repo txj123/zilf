@@ -142,10 +142,10 @@ class Validator
      * Create a new Validator instance.
      *
      * @param \Zilf\Validation\TranslatorInterface $translator
-     * @param array                                    $data
-     * @param array                                    $rules
-     * @param array                                    $messages
-     * @param array                                    $customAttributes
+     * @param array                                $data
+     * @param array                                $rules
+     * @param array                                $messages
+     * @param array                                $customAttributes
      *
      * @return \Zilf\Validation\Validator
      */
@@ -278,7 +278,6 @@ class Validator
     /**
      * Determine if the data passes the validation rules.
      *
-     *
      * @return bool
      */
     public function passes()
@@ -306,7 +305,6 @@ class Validator
 
     /**
      * Determine if the data fails the validation rules.
-     *
      *
      * @return bool
      */
@@ -451,7 +449,6 @@ class Validator
      * "Validate" optional attributes.
      *
      * Always returns true, just lets us put sometimes in rules.
-     *
      *
      * @return bool
      */
@@ -990,7 +987,6 @@ class Validator
         return $verifier->getCount(
 
             $table, $column, $value, $id, $idColumn, $extra
-
         ) === 0;
     }
 
@@ -1838,10 +1834,10 @@ class Validator
     /**
      * Replace all place-holders for the required_with_all rule.
      *
-     * @param  string  $message
-     * @param  string  $attribute
-     * @param  string  $rule
-     * @param  array   $parameters
+     * @param string $message
+     * @param string $attribute
+     * @param string $rule
+     * @param array  $parameters
      *
      * @return string
      */
@@ -2087,7 +2083,6 @@ class Validator
     /**
      * Get the array of custom validator extensions.
      *
-     *
      * @return array
      */
     public function getExtensions()
@@ -2152,7 +2147,6 @@ class Validator
     /**
      * Get the array of custom validator message replacers.
      *
-     *
      * @return array
      */
     public function getReplacers()
@@ -2190,7 +2184,6 @@ class Validator
     /**
      * Get the data under validation.
      *
-     *
      * @return array
      */
     public function getData()
@@ -2210,7 +2203,6 @@ class Validator
 
     /**
      * Get the validation rules.
-     *
      *
      * @return array
      */
@@ -2264,7 +2256,6 @@ class Validator
     /**
      * Get the files under validation.
      *
-     *
      * @return array
      */
     public function getFiles()
@@ -2288,7 +2279,6 @@ class Validator
 
     /**
      * Get the Presence Verifier implementation.
-     *
      *
      * @return \Zilf\Validation\PresenceVerifierInterface
      *
@@ -2316,7 +2306,6 @@ class Validator
     /**
      * Get the Translator implementation.
      *
-     *
      * @return \Zilf\Validation\TranslatorInterface
      */
     public function getTranslator()
@@ -2337,7 +2326,6 @@ class Validator
     /**
      * Get the custom messages for the validator.
      *
-     *
      * @return array
      */
     public function getCustomMessages()
@@ -2357,7 +2345,6 @@ class Validator
 
     /**
      * Get the custom attributes used by the validator.
-     *
      *
      * @return array
      */
@@ -2383,7 +2370,6 @@ class Validator
     /**
      * Get the custom values for the validator.
      *
-     *
      * @return array
      */
     public function getCustomValues()
@@ -2408,7 +2394,6 @@ class Validator
     /**
      * Get the fallback messages for the validator.
      *
-     *
      * @return array
      */
     public function getFallbackMessages()
@@ -2429,7 +2414,6 @@ class Validator
     /**
      * Get the failed validation rules.
      *
-     *
      * @return array
      */
     public function failed()
@@ -2444,7 +2428,6 @@ class Validator
     /**
      * Get the message container for the validator.
      *
-     *
      * @return \Zilf\Validation\MessageBag
      */
     public function messages()
@@ -2458,7 +2441,6 @@ class Validator
 
     /**
      * An alternative more semantic shortcut to the message container.
-     *
      *
      * @return \Zilf\Validation\MessageBag
      */

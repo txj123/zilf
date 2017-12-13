@@ -10,6 +10,7 @@ namespace Zilf\DataCrawler;
 
 /**
  * Class Caiji
+ *
  * @package Zilf\DataCrawler
  *
  * 参数配置参考事例
@@ -51,13 +52,15 @@ class Caiji
 
     public $msg = array();
 
-    static function instance($config,$extra=array()){
+    static function instance($config,$extra=array())
+    {
         self::$config = $config;
         self::$extra = $extra;
         return new Caiji();
     }
 
-    public function get(){
+    public function get()
+    {
 
         $config_arr = self::$config;
         $client = new Client();
@@ -81,42 +84,43 @@ class Caiji
             $curl_config = isset($config['curl']) ? $config['curl'] : '';
 
 
-            if($key == 0){
-                $list_arr = $client->request($config['url'],$config['rule'],$curl_config,$charset)->exec();
+            if($key == 0) {
+                $list_arr = $client->request($config['url'], $config['rule'], $curl_config, $charset)->exec();
             }else{
-                if(substr_count($config['url'],'@') == 1){
-                    $urls = $this->_get_all_urls($list_arr,substr($config['url'],1));
+                if(substr_count($config['url'], '@') == 1) {
+                    $urls = $this->_get_all_urls($list_arr, substr($config['url'], 1));
 
                     foreach ($urls as $row){
-                        if($this->_is_exists(self::$table,$row)){
+                        if($this->_is_exists(self::$table, $row)) {
                             $this->msg[] = array("<div style='color: gold;'>该网址：【".$row."】已经采集过了！\n<br/></div>");
                             continue;
                         }
-                        $lists = $client->request($row,$config['rule'],$curl_config,$charset)->exec();
-                        $list_arr = array_merge($list_arr,$lists);
+                        $lists = $client->request($row, $config['rule'], $curl_config, $charset)->exec();
+                        $list_arr = array_merge($list_arr, $lists);
                     }
                 }else{
-                    $lists = $client->request($config['url'],$config['rule'],$curl_config,$charset)->exec();
-                    $list_arr = array_merge($list_arr,$lists);
+                    $lists = $client->request($config['url'], $config['rule'], $curl_config, $charset)->exec();
+                    $list_arr = array_merge($list_arr, $lists);
                 }
             }
         }
 
-        $this->msg = array_merge($this->msg,$client->msg);
+        $this->msg = array_merge($this->msg, $client->msg);
 
         return $list_arr;
     }
 
     /**
-     * @param array $arr
+     * @param array  $arr
      * @param string $key
      * @return array
      */
-    private function _get_all_urls($arr=array(),$key='url'){
+    private function _get_all_urls($arr=array(),$key='url')
+    {
         $urls = array();
         foreach ($arr as $value){
-            if($value){
-                $urls = array_merge($urls,$value[$key]);
+            if($value) {
+                $urls = array_merge($urls, $value[$key]);
             }
         }
 
@@ -129,20 +133,21 @@ class Caiji
      * @return array
      * 过滤数据
      */
-    public function filter_data($data,$obj){
+    public function filter_data($data,$obj)
+    {
         $arr = array();
         $func = self::$config['content']['func'];
 
         foreach ($data as $row){
             //通过函数过滤特殊字符
             foreach ($row as $col => $item){
-                if(isset($func[$col]) && !empty($func[$col])){
+                if(isset($func[$col]) && !empty($func[$col])) {
                     $func = $func[$col];
                     $row[$col] = $obj->$func($item);
                 }
             }
 
-            if(isset($row['_extra'])){
+            if(isset($row['_extra'])) {
                 foreach ($row['_extra'] as $c_k => $c_v){
                     $row[$c_k] = $c_v;
                 }
@@ -163,14 +168,15 @@ class Caiji
         return $arr;
     }
 
-    public function show_logs(){
+    public function show_logs()
+    {
         $msg = $this->msg;
         echo "<hr/> 采集日志：=========  <br/>";
         echo '<div style="background: #dca7a7">';
 
-        if(!empty($msg)){
+        if(!empty($msg)) {
             foreach ($msg as $row){
-                if(is_array($row)){
+                if(is_array($row)) {
                     foreach ($row as $v){
                         echo $v;
                     }
@@ -184,10 +190,11 @@ class Caiji
         echo "</div>";
     }
 
-    private function _is_exists($table,$url){
-//        if(function_exists(M)){
-//            $is_exist = M($table)->where(array('md5_url'=>md5($url)))->count();
-//            return $is_exist ? true : false;
-//        }
+    private function _is_exists($table,$url)
+    {
+        //        if(function_exists(M)){
+        //            $is_exist = M($table)->where(array('md5_url'=>md5($url)))->count();
+        //            return $is_exist ? true : false;
+        //        }
     }
 }

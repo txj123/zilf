@@ -47,7 +47,8 @@ namespace Zilf\Facades;
 
 class MobileDetect extends Facade
 {
-    protected static function getFacadeAccessor(){
+    protected static function getFacadeAccessor()
+    {
         return new \Zilf\Detection\MobileDetect;
     }
 }

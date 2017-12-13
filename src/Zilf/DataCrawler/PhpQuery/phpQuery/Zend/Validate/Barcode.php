@@ -13,11 +13,11 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Barcode.php 8211 2008-02-20 14:29:24Z darby $
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: Barcode.php 8211 2008-02-20 14:29:24Z darby $
  */
 
 
@@ -64,21 +64,21 @@ class Zend_Validate_Barcode extends Zend_Validate_Abstract
     public function setType($barcodeType)
     {
         switch (strtolower($barcodeType)) {
-            case 'upc':
-            case 'upc-a':
-                $className = 'UpcA';
-                break;
-            case 'ean13':
-            case 'ean-13':
-                $className = 'Ean13';
-                break;
-            default:
-                require_once 'Zend/Validate/Exception.php';
-                throw new Zend_Validate_Exception("Barcode type '$barcodeType' is not supported'");
+        case 'upc':
+        case 'upc-a':
+            $className = 'UpcA';
+            break;
+        case 'ean13':
+        case 'ean-13':
+            $className = 'Ean13';
+            break;
+        default:
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception("Barcode type '$barcodeType' is not supported'");
                 break;
         }
 
-        require_once 'Zend/Validate/Barcode/' . $className . '.php';
+        include_once 'Zend/Validate/Barcode/' . $className . '.php';
 
         $class = 'Zend_Validate_Barcode_' . $className;
         $this->_barcodeValidator = new $class;

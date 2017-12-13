@@ -64,10 +64,10 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
 
     /**
      * Adapter constructor, currently empty. Config is set using setConfig()
-     *
      */
     public function __construct()
-    { }
+    { 
+    }
 
     /**
      * Set the configuration array for the adapter
@@ -77,9 +77,10 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
     public function setConfig($config = array())
     {
         if (! is_array($config)) {
-            require_once 'Zend/Http/Client/Adapter/Exception.php';
+            include_once 'Zend/Http/Client/Adapter/Exception.php';
             throw new Zend_Http_Client_Adapter_Exception(
-                '$config expects an array, ' . gettype($config) . ' recieved.');
+                '$config expects an array, ' . gettype($config) . ' recieved.'
+            );
         }
 
         foreach ($config as $k => $v) {
@@ -96,16 +97,17 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
      * @param int     $timeout
      */
     public function connect($host, $port = 80, $secure = false)
-    { }
+    { 
+    }
 
     /**
      * Send request to the remote server
      *
-     * @param string        $method
-     * @param Zend_Uri_Http $uri
-     * @param string        $http_ver
-     * @param array         $headers
-     * @param string        $body
+     * @param  string        $method
+     * @param  Zend_Uri_Http $uri
+     * @param  string        $http_ver
+     * @param  array         $headers
+     * @param  string        $body
      * @return string Request as string
      */
     public function write($method, $uri, $http_ver = '1.1', $headers = array(), $body = '')
@@ -115,10 +117,12 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
 
         // Build request headers
         $path = $uri->getPath();
-        if ($uri->getQuery()) $path .= '?' . $uri->getQuery();
+        if ($uri->getQuery()) { $path .= '?' . $uri->getQuery();
+        }
         $request = "{$method} {$path} HTTP/{$http_ver}\r\n";
         foreach ($headers as $k => $v) {
-            if (is_string($k)) $v = ucfirst($k) . ": $v";
+            if (is_string($k)) { $v = ucfirst($k) . ": $v";
+            }
             $request .= "$v\r\n";
         }
 
@@ -145,10 +149,10 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
 
     /**
      * Close the connection (dummy)
-     *
      */
     public function close()
-    { }
+    { 
+    }
 
     /**
      * Set the HTTP response(s) to be returned by this adapter
@@ -184,9 +188,10 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
     public function setResponseIndex($index)
     {
         if ($index < 0 || $index >= count($this->responses)) {
-            require_once 'Zend/Http/Client/Adapter/Exception.php';
+            include_once 'Zend/Http/Client/Adapter/Exception.php';
             throw new Zend_Http_Client_Adapter_Exception(
-                'Index out of range of response buffer size');
+                'Index out of range of response buffer size'
+            );
         }
         $this->responseIndex = $index;
     }

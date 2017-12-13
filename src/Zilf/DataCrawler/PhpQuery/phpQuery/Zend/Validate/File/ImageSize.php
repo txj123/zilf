@@ -178,8 +178,8 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
     /**
      * Sets the minimum image size
      *
-     * @param  integer $minwidth            The minimum image width
-     * @param  integer $minheight           The minimum image height
+     * @param  integer $minwidth  The minimum image width
+     * @param  integer $minheight The minimum image height
      * @throws Zend_Validate_Exception      When minwidth is greater than maxwidth
      * @throws Zend_Validate_Exception      When minheight is greater than maxheight
      * @return Zend_Validate_File_ImageSize Provides a fluent interface
@@ -187,15 +187,19 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
     public function setImageMin($minwidth, $minheight)
     {
         if (($this->_maxwidth !== null) and ($minwidth > $this->_maxwidth)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The minimum image width must be less than or equal to the "
-                . " maximum image width, but {$minwidth} > {$this->_maxwidth}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The minimum image width must be less than or equal to the "
+                . " maximum image width, but {$minwidth} > {$this->_maxwidth}"
+            );
         }
 
         if (($this->_maxheight !== null) and ($minheight > $this->_maxheight)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The minimum image height must be less than or equal to the "
-                . " maximum image height, but {$minheight} > {$this->_maxheight}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The minimum image height must be less than or equal to the "
+                . " maximum image height, but {$minheight} > {$this->_maxheight}"
+            );
         }
 
         $this->_minwidth  = max(0, (integer) $minwidth);
@@ -206,8 +210,8 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
     /**
      * Sets the maximum image size
      *
-     * @param  integer $maxwidth       The maximum image width
-     * @param  integer $maxheight      The maximum image height
+     * @param  integer $maxwidth  The maximum image width
+     * @param  integer $maxheight The maximum image height
      * @throws Zend_Validate_Exception When maxwidth is smaller than minwidth
      * @throws Zend_Validate_Exception When maxheight is smaller than minheight
      * @return Zend_Validate_StringLength Provides a fluent interface
@@ -217,9 +221,11 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
         if ($maxwidth === null) {
             $tempwidth = null;
         } else if (($this->_minwidth !== null) and ($maxwidth < $this->_minwidth)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The maximum image width must be greater than or equal to the "
-                . "minimum image width, but {$maxwidth} < {$this->_minwidth}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The maximum image width must be greater than or equal to the "
+                . "minimum image width, but {$maxwidth} < {$this->_minwidth}"
+            );
         } else {
             $tempwidth = (integer) $maxwidth;
         }
@@ -227,9 +233,11 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
         if ($maxheight === null) {
             $tempheight = null;
         } else if (($this->_minheight !== null) and ($maxheight < $this->_minheight)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The maximum image height must be greater than or equal to the "
-                . "minimum image height, but {$maxheight} < {$this->_minwidth}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The maximum image height must be greater than or equal to the "
+                . "minimum image height, but {$maxheight} < {$this->_minwidth}"
+            );
         } else {
             $tempheight = (integer) $maxheight;
         }
@@ -242,8 +250,8 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
     /**
      * Sets the mimimum and maximum image width
      *
-     * @param  integer $minwidth            The minimum image width
-     * @param  integer $maxwidth            The maximum image width
+     * @param  integer $minwidth The minimum image width
+     * @param  integer $maxwidth The maximum image width
      * @return Zend_Validate_File_ImageSize Provides a fluent interface
      */
     public function setImageWidth($minwidth, $maxwidth)
@@ -256,8 +264,8 @@ class Zend_Validate_File_ImageSize extends Zend_Validate_Abstract
     /**
      * Sets the mimimum and maximum image height
      *
-     * @param  integer $minheight           The minimum image height
-     * @param  integer $maxheight           The maximum image height
+     * @param  integer $minheight The minimum image height
+     * @param  integer $maxheight The maximum image height
      * @return Zend_Validate_File_ImageSize Provides a fluent interface
      */
     public function setImageHeight($minheight, $maxheight)

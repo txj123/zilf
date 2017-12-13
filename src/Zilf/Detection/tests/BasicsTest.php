@@ -22,9 +22,10 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     public function testBasicMethods()
     {
-        $this->assertNotEmpty( $this->detect->getScriptVersion() );
+        $this->assertNotEmpty($this->detect->getScriptVersion());
 
-        $this->detect->setHttpHeaders(array(
+        $this->detect->setHttpHeaders(
+            array(
                 'SERVER_SOFTWARE'       => 'Apache/2.2.15 (Linux) Whatever/4.0 PHP/5.2.13',
                 'REQUEST_METHOD'        => 'POST',
                 'HTTP_HOST'             => 'home.ghita.org',
@@ -41,24 +42,25 @@ class BasicTest extends PHPUnit_Framework_TestCase
                 'HTTP_CACHE_CONTROL'    => 'no-cache',
                 'REMOTE_ADDR'           => '11.22.33.44',
                 'REQUEST_TIME'          => '01-10-2012 07:57'
-            ));
+            )
+        );
 
         //12 because only 12 start with HTTP_
-        $this->assertCount( 12, $this->detect->getHttpHeaders() );
-        $this->assertTrue( $this->detect->checkHttpHeadersForMobile() );
+        $this->assertCount(12, $this->detect->getHttpHeaders());
+        $this->assertTrue($this->detect->checkHttpHeadersForMobile());
 
         $this->detect->setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 6_0_1 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A523 Safari/8536.25');
-        $this->assertNotEmpty( $this->detect->getUserAgent() );
+        $this->assertNotEmpty($this->detect->getUserAgent());
 
-        $this->assertTrue( $this->detect->isMobile() );
-        $this->assertFalse( $this->detect->isTablet() );
+        $this->assertTrue($this->detect->isMobile());
+        $this->assertFalse($this->detect->isTablet());
 
-        $this->assertTrue( $this->detect->isIphone() );
-        $this->assertTrue( $this->detect->isiphone() );
-        $this->assertTrue( $this->detect->isiOS() );
-        $this->assertTrue( $this->detect->isios() );
-        $this->assertTrue( $this->detect->is('iphone') );
-        $this->assertTrue( $this->detect->is('ios') );
+        $this->assertTrue($this->detect->isIphone());
+        $this->assertTrue($this->detect->isiphone());
+        $this->assertTrue($this->detect->isiOS());
+        $this->assertTrue($this->detect->isios());
+        $this->assertTrue($this->detect->is('iphone'));
+        $this->assertTrue($this->detect->is('ios'));
 
     }
 
@@ -165,8 +167,9 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * Headers should be reset when you use setHttpHeaders.
+     *
      * @covers Mobile_Detect::setHttpHeaders
-     * @issue #144
+     * @issue  #144
      */
     public function testSetHttpHeaders()
     {
@@ -181,6 +184,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * Read response from cloudfront, if the cloudfront headers are detected
+     *
      * @covers Mobile_Detect::setCfHeaders
      */
     public function testSetCfHeaders()
@@ -453,12 +457,14 @@ class BasicTest extends PHPUnit_Framework_TestCase
     public function testRules()
     {
         $md = new Mobile_Detect;
-        $count = array_sum(array(
+        $count = array_sum(
+            array(
             count(Mobile_Detect::getPhoneDevices()),
             count(Mobile_Detect::getTabletDevices()),
             count(Mobile_Detect::getOperatingSystems()),
             count(Mobile_Detect::getBrowsers())
-        ));
+            )
+        );
         $rules = $md->getRules();
         $this->assertEquals($count, count($rules));
     }
@@ -469,13 +475,15 @@ class BasicTest extends PHPUnit_Framework_TestCase
     public function testRulesExtended()
     {
         $md = new Mobile_Detect;
-        $count = array_sum(array(
+        $count = array_sum(
+            array(
             count(Mobile_Detect::getPhoneDevices()),
             count(Mobile_Detect::getTabletDevices()),
             count(Mobile_Detect::getOperatingSystems()),
             count(Mobile_Detect::getBrowsers()),
             count(Mobile_Detect::getUtilities())
-        ));
+            )
+        );
         $md->setDetectionType(Mobile_Detect::DETECTION_TYPE_EXTENDED);
         $rules = $md->getRules();
         $this->assertEquals($count, count($rules));
@@ -489,8 +497,10 @@ class BasicTest extends PHPUnit_Framework_TestCase
         $v = Mobile_Detect::getScriptVersion();
         $formatCheck = (bool)preg_match('/^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9])?$/', $v);
 
-        $this->assertTrue($formatCheck, "Fails the semantic version test. The version " . var_export($v, true)
-                . ' does not match X.Y.Z pattern');
+        $this->assertTrue(
+            $formatCheck, "Fails the semantic version test. The version " . var_export($v, true)
+            . ' does not match X.Y.Z pattern'
+        );
     }
 
     public function crazyVersionNumbers()
@@ -514,7 +524,9 @@ class BasicTest extends PHPUnit_Framework_TestCase
     {
         $md = new Mobile_Detect;
         $actual = $md->prepareVersionNo($raw);
-        $this->assertSame($expected, $actual, "We expected " . var_export($raw, true) . " to convert to "
-            . var_export($expected, true) . ', but got ' . var_export($actual, true) . ' instead');
+        $this->assertSame(
+            $expected, $actual, "We expected " . var_export($raw, true) . " to convert to "
+            . var_export($expected, true) . ', but got ' . var_export($actual, true) . ' instead'
+        );
     }
 }

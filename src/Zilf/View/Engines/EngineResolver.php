@@ -27,7 +27,7 @@ class EngineResolver
      * The engine string typically corresponds to a file extension.
      *
      * @param  string   $engine
-     * @param  \Closure  $resolver
+     * @param  \Closure $resolver
      * @return void
      */
     public function register($engine, Closure $resolver)
@@ -40,7 +40,7 @@ class EngineResolver
     /**
      * Resolver an engine instance by name.
      *
-     * @param  string  $engine
+     * @param  string $engine
      * @return \Zilf\View\Engines\EngineInterface
      * @throws \InvalidArgumentException
      */

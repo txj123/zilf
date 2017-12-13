@@ -93,7 +93,8 @@ namespace Zilf\Facades;
 
 class Request extends Facade
 {
-    protected static function getFacadeAccessor(){
+    protected static function getFacadeAccessor()
+    {
         return 'request';
     }
 }

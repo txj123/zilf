@@ -59,7 +59,7 @@ class Str
     /**
      * Determine if a given string contains a given substring.
      *
-     * @param  string $haystack
+     * @param  string       $haystack
      * @param  string|array $needles
      * @return bool
      */
@@ -77,7 +77,7 @@ class Str
     /**
      * Determine if a given string ends with a given substring.
      *
-     * @param  string $haystack
+     * @param  string       $haystack
      * @param  string|array $needles
      * @return bool
      */
@@ -144,7 +144,7 @@ class Str
      * Limit the number of characters in a string.
      *
      * @param  string $value
-     * @param  int $limit
+     * @param  int    $limit
      * @param  string $end
      * @return string
      */
@@ -172,7 +172,7 @@ class Str
      * Limit the number of words in a string.
      *
      * @param  string $value
-     * @param  int $words
+     * @param  int    $words
      * @param  string $end
      * @return string
      */
@@ -203,7 +203,7 @@ class Str
      * Get the plural form of an English word.
      *
      * @param  string $value
-     * @param  int $count
+     * @param  int    $count
      * @return string
      */
     public static function plural($value, $count = 2)
@@ -401,7 +401,7 @@ class Str
     /**
      * Determine if a given string starts with a given substring.
      *
-     * @param  string $haystack
+     * @param  string       $haystack
      * @param  string|array $needles
      * @return bool
      */
@@ -438,8 +438,8 @@ class Str
     /**
      * Returns the portion of string specified by the start and length parameters.
      *
-     * @param  string $string
-     * @param  int $start
+     * @param  string   $string
+     * @param  int      $start
      * @param  int|null $length
      * @return string
      */

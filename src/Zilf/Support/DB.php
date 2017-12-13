@@ -20,19 +20,21 @@ class DB
      * @param string $databaseName
      * @return Connection
      */
-    public static function connection($databaseName=''){
+    public static function connection($databaseName='')
+    {
         $database = $databaseName ? $databaseName : Zilf::$app->database;
         Zilf::$app->setDb($database);
         return Zilf::$container->getShare($database);
     }
 
     /**
-     * @param null $sql
+     * @param null  $sql
      * @param array $params
      * @return Command the DB command
      */
-    public static function  createCommand($sql = null, $params = []){
-        return Zilf::$container->getShare(Zilf::$app->database)->createCommand($sql,$params);
+    public static function createCommand($sql = null, $params = [])
+    {
+        return Zilf::$container->getShare(Zilf::$app->database)->createCommand($sql, $params);
     }
 
     /**
@@ -40,7 +42,8 @@ class DB
      *
      * @return Query
      */
-    public static function query(){
+    public static function query()
+    {
         return new Query();
     }
 }

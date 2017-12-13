@@ -34,13 +34,17 @@ require_once 'Zend/Validate/Abstract.php';
  */
 class Zend_Validate_File_Size extends Zend_Validate_Abstract
 {
-    /**#@+
+    /**
+* #@+
+     *
      * @const string Error constants
      */
     const TOO_BIG   = 'fileSizeTooBig';
     const TOO_SMALL = 'fileSizeTooSmall';
     const NOT_FOUND = 'fileSizeNotFound';
-    /**#@-*/
+    /**
+     * #@-
+     */
     
     /**
      * @var array Error message templates
@@ -61,6 +65,7 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
 
     /**
      * Minimum filesize
+     *
      * @var integer
      */
     protected $_min;
@@ -135,7 +140,7 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
     /**
      * Sets the minimum filesize
      *
-     * @param  integer $min            The minimum filesize
+     * @param  integer $min The minimum filesize
      * @return Zend_Validate_File_Size Provides a fluent interface
      * @throws Zend_Validate_Exception When min is greater than max
      */
@@ -143,9 +148,11 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
     {
         $min = (integer) $this->_fromByteString($min);
         if (($this->_max !== null) && ($min > $this->_max)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The minimum must be less than or equal to the maximum filesize, but $min >"
-                                            . " {$this->_max}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The minimum must be less than or equal to the maximum filesize, but $min >"
+                . " {$this->_max}"
+            );
         }
 
         $this->_min = max(0, $min);
@@ -171,7 +178,7 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
     /**
      * Sets the maximum filesize
      *
-     * @param  integer|null $max       The maximum filesize
+     * @param  integer|null $max The maximum filesize
      * @return Zend_Validate_StringLength Provides a fluent interface
      * @throws Zend_Validate_Exception When max is smaller than min
      */
@@ -179,9 +186,11 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
     {
         $max = (integer) $this->_fromByteString($max);
         if (($this->_min !== null) && ($max < $this->_min)) {
-            require_once 'Zend/Validate/Exception.php';
-            throw new Zend_Validate_Exception("The maximum must be greater than or equal to the minimum filesize, but "
-                                            . "$max < {$this->_min}");
+            include_once 'Zend/Validate/Exception.php';
+            throw new Zend_Validate_Exception(
+                "The maximum must be greater than or equal to the minimum filesize, but "
+                . "$max < {$this->_min}"
+            );
         } else {
             $this->_max = $max;
         }
@@ -208,7 +217,7 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
         }
 
         // limited to 4GB files
-        $size = sprintf("%u",@filesize($value));
+        $size = sprintf("%u", @filesize($value));
         $this->_setValue($size);
 
         // Check to see if it's smaller than min size
@@ -258,32 +267,32 @@ class Zend_Validate_File_Size extends Zend_Validate_Abstract
         $type  = trim(substr($size, -2));
         $value = substr($size, 0, -2);
         switch (strtoupper($type)) {
-            case 'YB':
-                $value *= (1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024);
-                break;
-            case 'ZB':
-                $value *= (1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024);
-                break;
-            case 'EB':
-                $value *= (1024 * 1024 * 1024 * 1024 * 1024 * 1024);
-                break;
-            case 'PB':
-                $value *= (1024 * 1024 * 1024 * 1024 * 1024);
-                break;
-            case 'TB':
-                $value *= (1024 * 1024 * 1024 * 1024);
-                break;
-            case 'GB':
-                $value *= (1024 * 1024 * 1024);
-                break;
-            case 'MB':
-                $value *= (1024 * 1024);
-                break;
-            case 'KB':
-                $value *= 1024;
-                break;
-            default:
-                break;
+        case 'YB':
+            $value *= (1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024);
+            break;
+        case 'ZB':
+            $value *= (1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024);
+            break;
+        case 'EB':
+            $value *= (1024 * 1024 * 1024 * 1024 * 1024 * 1024);
+            break;
+        case 'PB':
+            $value *= (1024 * 1024 * 1024 * 1024 * 1024);
+            break;
+        case 'TB':
+            $value *= (1024 * 1024 * 1024 * 1024);
+            break;
+        case 'GB':
+            $value *= (1024 * 1024 * 1024);
+            break;
+        case 'MB':
+            $value *= (1024 * 1024);
+            break;
+        case 'KB':
+            $value *= 1024;
+            break;
+        default:
+            break;
         }
 
         return $value;

@@ -11,7 +11,7 @@ namespace Zilf\Db\Exception;
  * Exception represents a generic exception for all purposes.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Exception extends \Exception
 {

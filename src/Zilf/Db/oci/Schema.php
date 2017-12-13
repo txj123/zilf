@@ -20,7 +20,7 @@ use Zilf\Db\TableSchema;
  * sequence object. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema
 {
@@ -97,7 +97,7 @@ class Schema extends \Zilf\Db\Schema
      * Resolves the table name and schema name (if any).
      *
      * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * @param string      $name  the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -115,7 +115,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Collects the table column metadata.
-     * @param TableSchema $table the table schema
+     *
+     * @param  TableSchema $table the table schema
      * @return bool whether the table exists
      */
     protected function findColumns($table)
@@ -141,10 +142,12 @@ ORDER BY A.COLUMN_ID
 SQL;
 
         try {
-            $columns = $this->db->createCommand($sql, [
+            $columns = $this->db->createCommand(
+                $sql, [
                 ':tableName' => $table->name,
                 ':schemaName' => $table->schemaName,
-            ])->queryAll();
+                ]
+            )->queryAll();
         } catch (\Exception $e) {
             return false;
         }
@@ -166,9 +169,9 @@ SQL;
     /**
      * Sequence name of table
      *
-     * @param string $tableName
+     * @param    string $tableName
      * @internal param \Zilf\Db\TableSchema $table->name the table schema
-     * @return string|null whether the sequence exists
+     * @return   string|null whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
     {
@@ -201,9 +204,11 @@ SQL;
         if ($this->db->isActive) {
             // get the last insert id from the master connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
-            return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
-                return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
-            });
+            return $this->db->useMaster(
+                function (Connection $db) use ($sequenceName) {
+                    return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+                }
+            );
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
@@ -212,7 +217,7 @@ SQL;
     /**
      * Creates ColumnSchema instance
      *
-     * @param array $column
+     * @param  array $column
      * @return ColumnSchema
      */
     protected function createColumn($column)
@@ -254,6 +259,7 @@ SQL;
 
     /**
      * Finds constraints and fills them into TableSchema object passed
+     *
      * @param TableSchema $table
      */
     protected function findConstraints($table)
@@ -278,10 +284,12 @@ WHERE
     AND C.TABLE_NAME = :tableName
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
-        $command = $this->db->createCommand($sql, [
+        $command = $this->db->createCommand(
+            $sql, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
-        ]);
+            ]
+        );
         $constraints = [];
         foreach ($command->queryAll() as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
@@ -392,9 +400,9 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
-     * @since 2.0.4
+     * @since  2.0.4
      */
     public function findUniqueIndexes($table)
     {
@@ -411,10 +419,12 @@ WHERE
 ORDER BY DIC.TABLE_NAME, DIC.INDEX_NAME, DIC.COLUMN_POSITION
 SQL;
         $result = [];
-        $command = $this->db->createCommand($query, [
+        $command = $this->db->createCommand(
+            $query, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
-        ]);
+            ]
+        );
         foreach ($command->queryAll() as $row) {
             $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
         }
@@ -423,14 +433,18 @@ SQL;
 
     /**
      * Extracts the data types for the given column
+     *
      * @param ColumnSchema $column
-     * @param string $dbType DB type
-     * @param string $precision total number of digits.
-     * This parameter is available since version 2.0.4.
-     * @param string $scale number of digits on the right of the decimal separator.
-     * This parameter is available since version 2.0.4.
-     * @param string $length length for character types.
-     * This parameter is available since version 2.0.4.
+     * @param string       $dbType    DB type
+     * @param string       $precision total number of digits.
+     *                                This parameter is
+     *                                available since version
+     *                                2.0.4.
+     * @param string       $scale     number of digits on the right of the decimal separator.
+     *                                This parameter is available since version 2.0.4.
+     * @param string       $length    length for character types.
+     *                                This parameter is available
+     *                                since version 2.0.4.
      */
     protected function extractColumnType($column, $dbType, $precision, $scale, $length)
     {
@@ -459,14 +473,18 @@ SQL;
 
     /**
      * Extracts size, precision and scale information from column's DB type.
+     *
      * @param ColumnSchema $column
-     * @param string $dbType the column's DB type
-     * @param string $precision total number of digits.
-     * This parameter is available since version 2.0.4.
-     * @param string $scale number of digits on the right of the decimal separator.
-     * This parameter is available since version 2.0.4.
-     * @param string $length length for character types.
-     * This parameter is available since version 2.0.4.
+     * @param string       $dbType    the column's DB type
+     * @param string       $precision total number of digits.
+     *                                This parameter is
+     *                                available since version
+     *                                2.0.4.
+     * @param string       $scale     number of digits on the right of the decimal separator.
+     *                                This parameter is available since version 2.0.4.
+     * @param string       $length    length for character types.
+     *                                This parameter is available
+     *                                since version 2.0.4.
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {

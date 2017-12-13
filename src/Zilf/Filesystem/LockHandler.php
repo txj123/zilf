@@ -69,7 +69,10 @@ class LockHandler
         }
 
         // Silence error reporting
-        set_error_handler(function () {});
+        set_error_handler(
+            function () {
+            }
+        );
 
         if (!$this->handle = fopen($this->file, 'r')) {
             if ($this->handle = fopen($this->file, 'x')) {

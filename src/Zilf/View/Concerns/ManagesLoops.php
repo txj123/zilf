@@ -17,7 +17,7 @@ trait ManagesLoops
     /**
      * Add new loop to the stack.
      *
-     * @param  \Countable|array  $data
+     * @param  \Countable|array $data
      * @return void
      */
     public function addLoop($data)
@@ -47,13 +47,15 @@ trait ManagesLoops
     {
         $loop = $this->loopsStack[$index = count($this->loopsStack) - 1];
 
-        $this->loopsStack[$index] = array_merge($this->loopsStack[$index], [
+        $this->loopsStack[$index] = array_merge(
+            $this->loopsStack[$index], [
             'iteration' => $loop['iteration'] + 1,
             'index' => $loop['iteration'],
             'first' => $loop['iteration'] == 0,
             'remaining' => isset($loop['count']) ? $loop['remaining'] - 1 : null,
             'last' => isset($loop['count']) ? $loop['iteration'] == $loop['count'] - 1 : null,
-        ]);
+            ]
+        );
     }
 
     /**

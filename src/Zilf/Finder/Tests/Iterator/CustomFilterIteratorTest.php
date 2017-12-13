@@ -38,8 +38,12 @@ class CustomFilterIteratorTest extends IteratorTestCase
     public function getAcceptData()
     {
         return array(
-            array(array(function (\SplFileInfo $fileinfo) { return false; }), array()),
-            array(array(function (\SplFileInfo $fileinfo) { return 0 === strpos($fileinfo, 'test'); }), array('test.php', 'test.py')),
+            array(array(function (\SplFileInfo $fileinfo) {
+                return false; 
+            }), array()),
+            array(array(function (\SplFileInfo $fileinfo) {
+                return 0 === strpos($fileinfo, 'test'); 
+            }), array('test.php', 'test.py')),
             array(array('is_dir'), array()),
         );
     }

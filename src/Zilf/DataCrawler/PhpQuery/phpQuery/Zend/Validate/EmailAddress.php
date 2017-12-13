@@ -13,11 +13,11 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: EmailAddress.php 8985 2008-03-21 21:37:24Z matthew $
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: EmailAddress.php 8985 2008-03-21 21:37:24Z matthew $
  */
 
 
@@ -100,9 +100,9 @@ class Zend_Validate_EmailAddress extends Zend_Validate_Abstract
      * These bitfields are defined by the ALLOW_* constants in Zend_Validate_Hostname
      * The default is to allow DNS hostnames only
      *
-     * @param integer                $allow             OPTIONAL
-     * @param bool                   $validateMx        OPTIONAL
-     * @param Zend_Validate_Hostname $hostnameValidator OPTIONAL
+     * @param  integer                $allow             OPTIONAL
+     * @param  bool                   $validateMx        OPTIONAL
+     * @param  Zend_Validate_Hostname $hostnameValidator OPTIONAL
      * @return void
      */
     public function __construct($allow = Zend_Validate_Hostname::ALLOW_DNS, $validateMx = false, Zend_Validate_Hostname $hostnameValidator = null)
@@ -176,7 +176,7 @@ class Zend_Validate_EmailAddress extends Zend_Validate_Abstract
 
         // Match hostname part
         $hostnameResult = $this->hostnameValidator->setTranslator($this->getTranslator())
-                               ->isValid($this->_hostname);
+            ->isValid($this->_hostname);
         if (!$hostnameResult) {
             $this->_error(self::INVALID_HOSTNAME);
 
@@ -200,9 +200,10 @@ class Zend_Validate_EmailAddress extends Zend_Validate_Abstract
             } else {
                 /**
                  * MX checks are not supported by this system
+                 *
                  * @see Zend_Validate_Exception
                  */
-                require_once 'Zend/Validate/Exception.php';
+                include_once 'Zend/Validate/Exception.php';
                 throw new Zend_Validate_Exception('Internal error: MX checking not available on this system');
             }
         }

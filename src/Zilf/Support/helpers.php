@@ -3,23 +3,25 @@
 if (!function_exists('cookie')) {
     /**
      * Cookie 设置、获取、删除
-     * @param string $name cookie名称
-     * @param mixed $value cookie值
-     * @param mixed $option cookie参数
+     *
+     * @param  string $name   cookie名称
+     * @param  mixed  $value  cookie值
+     * @param  mixed  $option cookie参数
      * @return mixed
      */
     function cookie($name = '', $value = '', $option = null)
     {
-        return cookie_helper($name,$value,$option);
+        return cookie_helper($name, $value, $option);
     }
 }
 
 if (!function_exists('cookie_helper')) {
     /**
      * Cookie 设置、获取、删除
-     * @param string $name cookie名称
-     * @param mixed $value cookie值
-     * @param mixed $option cookie参数
+     *
+     * @param  string $name   cookie名称
+     * @param  mixed  $value  cookie值
+     * @param  mixed  $option cookie参数
      * @return mixed
      */
     function cookie_helper($name = '', $value = '', $option = null)
@@ -36,10 +38,11 @@ if (!function_exists('cookie_helper')) {
         );
         // 参数设置(会覆盖黙认设置)
         if (!is_null($option)) {
-            if (is_numeric($option))
+            if (is_numeric($option)) {
                 $option = array('expire' => $option);
-            elseif (is_string($option))
+            } elseif (is_string($option)) {
                 parse_str($option, $option);
+            }
             $config = array_merge($config, array_change_key_case($option));
         }
         if (!empty($config['httponly'])) {
@@ -47,8 +50,9 @@ if (!function_exists('cookie_helper')) {
         }
         // 清除指定前缀的所有cookie
         if (is_null($name)) {
-            if (empty($_COOKIE))
+            if (empty($_COOKIE)) {
                 return null;
+            }
             // 要删除的cookie前缀，不指定则删除config设置的指定前缀
             $prefix = empty($value) ? $config['prefix'] : $value;
             if (!empty($prefix)) {// 如果前缀为空字符串将不作处理直接返回
@@ -99,8 +103,8 @@ if (!function_exists('config_helper')) {
     /**
      * 获取配置信息
      *
-     * @param $name
-     * @param null $default
+     * @param  $name
+     * @param  null $default
      * @return mixed
      */
     function config_helper($name, $default = null)
@@ -113,13 +117,13 @@ if (!function_exists('config')) {
     /**
      * 获取配置信息
      *
-     * @param $name
-     * @param null $default
+     * @param  $name
+     * @param  null $default
      * @return mixed
      */
     function config($name, $default = null)
     {
-        return config_helper($name,$default);
+        return config_helper($name, $default);
     }
 }
 
@@ -139,7 +143,7 @@ if (!function_exists('route_info')) {
     /**
      * 获取当前的url
      *
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     function route_info($key)
@@ -155,9 +159,9 @@ if (!function_exists('toRoute')) {
      * 例子
      * toRoute('path/show');  # http://www.xx.com/currentBundle/path/show
      *
-     * @param string $url
-     * @param string $params
-     * @param bool $scheme
+     * @param  string $url
+     * @param  string $params
+     * @param  bool   $scheme
      * @return string
      */
     function toRoute($url = '', $params = '', $scheme = true)
@@ -173,7 +177,7 @@ if (!function_exists('str_limit')) {
      * Limit the number of characters in a string.
      *
      * @param  string $value
-     * @param  int $limit
+     * @param  int    $limit
      * @param  string $end
      * @return string
      */
@@ -188,7 +192,7 @@ if (!function_exists('tap')) {
     /**
      * Call the given Closure with the given value then return the value.
      *
-     * @param  mixed $value
+     * @param  mixed    $value
      * @param  callable $callback
      * @return mixed
      */
@@ -232,8 +236,8 @@ if (!function_exists('array_get')) {
      * Get an item from an array using "dot" notation.
      *
      * @param  \ArrayAccess|array $array
-     * @param  string $key
-     * @param  mixed $default
+     * @param  string             $key
+     * @param  mixed              $default
      * @return mixed
      */
     function array_get($array, $key, $default = null)
@@ -247,7 +251,7 @@ if (!function_exists('array_has')) {
      * Check if an item or items exist in an array using "dot" notation.
      *
      * @param  \ArrayAccess|array $array
-     * @param  string|array $keys
+     * @param  string|array       $keys
      * @return bool
      */
     function array_has($array, $keys)
@@ -261,8 +265,8 @@ if (! function_exists('array_except')) {
     /**
      * Get all of the given array except for a specified array of items.
      *
-     * @param  array  $array
-     * @param  array|string  $keys
+     * @param  array        $array
+     * @param  array|string $keys
      * @return array
      */
     function array_except($array, $keys)
@@ -276,7 +280,7 @@ if (! function_exists('e')) {
     /**
      * Escape HTML special characters in a string.
      *
-     * @param  string  $value
+     * @param  string $value
      * @return string
      */
     function e($value)
@@ -289,7 +293,7 @@ if (! function_exists('last')) {
     /**
      * Get the last element from an array.
      *
-     * @param  array  $array
+     * @param  array $array
      * @return mixed
      */
     function last($array)
@@ -305,7 +309,7 @@ if (!function_exists('hashids_encode')) {
     /**
      * id 参数的数据加密
      *
-     * @param array ...$args
+     * @param  array ...$args
      * @return mixed
      */
     function hashids_encode(...$args)
@@ -345,7 +349,7 @@ if (!function_exists('password_make')) {
      * Hash the given value.
      *
      * @param  string $value
-     * @param  array $options
+     * @param  array  $options
      * @return string
      *
      * @throws \RuntimeException
@@ -366,7 +370,7 @@ if (!function_exists('password_check')) {
      *
      * @param  string $value
      * @param  string $hashedValue
-     * @param  array $options
+     * @param  array  $options
      * @return bool
      */
     function password_check($value, $hashedValue, array $options = [])
@@ -384,10 +388,11 @@ if (!function_exists('password_check')) {
 if (!function_exists('html_encode')) {
     /**
      * @param $content
-     * @param bool $doubleEncode
+     * @param bool    $doubleEncode
      * @return string
      */
-    function html_encode($content, $doubleEncode = true){
+    function html_encode($content, $doubleEncode = true)
+    {
         return \Zilf\Helpers\Html::encode($content, $doubleEncode);
     }
 }
@@ -397,7 +402,8 @@ if (!function_exists('html_decode')) {
      * @param $content
      * @return string
      */
-    function html_decode($content){
+    function html_decode($content)
+    {
         return \Zilf\Helpers\Html::decode($content);
     }
 }
@@ -409,19 +415,21 @@ if (!function_exists('asset_link')) {
      * @param string $urlName
      * @return string
      */
-    function asset_link($url, $version = '', $urlName = 'default'){
-        return \Zilf\Helpers\Url::assetUrl($url,$version,$urlName);
+    function asset_link($url, $version = '', $urlName = 'default')
+    {
+        return \Zilf\Helpers\Url::assetUrl($url, $version, $urlName);
     }
 }
 
 if (!function_exists('asset_css')) {
     /**
      * @param $url
-     * @param array $options
+     * @param array  $options
      * @param string $urlName
      * @return string
      */
-    function asset_css($url, $options = [], $urlName = 'default'){
+    function asset_css($url, $options = [], $urlName = 'default')
+    {
         return \Zilf\Helpers\Html::assetCss($url, $options, $urlName);
     }
 }
@@ -429,11 +437,12 @@ if (!function_exists('asset_css')) {
 if (!function_exists('asset_js')) {
     /**
      * @param $url
-     * @param array $options
+     * @param array  $options
      * @param string $urlName
      * @return string
      */
-    function asset_js($url, $options = [], $urlName = 'default'){
+    function asset_js($url, $options = [], $urlName = 'default')
+    {
         return \Zilf\Helpers\Html::assetJs($url, $options, $urlName);
     }
 }
@@ -441,11 +450,12 @@ if (!function_exists('asset_js')) {
 if (!function_exists('asset_img')) {
     /**
      * @param $url
-     * @param array $options
+     * @param array  $options
      * @param string $urlName
      * @return string
      */
-    function asset_img($url, $options = [], $urlName = 'default'){
+    function asset_img($url, $options = [], $urlName = 'default')
+    {
         return \Zilf\Helpers\Html::assetImg($url, $options, $urlName);
     }
 }
@@ -453,11 +463,12 @@ if (!function_exists('asset_img')) {
 if (!function_exists('asset_a')) {
     /**
      * @param $text
-     * @param null $url
+     * @param null  $url
      * @param array $options
      * @return string
      */
-    function asset_a($text, $url = null, $options = []){
+    function asset_a($text, $url = null, $options = [])
+    {
         return \Zilf\Helpers\Html::a($text, $url, $options);
     }
 }
@@ -465,11 +476,12 @@ if (!function_exists('asset_a')) {
 if (!function_exists('asset_mailto')) {
     /**
      * @param $text
-     * @param null $email
+     * @param null  $email
      * @param array $options
      * @return string
      */
-    function asset_mailto($text, $email = null, $options = []){
+    function asset_mailto($text, $email = null, $options = [])
+    {
         return \Zilf\Helpers\Html::assetImg($text, $email, $options);
     }
 }

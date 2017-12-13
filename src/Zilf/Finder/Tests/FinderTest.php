@@ -213,14 +213,26 @@ class FinderTest extends Iterator\RealIteratorTestCase
     public function testSort()
     {
         $finder = $this->buildFinder();
-        $this->assertSame($finder, $finder->sort(function (\SplFileInfo $a, \SplFileInfo $b) { return strcmp($a->getRealPath(), $b->getRealPath()); }));
+        $this->assertSame(
+            $finder, $finder->sort(
+                function (\SplFileInfo $a, \SplFileInfo $b) {
+                    return strcmp($a->getRealPath(), $b->getRealPath()); 
+                }
+            )
+        );
         $this->assertIterator($this->toAbsolute(array('foo', 'foo bar', 'foo/bar.tmp', 'test.php', 'test.py', 'toto')), $finder->in(self::$tmpDir)->getIterator());
     }
 
     public function testFilter()
     {
         $finder = $this->buildFinder();
-        $this->assertSame($finder, $finder->filter(function (\SplFileInfo $f) { return false !== strpos($f, 'test'); }));
+        $this->assertSame(
+            $finder, $finder->filter(
+                function (\SplFileInfo $f) {
+                    return false !== strpos($f, 'test'); 
+                }
+            )
+        );
         $this->assertIterator($this->toAbsolute(array('test.php', 'test.py')), $finder->in(self::$tmpDir)->getIterator());
     }
 

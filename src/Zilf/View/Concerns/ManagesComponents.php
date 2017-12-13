@@ -37,7 +37,7 @@ trait ManagesComponents
     /**
      * Start a component rendering process.
      *
-     * @param  string  $name
+     * @param  string $name
      * @param  array  $data
      * @return void
      */
@@ -67,7 +67,7 @@ trait ManagesComponents
     /**
      * Get the data for the given component.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return array
      */
     protected function componentData($name)
@@ -82,8 +82,8 @@ trait ManagesComponents
     /**
      * Start the slot rendering process.
      *
-     * @param  string  $name
-     * @param  string|null  $content
+     * @param  string      $name
+     * @param  string|null $content
      * @return void
      */
     public function slot($name, $content = null)

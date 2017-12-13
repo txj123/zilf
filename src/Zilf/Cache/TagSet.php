@@ -23,8 +23,8 @@ class TagSet
     /**
      * Create a new TagSet instance.
      *
-     * @param  \Zilf\Cache\Store  $store
-     * @param  array  $names
+     * @param  \Zilf\Cache\Store $store
+     * @param  array             $names
      * @return void
      */
     public function __construct(Store $store, array $names = [])
@@ -46,7 +46,7 @@ class TagSet
     /**
      * Reset the tag and return the new tag identifier.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return string
      */
     public function resetTag($name)
@@ -79,7 +79,7 @@ class TagSet
     /**
      * Get the unique tag identifier for a given tag.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return string
      */
     public function tagId($name)
@@ -90,7 +90,7 @@ class TagSet
     /**
      * Get the tag identifier key for a given tag.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return string
      */
     public function tagKey($name)

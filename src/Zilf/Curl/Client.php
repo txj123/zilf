@@ -589,7 +589,7 @@ class Client
      *                              ]
      *     ]);
      *
-     * @param array $config
+     * @param  array $config
      * @throws \ErrorException
      */
     public function __construct(array $config = [])
@@ -604,35 +604,36 @@ class Client
         if ($config) {
             foreach ($config as $key => $value) {
                 switch (strtolower($key)) {
-                    case 'baseurl':
-                        $this->baseUrl = rtrim($value, '/') . '/';
-                        unset($config[$key]);
-                        break;
+                case 'baseurl':
+                    $this->baseUrl = rtrim($value, '/') . '/';
+                    unset($config[$key]);
+                    break;
 
-                    case 'method':
-                        $this->method = $value;
-                        unset($config[$key]);
-                        break;
+                case 'method':
+                    $this->method = $value;
+                    unset($config[$key]);
+                    break;
 
-                    case 'timeout':
-                        $this->config['CURLOPT_IMEOUT'] = intval($value);  //在尝试连接时等待的秒数。设置为0，则无限等待。
-                        unset($config[$key]);
-                        break;
+                case 'timeout':
+                    $this->config['CURLOPT_IMEOUT'] = intval($value);  //在尝试连接时等待的秒数。设置为0，则无限等待。
+                    unset($config[$key]);
+                    break;
 
-                    case 'connecttimeout':
-                        $this->config['CURLOPT_CONNECTTIMEOUT'] = intval($value);  //在尝试连接时等待的秒数。设置为0，则无限等待。
-                        unset($config[$key]);
-                        break;
+                case 'connecttimeout':
+                    $this->config['CURLOPT_CONNECTTIMEOUT'] = intval($value);  //在尝试连接时等待的秒数。设置为0，则无限等待。
+                    unset($config[$key]);
+                    break;
 
-                    case 'proxy':
-                        if (is_array($value) && !empty($value)) {
-                            $this->config['CURLOPT_PROXY'] = $value[0];
-                            if (isset($value[1])) $this->config['CURLOPT_PROXYUSERPWD'] = $value[1];
-                        } else {
-                            $this->config['CURLOPT_PROXY'] = $value;
+                case 'proxy':
+                    if (is_array($value) && !empty($value)) {
+                        $this->config['CURLOPT_PROXY'] = $value[0];
+                        if (isset($value[1])) { $this->config['CURLOPT_PROXYUSERPWD'] = $value[1];
                         }
-                        unset($config[$key]);
-                        break;
+                    } else {
+                        $this->config['CURLOPT_PROXY'] = $value;
+                    }
+                    unset($config[$key]);
+                    break;
                 }
             }
         }
@@ -667,7 +668,7 @@ class Client
     /**
      * @param string $method
      * @param string $url
-     * @param mixed $parameters
+     * @param mixed  $parameters
      * @return CurlResponse
      */
     public function request($method = '', $url = '', $parameters = '')
@@ -694,7 +695,8 @@ class Client
     /**
      * curl_init 对象
      */
-    public function get_curlObj(){
+    public function get_curlObj()
+    {
         //curl 请求的句柄
         $curlObj = curl_init();
 
@@ -737,7 +739,8 @@ class Client
      * @param array $parameters
      * @return array
      */
-    public function getAsync($url,$parameters = []){
+    public function getAsync($url,$parameters = [])
+    {
         return $this->requestAsync('GET', $url, $parameters);
     }
 
@@ -746,7 +749,8 @@ class Client
      * @param array $parameters
      * @return array
      */
-    public function postAsync($url,$parameters = []){
+    public function postAsync($url,$parameters = [])
+    {
         return $this->requestAsync('GET', $url, $parameters);
     }
 
@@ -756,7 +760,8 @@ class Client
      * @param string $parameters
      * @return array
      */
-    public function requestAsync($method = '', $url = '', $parameters = ''){
+    public function requestAsync($method = '', $url = '', $parameters = '')
+    {
         $curlObj_arr = [];
         $response_arr = [];
 
@@ -765,7 +770,7 @@ class Client
 
         $master = curl_multi_init();
 
-        if(is_array($url)){
+        if(is_array($url)) {
 
             foreach ($url as $key => $one_url){
                 $this->parameters = $parameters[$key] ?? [];
@@ -792,14 +797,13 @@ class Client
         while ($active && $mrc == CURLM_OK)
         {
             // add this line
-            while (curl_multi_exec($master, $active) === CURLM_CALL_MULTI_PERFORM);
+            while (curl_multi_exec($master, $active) === CURLM_CALL_MULTI_PERFORM) {
+            }
 
-            if (curl_multi_select($master) != -1)
-            {
+            if (curl_multi_select($master) != -1) {
                 do {
                     $mrc = curl_multi_exec($master, $active);
-                    if ($mrc == CURLM_OK)
-                    {
+                    if ($mrc == CURLM_OK) {
                         /*while($info = curl_multi_info_read($master))
                         {
                         }*/
@@ -810,7 +814,7 @@ class Client
 
         foreach ($curlObj_arr as $i => $url) {
             $content = curl_multi_getcontent($curlObj_arr[$i]);
-            $response_arr[] = new CurlResponse($this, $curlObj_arr[$i],$content);
+            $response_arr[] = new CurlResponse($this, $curlObj_arr[$i], $content);
             curl_close($curlObj_arr[$i]);
         }
 
@@ -823,9 +827,9 @@ class Client
     /**
      * 添加需要上传的文件
      *
-     * @param string $postname 文件名称
-     * @param string $filename 文件绝对路径
-     * @param string $mimetype 文件的mimetype
+     * @param  string $postname 文件名称
+     * @param  string $filename 文件绝对路径
+     * @param  string $mimetype 文件的mimetype
      * @return $this
      */
     public function add_upload_file(string $postname, string $filename, string $mimetype = '')
@@ -838,7 +842,7 @@ class Client
 
     /**
      * @param $cookie_name
-     * @param string $path cookie的存储路径,为空则为系统默认的缓存路径
+     * @param string      $path cookie的存储路径,为空则为系统默认的缓存路径
      * @return $this
      */
     public function set_open_cookie($cookie_name, $path = '')
@@ -860,20 +864,26 @@ class Client
     /**
      * 设置ssl请求
      *
-     * @param string $cacert // CA根证书（用来验证的网站证书是否是CA颁布）
-     * @param string $sslcert 一个包含 PEM 格式证书的文件名。
-     * @param string $sslcertpasswd 使用CURLOPT_SSLCERT证书需要的密码。
-     * @param int $ssl_verifyhost 设置为 1 是检查服务器SSL证书中是否存在一个公用名 设置成 2，会检查公用名是否存在，并且是否与提供的主机名匹配。 0 为不检查名称。 在生产环境中，这个值应该是 2（默认值）。
+     * @param string $cacert         //
+     *                               CA根证书（用来验证的网站证书是否是CA颁布）
+     * @param string $sslcert        一个包含 PEM
+     *                               格式证书的文件名。
+     * @param string $sslcertpasswd  使用CURLOPT_SSLCERT证书需要的密码。
+     * @param int    $ssl_verifyhost 设置为 1 是检查服务器SSL证书中是否存在一个公用名 设置成
+     *                               2，会检查公用名是否存在，并且是否与提供的主机名匹配。 0
+     *                               为不检查名称。 在生产环境中，这个值应该是 2（默认值）。
      *
      * @return $this
      */
     public function set_ssl(string $cacert = '', string $sslcert = '', string $sslcertpasswd = '', $ssl_verifyhost = 2)
     {
-        if ($sslcert)
+        if ($sslcert) {
             $this->config['CURLOPT_SSLCERT'] = $sslcert;
+        }
 
-        if ($sslcertpasswd)
+        if ($sslcertpasswd) {
             $this->config['CURLOPT_SSLCERTPASSWD'] = $sslcertpasswd;
+        }
 
         if (!empty($cacert_path)) {
 
@@ -891,62 +901,63 @@ class Client
 
     /**
      * 设置请求的方法，以及请求参数的设置
+     *
      * @throws \Exception
      */
     private function _set_method()
     {
         switch (strtoupper($this->method)) {
-            case 'HEAD':
-                //CURLOPT_NOBODY TRUE 时将不输出 BODY 部分。同时 Mehtod 变成了 HEAD。修改为 FALSE 时不会变成 GET。
-                if (!isset($this->config['CURLOPT_NOBODY'])) {
-                    $this->config['CURLOPT_NOBODY'] = true;
-                }
-                break;
+        case 'HEAD':
+            //CURLOPT_NOBODY TRUE 时将不输出 BODY 部分。同时 Mehtod 变成了 HEAD。修改为 FALSE 时不会变成 GET。
+            if (!isset($this->config['CURLOPT_NOBODY'])) {
+                $this->config['CURLOPT_NOBODY'] = true;
+            }
+            break;
 
-            case 'GET':
+        case 'GET':
 
-                if (!empty($this->config['parameters'])) {
+            if (!empty($this->config['parameters'])) {
 
-                    $url = (stripos($this->config['CURLOPT_URL'], '?') !== false) ? '&' : '?';
+                $url = (stripos($this->config['CURLOPT_URL'], '?') !== false) ? '&' : '?';
 
-                    if (is_array($this->config['parameters'])) {  //参数是数组
-                        $url .= http_build_query($this->_parameters, '', '&');
-                    } else { //参数是字符串
-                        $url .= $this->config['parameters'];
-                    }
-
-                    $this->config['CURLOPT_URL'] = $url;
-                    unset($url);
+                if (is_array($this->config['parameters'])) {  //参数是数组
+                    $url .= http_build_query($this->_parameters, '', '&');
+                } else { //参数是字符串
+                    $url .= $this->config['parameters'];
                 }
 
-                $this->config['CURLOPT_HTTPGET'] = true;  //TRUE 时会设置 HTTP 的 method 为 GET
+                $this->config['CURLOPT_URL'] = $url;
+                unset($url);
+            }
 
-                break;
+            $this->config['CURLOPT_HTTPGET'] = true;  //TRUE 时会设置 HTTP 的 method 为 GET
 
-            case 'POST':
+            break;
 
-                if (!empty($this->parameters) && is_array($this->parameters)) { //参数是数组
-                    $data = http_build_query($this->parameters); //为了更好的兼容性
-                } else {  //参数是字符串
-                    $data = $this->parameters;
-                }
+        case 'POST':
 
-                $this->config['CURLOPT_POSTFIELDS'] = $data;  //post请求的数据
-                $this->config['CURLOPT_POST'] = true;   //TRUE 时会发送 POST 请求，类型为：application/x-www-form-urlencoded，是 HTML 表单提交时最常见的一种。
+            if (!empty($this->parameters) && is_array($this->parameters)) { //参数是数组
+                $data = http_build_query($this->parameters); //为了更好的兼容性
+            } else {  //参数是字符串
+                $data = $this->parameters;
+            }
 
-                unset($data);
+            $this->config['CURLOPT_POSTFIELDS'] = $data;  //post请求的数据
+            $this->config['CURLOPT_POST'] = true;   //TRUE 时会发送 POST 请求，类型为：application/x-www-form-urlencoded，是 HTML 表单提交时最常见的一种。
 
-                break;
+            unset($data);
 
-            default:
-                throw new CurlException('该请求方式不支持！');
+            break;
+
+        default:
+            throw new CurlException('该请求方式不支持！');
         }
     }
 
     /**
      * 获取配置信息
      *
-     * @param string $name
+     * @param  string $name
      * @return array|mixed
      */
     function getConfig($name = '')
@@ -961,7 +972,7 @@ class Client
     /**
      * 获取所有的curlopt的名称及值;
      *
-     * @param string $name
+     * @param  string $name
      * @return array|mixed
      */
     public function getCurlOptions(string $name = '')
@@ -976,7 +987,7 @@ class Client
     /**
      * 设置文件的头信息
      *
-     * @param array $data
+     * @param  array $data
      * @return $this
      */
     public function set_httpHeader($data = [])
@@ -1001,15 +1012,18 @@ class Client
     /**
      * 设置代理请求
      *
-     * @param $proxy   如: 192.168.2.2:220
-     * @param string $userpwd 如: admin:admin
+     * @param  $proxy   如: 192.168.2.2:220
+     * @param  string           $userpwd 如:
+     *                                   admin:admin
      * @return $this
      */
-    public function set_proxy($proxy,$userpwd=''){
+    public function set_proxy($proxy,$userpwd='')
+    {
         $this->config['CURLOPT_PROXY'] = $proxy;
 
-        if ($userpwd)
+        if ($userpwd) {
             $this->config['CURLOPT_PROXYUSERPWD'] = $userpwd;
+        }
 
         return $this;
     }
@@ -1017,7 +1031,8 @@ class Client
     /**
      * @return array
      */
-    public function get_proxy(){
+    public function get_proxy()
+    {
         return [
             'CURLOPT_PROXY' => $this->config['CURLOPT_PROXY'],
             'CURLOPT_PROXYUSERPWD' => $this->config['CURLOPT_PROXYUSERPWD'],
@@ -1036,6 +1051,7 @@ class Client
 
     /**
      * 获取请求的url地址
+     *
      * @return string
      */
     public function get_parameters()
@@ -1055,6 +1071,7 @@ class Client
 
     /**
      * 获取请求的url地址
+     *
      * @return string
      */
     public function getTimeout()
@@ -1074,6 +1091,7 @@ class Client
 
     /**
      * 获取请求的url地址
+     *
      * @return string
      */
     public function get_url()
@@ -1104,8 +1122,8 @@ class Client
      *  $client->setHttpHeader($value);
      *  $client->HttpHeader($value);
      *
-     * @param $name
-     * @param $arguments
+     * @param  $name
+     * @param  $arguments
      * @return $this
      */
     function __call($name, $arguments)

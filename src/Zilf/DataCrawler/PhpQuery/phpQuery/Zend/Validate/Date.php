@@ -13,11 +13,11 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Date.php 11046 2008-08-25 13:58:52Z thomas $
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
+ * @version   $Id: Date.php 11046 2008-08-25 13:58:52Z thomas $
  */
 
 
@@ -111,10 +111,10 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
             return $this;
         }
 
-        require_once 'Zend/Locale.php';
+        include_once 'Zend/Locale.php';
         if (!Zend_Locale::isLocale($locale, true)) {
             if (!Zend_Locale::isLocale($locale, false)) {
-                require_once 'Zend/Validate/Exception.php';
+                include_once 'Zend/Validate/Exception.php';
                 throw new Zend_Validate_Exception("The locale '$locale' is no known locale");
             }
 
@@ -164,7 +164,7 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
         $this->_setValue($valueString);
 
         if (($this->_format !== null) or ($this->_locale !== null)) {
-            require_once 'Zend/Date.php';
+            include_once 'Zend/Date.php';
             if (!Zend_Date::isDate($value, $this->_format, $this->_locale)) {
                 if ($this->_checkFormat($value) === false) {
                     $this->_error(self::FALSEFORMAT);
@@ -193,18 +193,21 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
     /**
      * Check if the given date fits the given format
      *
-     * @param  string $value  Date to check
+     * @param  string $value Date to check
      * @return boolean False when date does not fit the format
      */
     private function _checkFormat($value)
     {
         try {
-            require_once 'Zend/Locale/Format.php';
-            $parsed = Zend_Locale_Format::getDate($value, array(
+            include_once 'Zend/Locale/Format.php';
+            $parsed = Zend_Locale_Format::getDate(
+                $value, array(
                                                   'date_format' => $this->_format, 'format_type' => 'iso',
-                                                  'fix_date' => false));
-            if (isset($parsed['year']) and ((strpos(strtoupper($this->_format), 'YY') !== false) and
-                (strpos(strtoupper($this->_format), 'YYYY') === false))) {
+                'fix_date' => false)
+            );
+            if (isset($parsed['year']) and ((strpos(strtoupper($this->_format), 'YY') !== false) 
+                and (strpos(strtoupper($this->_format), 'YYYY') === false))
+            ) {
                 $parsed['year'] = Zend_Date::_century($parsed['year']);
             }
         } catch (Exception $e) {
@@ -212,8 +215,9 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
             return false;
         }
 
-        if (((strpos($this->_format, 'Y') !== false) or (strpos($this->_format, 'y') !== false)) and
-            (!isset($parsed['year']))) {
+        if (((strpos($this->_format, 'Y') !== false) or (strpos($this->_format, 'y') !== false)) 
+            and (!isset($parsed['year']))
+        ) {
             // Year expected but not found
             return false;
         }
@@ -228,8 +232,9 @@ class Zend_Validate_Date extends Zend_Validate_Abstract
             return false;
         }
 
-        if (((strpos($this->_format, 'H') !== false) or (strpos($this->_format, 'h') !== false)) and
-            (!isset($parsed['hour']))) {
+        if (((strpos($this->_format, 'H') !== false) or (strpos($this->_format, 'h') !== false)) 
+            and (!isset($parsed['hour']))
+        ) {
             // Hour expected but not found
             return false;
         }

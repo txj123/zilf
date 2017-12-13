@@ -15,7 +15,7 @@ use Zilf\Db\ColumnSchema;
  * Schema is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema
 {
@@ -57,7 +57,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a table name for use in a query.
      * A simple table name has no schema prefix.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
      */
     public function quoteSimpleTableName($name)
@@ -68,7 +69,8 @@ class Schema extends \Zilf\Db\Schema
     /**
      * Quotes a column name for use in a query.
      * A simple column name has no prefix.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return string the properly quoted column name
      */
     public function quoteSimpleColumnName($name)
@@ -78,6 +80,7 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Creates a query builder for the MySQL database.
+     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -87,7 +90,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the metadata for the specified table.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return TableSchema driver dependent table metadata. Null if the table does not exist.
      */
     protected function loadTableSchema($name)
@@ -106,8 +110,9 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Resolves the table name and schema name (if any).
+     *
      * @param TableSchema $table the table metadata object
-     * @param string $name the table name
+     * @param string      $name  the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -123,7 +128,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
+     *
+     * @param  array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -188,7 +194,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return bool whether the table exists in the database
      * @throws \Exception if DB query fails
      */
@@ -225,7 +232,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Gets the CREATE TABLE sql string.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return string $sql the result of 'SHOW CREATE TABLE'
      */
     protected function getCreateTableSql($table)
@@ -243,7 +251,8 @@ class Schema extends \Zilf\Db\Schema
 
     /**
      * Collects the foreign key column details for the given table.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @throws \Exception
      */
     protected function findConstraints($table)
@@ -317,7 +326,7 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
@@ -339,7 +348,8 @@ SQL;
 
     /**
      * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
+     *
+     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
      */
     protected function findTableNames($schema = '')

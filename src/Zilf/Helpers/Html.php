@@ -8,7 +8,6 @@ namespace Zilf\Helpers;
  * Nearly all of the methods in this class allow setting additional html attributes for the html
  * tags they generate. You can specify for example. 'class', 'style'  or 'id' for an html element
  * using the `$options` parameter. See the documentation of the [[tag()]] method for more details.
- *
  */
 class Html
 {
@@ -81,12 +80,13 @@ class Html
     /**
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
-     * @param string $content the content to be encoded
-     * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
-     * HTML entities in `$content` will not be further encoded.
+     *
+     * @param  string  $content      the content to be encoded
+     * @param  boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
+     *                               HTML entities in `$content` will not be further encoded.
      * @return string the encoded content
-     * @see decode()
-     * @see http://www.php.net/manual/en/function.htmlspecialchars.php
+     * @see    decode()
+     * @see    http://www.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function encode($content, $doubleEncode = true)
     {
@@ -96,10 +96,11 @@ class Html
     /**
      * Decodes special HTML entities back to the corresponding characters.
      * This is the opposite of [[encode()]].
-     * @param string $content the content to be decoded
+     *
+     * @param  string $content the content to be decoded
      * @return string the decoded content
-     * @see encode()
-     * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see    encode()
+     * @see    http://www.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function decode($content)
     {
@@ -108,21 +109,23 @@ class Html
 
     /**
      * Generates a complete HTML tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
-     * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
-     * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
-     * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
-     * These will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
      *
-     * For example when using `['class' => 'my-class', 'target' => '_blank', 'value' => null]` it will result in the
-     * html attributes rendered like this: `class="my-class" target="_blank"`.
-     *
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @param string|boolean|null $name    the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string              $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
+     *                                     If this is coming from end users, you should consider [[encode()]] it to prevent XSS
+     *                                     attacks.
+     * @param array               $options the HTML tag attributes (HTML options) in terms of name-value pairs.
+     *                                     These will be rendered as the attributes of the resulting tag. The
+     *                                     values will be HTML-encoded using [[encode()]]. If a value is null,
+     *                                     the corresponding attribute will not be rendered. For example when
+     *                                     using `['class' => 'my-class', 'target' => '_blank', 'value' =>
+     *                                     null]` it will result in the html attributes rendered like this:
+     *                                     `class="my-class" target="_blank"`. See [[renderTagAttributes()]]
+     *                                     for details on how attributes are being rendered.
      *
      * @return string the generated HTML tag
-     * @see beginTag()
-     * @see endTag()
+     * @see    beginTag()
+     * @see    endTag()
      */
     public static function tag($name, $content = '', $options = [])
     {
@@ -135,20 +138,20 @@ class Html
 
     /**
      * Generates a link tag that refers to an external CSS file.
-     * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::assetUrl()]].
-     * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
-     * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
-     *   the generated `link` tag will be enclosed within the conditional comments. This is mainly useful
-     *   for supporting old versions of IE browsers.
-     * - noscript: if set to true, `link` tag will be wrapped into `<noscript>` tags.
-     *
-     * The rest of the options will be rendered as the attributes of the resulting link tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @param string $urlName
+     * @param  array|string $url     the URL of the external CSS file. This parameter will be processed by [[Url::assetUrl()]].
+     * @param  array        $options the tag options in terms of name-value pairs. The following option is specially handled:
+     *                               - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is
+     *                               specified, the generated `link` tag will be enclosed within the conditional comments.
+     *                               This is mainly useful for supporting old versions of IE browsers. - noscript: if set to
+     *                               true, `link` tag will be wrapped into `<noscript>` tags. The rest of the options will be
+     *                               rendered as the attributes of the resulting link tag. The values will be HTML-encoded
+     *                               using [[encode()]]. If a value is null, the corresponding attribute will not be
+     *                               rendered. See [[renderTagAttributes()]] for details on how attributes are being
+     *                               rendered.
+     * @param  string       $urlName
      * @return string the generated link tag
-     * @see Url::assetUrl()
+     * @see    Url::assetUrl()
      */
     public static function assetCss($url, $options = [], $urlName = 'default')
     {
@@ -166,7 +169,7 @@ class Html
 
     /**
      * @param $url
-     * @param array $options
+     * @param array  $options
      * @param string $urlName
      * @return string
      */
@@ -197,19 +200,19 @@ class Html
 
     /**
      * Generates a script tag that refers to an external JavaScript file.
-     * @param string $url the URL of the external JavaScript file. This parameter will be processed by [[Url::assetUrl()]].
-     * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
      *
-     * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
-     *   the generated `script` tag will be enclosed within the conditional comments. This is mainly useful
-     *   for supporting old versions of IE browsers.
-     *
-     * The rest of the options will be rendered as the attributes of the resulting script tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @param string $urlName
+     * @param  string $url     the URL of the external JavaScript file. This parameter will be processed by [[Url::assetUrl()]].
+     * @param  array  $options the tag options in terms of name-value pairs. The following option is specially handled:
+     *                         - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is
+     *                         specified, the generated `script` tag will be enclosed within the conditional comments.
+     *                         This is mainly useful for supporting old versions of IE browsers. The rest of the
+     *                         options will be rendered as the attributes of the resulting script tag. The values will
+     *                         be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will
+     *                         not be rendered. See [[renderTagAttributes()]] for details on how attributes are being
+     *                         rendered.
+     * @param  string $urlName
      * @return string the generated script tag
-     * @see Url::assetUrl()
+     * @see    Url::assetUrl()
      */
     public static function assetJs($url, $options = [], $urlName = 'default')
     {
@@ -248,26 +251,23 @@ class Html
 
     /**
      * Generates a hyperlink tag.
-     * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
-     * such as an image tag. If this is coming from end users, you should consider [[encode()]]
-     * it to prevent XSS attacks.
-     * @param array|string|null $url the URL for the hyperlink tag. This parameter will be processed by [[Url::toRoute()]]
-     * and will be used for the "href" attribute of the tag. If this parameter is null, the "href" attribute
-     * will not be generated.
      *
-     * If you want to use an absolute url you can call [[Url::assetUrl()]] yourself, before passing the URL to this method,
-     * like this:
+     * @param string            $text    link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
+     *                                   such as an image tag. If this is coming from end users, you should consider
+     *                                   [[encode()]] it to prevent XSS attacks.
+     * @param array|string|null $url     the URL for the hyperlink tag. This parameter will be processed by [[Url::toRoute()]]
+     *                                   and will be used for the "href" attribute of the tag. If this parameter is null, the
+     *                                   "href" attribute will not be generated. If you want to use an absolute url you can
+     *                                   call [[Url::assetUrl()]] yourself, before passing the URL to this method, like this:
+     *                                   ```php Html::a('link text', Url::toRoute($url, true)) ```
      *
-     * ```php
-     * Html::a('link text', Url::toRoute($url, true))
-     * ```
-     *
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @param  array             $options the tag options in terms of name-value pairs. These will be rendered as
+     *                                    the attributes of the resulting tag. The values will be HTML-encoded
+     *                                    using [[encode()]]. If a value is null, the corresponding attribute
+     *                                    will not be rendered. See [[renderTagAttributes()]] for details on how
+     *                                    attributes are being rendered.
      * @return string the generated hyperlink
-     * @see \Zilf\Helpers\Url::toRoute()
+     * @see    \Zilf\Helpers\Url::toRoute()
      */
     public static function a($text, $url = null, $options = [])
     {
@@ -279,15 +279,17 @@ class Html
 
     /**
      * Generates a mailto hyperlink.
-     * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
-     * such as an image tag. If this is coming from end users, you should consider [[encode()]]
-     * it to prevent XSS attacks.
-     * @param string $email email address. If this is null, the first parameter (link body) will be treated
-     * as the email address and used.
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     *
+     * @param  string $text    link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
+     *                         such as an image tag. If this is coming from end users, you should consider
+     *                         [[encode()]] it to prevent XSS attacks.
+     * @param  string $email   email address. If this is null, the first parameter (link body) will be treated
+     *                         as the email address and used.
+     * @param  array  $options the tag options in terms of name-value pairs. These will be rendered as
+     *                         the attributes of the resulting tag. The values will be HTML-encoded
+     *                         using [[encode()]]. If a value is null, the corresponding attribute
+     *                         will not be rendered. See [[renderTagAttributes()]] for details on how
+     *                         attributes are being rendered.
      * @return string the generated mailto link
      */
     public static function mailto($text, $email = null, $options = [])
@@ -298,12 +300,14 @@ class Html
 
     /**
      * Generates an image tag.
-     * @param array|string $src the image URL. This parameter will be processed by [[Url::toRoute()]].
-     * @param array $options the tag options in terms of name-value pairs. These will be rendered as
-     * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
-     * If a value is null, the corresponding attribute will not be rendered.
-     * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @param string $urlName
+     *
+     * @param  array|string $src     the image URL. This parameter will be processed by [[Url::toRoute()]].
+     * @param  array        $options the tag options in terms of name-value pairs. These will be rendered as
+     *                               the attributes of the resulting tag. The values will be HTML-encoded
+     *                               using [[encode()]]. If a value is null, the corresponding attribute
+     *                               will not be rendered. See [[renderTagAttributes()]] for details on how
+     *                               attributes are being rendered.
+     * @param  string       $urlName
      * @return string the generated image tag
      */
     public static function assetImg($src, $options = [], $urlName= 'default')
@@ -311,10 +315,10 @@ class Html
         $html = '';
         if (is_array($src)) {
             foreach ($src as $item) {
-                $html .= self::getImgHtml($item, $options,$urlName);
+                $html .= self::getImgHtml($item, $options, $urlName);
             }
         } else {
-            $html = self::getImgHtml($src, $options,$urlName);
+            $html = self::getImgHtml($src, $options, $urlName);
         }
 
         return $html;
@@ -322,7 +326,7 @@ class Html
 
     /**
      * @param $src
-     * @param array $options
+     * @param array  $options
      * @param string $urlName
      * @return string
      */
@@ -330,7 +334,7 @@ class Html
     {
         $version = $options['version'] ?? config('assets.css_version');
         unset($options['version']);
-        $options['src'] = Url::assetUrl($src,$version,$urlName);
+        $options['src'] = Url::assetUrl($src, $version, $urlName);
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
@@ -354,7 +358,7 @@ class Html
      * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` will be rendered as:
      * `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
      *
-     * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
+     * @param  array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
      * in a tag. If there is no attribute, an empty string will be returned.
@@ -409,8 +413,9 @@ class Html
 
     /**
      * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
-     * @param string $content raw HTML content.
-     * @param string $condition condition string.
+     *
+     * @param  string $content   raw HTML content.
+     * @param  string $condition condition string.
      * @return string generated HTML.
      */
     private static function wrapIntoCondition($content, $condition)
@@ -431,8 +436,8 @@ class Html
      * // will display: 'width: 100px; height: 200px;'
      * ```
      *
-     * @param array $style the CSS style array. The array keys are the CSS property names,
-     * and the array values are the corresponding CSS property values.
+     * @param  array $style the CSS style array. The array keys are the CSS property names,
+     *                      and the array values are the corresponding CSS property values.
      * @return string the CSS style string. If the CSS style is empty, a null will be returned.
      */
     public static function cssStyleFromArray(array $style)

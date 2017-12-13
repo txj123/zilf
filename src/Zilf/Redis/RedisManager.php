@@ -32,8 +32,9 @@ class RedisManager
      * 创建一个redis管理
      *
      * RedisManager constructor.
+     *
      * @param $driver
-     * @param array $config
+     * @param array  $config
      */
     public function __construct($driver, array $config)
     {
@@ -61,7 +62,7 @@ class RedisManager
     /**
      * Resolve the given connection by name.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return \Zilf\Redis\Connections\Connection
      *
      * @throws \InvalidArgumentException
@@ -87,7 +88,7 @@ class RedisManager
     /**
      * Resolve the given cluster connection by name.
      *
-     * @param  string  $name
+     * @param  string $name
      * @return \Zilf\Redis\Connections\Connection
      */
     protected function resolveCluster($name)
@@ -107,17 +108,17 @@ class RedisManager
     protected function connector()
     {
         switch ($this->driver) {
-            case 'predis':
-                return new Connectors\PredisConnector;
-            case 'phpredis':
-                return new Connectors\PhpRedisConnector;
+        case 'predis':
+            return new Connectors\PredisConnector;
+        case 'phpredis':
+            return new Connectors\PhpRedisConnector;
         }
     }
 
     /**
      * Pass methods onto the default Redis connection.
      *
-     * @param  string  $method
+     * @param  string $method
      * @param  array  $parameters
      * @return mixed
      */

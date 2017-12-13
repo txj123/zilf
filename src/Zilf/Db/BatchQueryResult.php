@@ -26,7 +26,7 @@ use Zilf\Db\Exception\Object;
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class BatchQueryResult extends Object implements \Iterator
 {
@@ -130,6 +130,7 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Fetches the next batch of data.
+     *
      * @return array the data fetched
      */
     protected function fetchData()
@@ -150,6 +151,7 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
+     *
      * @return int the index of the current row.
      */
     public function key()
@@ -160,6 +162,7 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
+     *
      * @return mixed the current dataset.
      */
     public function current()
@@ -170,6 +173,7 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns whether there is a valid dataset at the current position.
      * This method is required by the interface [[\Iterator]].
+     *
      * @return bool whether there is a valid dataset at the current position.
      */
     public function valid()

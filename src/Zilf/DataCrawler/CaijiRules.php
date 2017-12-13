@@ -18,7 +18,8 @@ class CaijiRules
         $this->rules = $rules;
     }
 
-    function getRules(){
+    function getRules()
+    {
         return $this->rules;
     }
 }

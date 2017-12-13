@@ -5,9 +5,9 @@
  * Date: 17-6-24
  * Time: 上午10:41
  */
-include '../Client.php';
-include '../CurlResponse.php';
-include '../CurlException.php';
+require '../Client.php';
+require '../CurlResponse.php';
+require '../CurlException.php';
 
 
 $client = new \Zilf\Curl\Client();

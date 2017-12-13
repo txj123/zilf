@@ -81,16 +81,16 @@ class Comparator
     public function test($test)
     {
         switch ($this->operator) {
-            case '>':
-                return $test > $this->target;
-            case '>=':
-                return $test >= $this->target;
-            case '<':
-                return $test < $this->target;
-            case '<=':
-                return $test <= $this->target;
-            case '!=':
-                return $test != $this->target;
+        case '>':
+            return $test > $this->target;
+        case '>=':
+            return $test >= $this->target;
+        case '<':
+            return $test < $this->target;
+        case '<=':
+            return $test <= $this->target;
+        case '!=':
+            return $test != $this->target;
         }
 
         return $test == $this->target;

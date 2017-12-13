@@ -108,13 +108,15 @@ class AutoExpireFlashBagTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->bag->initialize($array);
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'notice' => 'Foo',
             'error' => 'Bar',
             ), $this->bag->peekAll()
         );
 
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'notice' => 'Foo',
             'error' => 'Bar',
             ), $this->bag->peekAll()
@@ -140,7 +142,8 @@ class AutoExpireFlashBagTest extends \PHPUnit_Framework_TestCase
     {
         $this->bag->set('notice', 'Foo');
         $this->bag->set('error', 'Bar');
-        $this->assertEquals(array(
+        $this->assertEquals(
+            array(
             'notice' => array('A previous flash message'),
             ), $this->bag->all()
         );

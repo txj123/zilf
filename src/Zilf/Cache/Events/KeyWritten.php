@@ -21,9 +21,9 @@ class KeyWritten extends CacheEvent
     /**
      * Create a new event instance.
      *
-     * @param  string  $key
+     * @param  string $key
      * @param  mixed  $value
-     * @param  int  $minutes
+     * @param  int    $minutes
      * @param  array  $tags
      * @return void
      */
