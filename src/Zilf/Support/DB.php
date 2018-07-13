@@ -23,7 +23,11 @@ class DB
     public static function connection($databaseName='')
     {
         $database = $databaseName ? $databaseName : Zilf::$app->database;
-        Zilf::$app->setDb($database);
+
+        if(!empty($databaseName)){
+            Zilf::$app->setDb($database);
+        }
+
         return Zilf::$container->getShare($database);
     }
 
@@ -45,5 +49,9 @@ class DB
     public static function query()
     {
         return new Query();
+    }
+
+    public static function db(){
+
     }
 }
