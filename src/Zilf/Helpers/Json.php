@@ -91,7 +91,7 @@ class Json
      * Handles [[encode()]] and [[decode()]] errors by throwing exceptions with the respective error message.
      *
      * @param  integer $lastError error code from [json_last_error()](http://php.net/manual/en/function.json-last-error.php).
-     * @throws \yii\base\InvalidParamException if there is any encoding/decoding error.
+     * @throws \Zilf\Db\base\InvalidParamException if there is any encoding/decoding error.
      * @since  2.0.6
      */
     protected static function handleJsonError($lastError)

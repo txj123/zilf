@@ -538,7 +538,7 @@ class Arr
      * @param  boolean $valuesOnly whether to encode array values only. If false,
      *                             both the array keys and array values will be encoded.
      * @param  string  $charset    the charset that the data is using. If not set,
-     *                             [[\yii\base\Application::charset]] will be
+     *                             [[\Zilf\Db\base\Application::charset]] will be
      *                             used.
      * @return array the encoded data
      * @see    http://www.php.net/manual/en/function.htmlspecialchars.php

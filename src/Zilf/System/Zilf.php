@@ -47,11 +47,11 @@ class Zilf
      *
      * ```php
      * // create an object using a class name
-     * $object = Yii::createObject('yii\db\Connection');
+     * $object = Zilf::createObject('Zilf\db\Connection');
      *
      * // create an object using a configuration array
-     * $object = Yii::createObject([
-     *     'class' => 'yii\db\Connection',
+     * $object = Zilf::createObject([
+     *     'class' => 'Zilf\db\Connection',
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -59,10 +59,10 @@ class Zilf
      * ]);
      *
      * // create an object with two constructor parameters
-     * $object = \Yii::createObject('MyClass', [$param1, $param2]);
+     * $object = \Zilf::createObject('MyClass', [$param1, $param2]);
      * ```
      *
-     * Using [[\yii\di\Container|dependency injection container]], this method can also identify
+     * Using [[\Zilf\di\Container|dependency injection container]], this method can also identify
      * dependent objects, instantiate them and inject them into the newly created object.
      *
      * @param string|array|callable $type   the object type. This can be specified in one of the following forms:
@@ -88,7 +88,7 @@ class Zilf
             $class = $type['class'];
             unset($type['class']);
 
-            static::$container->set($class, $class, $type);
+            static::$container->set($class, $class, ['config'=>$type]);
             return static::$container->get($class);
 
         } elseif (is_array($type)) {

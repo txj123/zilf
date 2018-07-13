@@ -79,7 +79,7 @@ class Html
 
     /**
      * Encodes special characters into HTML entities.
-     * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
+     * The [[\Zilf\Db\base\Application::charset|application charset]] will be used for encoding.
      *
      * @param  string  $content      the content to be encoded
      * @param  boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
@@ -353,10 +353,10 @@ class Html
      *
      * The "data" attribute is specially handled when it is receiving an array value. In this case,
      * the array will be "expanded" and a list data attributes will be rendered. For example,
-     * if `'data' => ['id' => 1, 'name' => 'yii']`, then this will be rendered:
-     * `data-id="1" data-name="yii"`.
-     * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'yii'], 'status' => 'ok']` will be rendered as:
-     * `data-params='{"id":1,"name":"yii"}' data-status="ok"`.
+     * if `'data' => ['id' => 1, 'name' => 'Zilf']`, then this will be rendered:
+     * `data-id="1" data-name="Zilf"`.
+     * Additionally `'data' => ['params' => ['id' => 1, 'name' => 'Zilf'], 'status' => 'ok']` will be rendered as:
+     * `data-params='{"id":1,"name":"Zilf"}' data-status="ok"`.
      *
      * @param  array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
