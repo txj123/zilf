@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;

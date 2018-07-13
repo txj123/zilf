@@ -1,24 +1,26 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\sqlite;
 
+use Zilf\Db\base\InvalidArgumentException;
+use Zilf\Db\base\NotSupportedException;
 use Zilf\Db\Connection;
-use Zilf\Db\Exception;
-use Zilf\Db\Exception\InvalidParamException;
-use Zilf\Db\Exception\NotSupportedException;
+use Zilf\Db\Constraint;
 use Zilf\Db\Expression;
+use Zilf\Db\ExpressionInterface;
 use Zilf\Db\Query;
+use Zilf\Helpers\StringHelper;
 
 /**
  * QueryBuilder is the query builder for SQLite databases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
@@ -33,6 +35,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
+        Schema::TYPE_TINYINT => 'tinyint',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'integer',
         Schema::TYPE_BIGINT => 'bigint',
@@ -48,13 +51,67 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected $likeEscapeCharacter = '\\';
+    protected function defaultExpressionBuilders()
+    {
+        return array_merge(parent::defaultExpressionBuilders(), [
+            'Zilf\Db\conditions\LikeCondition' => 'Zilf\Db\sqlite\conditions\LikeConditionBuilder',
+            'Zilf\Db\conditions\InCondition' => 'Zilf\Db\sqlite\conditions\InConditionBuilder',
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @see https://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert/15277374#15277374
+     */
+    public function upsert($table, $insertColumns, $updateColumns, &$params)
+    {
+        /** @var Constraint[] $constraints */
+        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        if (empty($uniqueNames)) {
+            return $this->insert($table, $insertColumns, $params);
+        }
+
+        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        $insertSql = 'INSERT OR IGNORE INTO ' . $this->db->quoteTableName($table)
+            . (!empty($insertNames) ? ' (' . implode(', ', $insertNames) . ')' : '')
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+        if ($updateColumns === false) {
+            return $insertSql;
+        }
+
+        $updateCondition = ['or'];
+        $quotedTableName = $this->db->quoteTableName($table);
+        foreach ($constraints as $constraint) {
+            $constraintCondition = ['and'];
+            foreach ($constraint->columnNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                $constraintCondition[] = "$quotedTableName.$quotedName=(SELECT $quotedName FROM `EXCLUDED`)";
+            }
+            $updateCondition[] = $constraintCondition;
+        }
+        if ($updateColumns === true) {
+            $updateColumns = [];
+            foreach ($updateNames as $name) {
+                $quotedName = $this->db->quoteColumnName($name);
+                if (strrpos($quotedName, '.') === false) {
+                    $quotedName = "(SELECT $quotedName FROM `EXCLUDED`)";
+                }
+                $updateColumns[$name] = new Expression($quotedName);
+            }
+        }
+        $updateSql = 'WITH "EXCLUDED" (' . implode(', ', $insertNames)
+            . ') AS (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') '
+            . $this->update($table, $updateColumns, $updateCondition, $params);
+        return "$updateSql; $insertSql;";
+    }
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -67,12 +124,12 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param  string $table   the table that new rows will be inserted into.
-     * @param  array  $columns the column names
-     * @param  array  $rows    the rows to be batch inserted into the table
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, &$params = [])
     {
         if (empty($rows)) {
             return '';
@@ -81,8 +138,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
-        if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows);
+        if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
+            return parent::batchInsert($table, $columns, $rows, $params);
         }
 
         $schema = $this->db->getSchema();
@@ -96,15 +153,20 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
         foreach ($rows as $row) {
             $vs = [];
             foreach ($row as $i => $value) {
-                if (!is_array($value) && isset($columnSchemas[$columns[$i]])) {
+                if (isset($columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = StringHelper::floatToString($value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
                     $value = 'NULL';
+                } elseif ($value instanceof ExpressionInterface) {
+                    $value = $this->buildExpression($value, $params);
                 }
                 $vs[] = $value;
             }
@@ -126,12 +188,11 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     *
-     * @param  string $tableName the name of the table whose primary key sequence will be reset
-     * @param  mixed  $value     the value for the primary key of the next new row inserted. If this is not set,
-     *                           the next new row's primary key will have a value 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -141,41 +202,37 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
             $tableName = $db->quoteTableName($tableName);
             if ($value === null) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $value = $this->db->useMaster(
-                    function (Connection $db) use ($key, $tableName) {
-                        return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
-                    }
-                );
+                $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
+                    return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
+                });
             } else {
                 $value = (int) $value - 1;
             }
 
             return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
+            throw new InvalidArgumentException("Table not found: $tableName");
         }
+
+        throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.'");
     }
 
     /**
      * Enables or disables integrity check.
-     *
-     * @param  bool   $check  whether to turn on or off the integrity check.
-     * @param  string $schema the schema of the tables. Meaningless for SQLite.
-     * @param  string $table  the table name. Meaningless for SQLite.
+     * @param bool $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables. Meaningless for SQLite.
+     * @param string $table the table name. Meaningless for SQLite.
      * @return string the SQL statement for checking integrity
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int) $check;
+        return 'PRAGMA foreign_keys=' . (int) $check;
     }
 
     /**
      * Builds a SQL statement for truncating a DB table.
-     *
-     * @param  string $table the table to be truncated. The name will be properly quoted by the method.
+     * @param string $table the table to be truncated. The name will be properly quoted by the method.
      * @return string the SQL statement for truncating a DB table.
      */
     public function truncateTable($table)
@@ -185,9 +242,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping an index.
-     *
-     * @param  string $name  the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param  string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping an index.
      */
     public function dropIndex($name, $table)
@@ -197,9 +253,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping a DB column.
-     *
-     * @param  string $table  the table whose column is to be dropped. The name will be properly quoted by the method.
-     * @param  string $column the name of the column to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose column is to be dropped. The name will be properly quoted by the method.
+     * @param string $column the name of the column to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping a DB column.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -210,10 +265,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     *
-     * @param  string $table   the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param  string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param  string $newName the new name of the column. The name will be properly quoted by the method.
+     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
+     * @param string $newName the new name of the column. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB column.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -225,17 +279,15 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Builds a SQL statement for adding a foreign key constraint to an existing table.
      * The method will properly quote the table and column names.
-     *
-     * @param  string       $name       the name of the foreign key constraint.
-     * @param  string       $table      the table that the foreign key constraint will be added to.
-     * @param  string|array $columns    the name of the column to that the constraint will be added on.
-     *                                  If there are multiple columns, separate them with commas or use
-     *                                  an array to represent them.
-     * @param  string       $refTable   the table that the foreign key references to.
-     * @param  string|array $refColumns the name of the column that the foreign key references to.
-     *                                  If there are multiple columns, separate them with commas or use an array to represent them.
-     * @param  string       $delete     the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param  string       $update     the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string $name the name of the foreign key constraint.
+     * @param string $table the table that the foreign key constraint will be added to.
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas or use an array to represent them.
+     * @param string $refTable the table that the foreign key references to.
+     * @param string|array $refColumns the name of the column that the foreign key references to.
+     * If there are multiple columns, separate them with commas or use an array to represent them.
+     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return string the SQL statement for adding a foreign key constraint to an existing table.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -246,9 +298,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping a foreign key constraint.
-     *
-     * @param  string $name  the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param  string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping a foreign key constraint.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -260,8 +311,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Builds a SQL statement for renaming a DB table.
      *
-     * @param  string $table   the table to be renamed. The name will be properly quoted by the method.
-     * @param  string $newName the new table name. The name will be properly quoted by the method.
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($table, $newName)
@@ -271,13 +322,12 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     *
-     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string $type   the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     *                        column type (if any) into the physical one. Anything that is not recognized as abstract
-     *                        type will be kept in the generated SQL. For example, 'string' will be turned into
-     *                        'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
+     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
+     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
+     * will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -288,10 +338,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for adding a primary key constraint to an existing table.
-     *
-     * @param  string       $name    the name of the primary key constraint.
-     * @param  string       $table   the table that the primary key constraint will be added to.
-     * @param  string|array $columns comma separated string or array of columns that the primary key will consist of.
+     * @param string $name the name of the primary key constraint.
+     * @param string $table the table that the primary key constraint will be added to.
+     * @param string|array $columns comma separated string or array of columns that the primary key will consist of.
      * @return string the SQL statement for adding a primary key constraint to an existing table.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -302,9 +351,8 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for removing a primary key constraint to an existing table.
-     *
-     * @param  string $name  the name of the primary key constraint to be removed.
-     * @param  string $table the table that the primary key constraint will be removed from.
+     * @param string $name the name of the primary key constraint to be removed.
+     * @param string $table the table that the primary key constraint will be removed from.
      * @return string the SQL statement for removing a primary key constraint from an existing table.
      * @throws NotSupportedException this is not supported by SQLite
      */
@@ -314,7 +362,61 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropUnique($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -324,7 +426,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -334,7 +436,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -344,7 +446,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @throws NotSupportedException
      * @since 2.0.8
      */
@@ -354,7 +456,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildLimit($limit, $offset)
     {
@@ -374,52 +476,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
-     * @throws NotSupportedException if `$columns` is an array
-     */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
-        if (is_array($columns)) {
-            throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
-        }
-        return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
-    }
-
-    /**
-     * Builds SQL for IN condition
-     *
-     * @param  string $operator
-     * @param  array  $columns
-     * @param  array  $values
-     * @param  array  $params
-     * @return string SQL
-     */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
-    {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if (isset($value[$column])) {
-                    $phName = self::PARAM_PREFIX . count($params);
-                    $params[$phName] = $value[$column];
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
-            }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
-        }
-
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
-    }
-
-    /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function build($query, $params = [])
     {
@@ -441,15 +498,15 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
         if (!empty($query->orderBy)) {
             foreach ($query->orderBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
+                if ($expression instanceof ExpressionInterface) {
+                    $this->buildExpression($expression, $params);
                 }
             }
         }
         if (!empty($query->groupBy)) {
             foreach ($query->groupBy as $expression) {
-                if ($expression instanceof Expression) {
-                    $params = array_merge($params, $expression->params);
+                if ($expression instanceof ExpressionInterface) {
+                    $this->buildExpression($expression, $params);
                 }
             }
         }
@@ -463,7 +520,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function buildUnion($unions, &$params)
     {

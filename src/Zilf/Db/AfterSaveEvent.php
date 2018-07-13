@@ -1,19 +1,19 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
 
-use Zilf\Db\Exception\Event;
+use Zilf\Db\base\Event;
 
 /**
  * AfterSaveEvent represents the information available in [[ActiveRecord::EVENT_AFTER_INSERT]] and [[ActiveRecord::EVENT_AFTER_UPDATE]].
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 class AfterSaveEvent extends Event
 {

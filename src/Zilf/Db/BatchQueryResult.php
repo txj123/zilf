@@ -1,13 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
 
-use Zilf\Db\Exception\Object;
+use Zilf\Db\base\BaseObject;
 
 /**
  * BatchQueryResult represents a batch query from which you can retrieve data in batches.
@@ -26,9 +26,9 @@ use Zilf\Db\Exception\Object;
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
-class BatchQueryResult extends Object implements \Iterator
+class BatchQueryResult extends BaseObject implements \Iterator
 {
     /**
      * @var Connection the DB connection to be used when performing batch query.
@@ -118,7 +118,7 @@ class BatchQueryResult extends Object implements \Iterator
             if ($this->query->indexBy !== null) {
                 $this->_key = key($this->_batch);
             } elseif (key($this->_batch) !== null) {
-                $this->_key++;
+                $this->_key = $this->_key === null ? 0 : $this->_key + 1;
             } else {
                 $this->_key = null;
             }
@@ -130,7 +130,6 @@ class BatchQueryResult extends Object implements \Iterator
 
     /**
      * Fetches the next batch of data.
-     *
      * @return array the data fetched
      */
     protected function fetchData()
@@ -151,7 +150,6 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     *
      * @return int the index of the current row.
      */
     public function key()
@@ -162,7 +160,6 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
-     *
      * @return mixed the current dataset.
      */
     public function current()
@@ -173,7 +170,6 @@ class BatchQueryResult extends Object implements \Iterator
     /**
      * Returns whether there is a valid dataset at the current position.
      * This method is required by the interface [[\Iterator]].
-     *
      * @return bool whether there is a valid dataset at the current position.
      */
     public function valid()
