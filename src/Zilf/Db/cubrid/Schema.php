@@ -1,25 +1,33 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\cubrid;
 
+use Zilf\Db\base\NotSupportedException;
+use Zilf\Db\Constraint;
+use Zilf\Db\ConstraintFinderInterface;
+use Zilf\Db\ConstraintFinderTrait;
 use Zilf\Db\Expression;
+use Zilf\Db\ForeignKeyConstraint;
+use Zilf\Db\IndexConstraint;
 use Zilf\Db\TableSchema;
-use Zilf\Db\ColumnSchema;
 use Zilf\Db\Transaction;
+use Zilf\Helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
-class Schema extends \Zilf\Db\Schema
+class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 {
+    use ConstraintFinderTrait;
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      * Please refer to [CUBRID manual](http://www.cubrid.org/manual/91/en/sql/datatype.html) for
@@ -72,54 +80,32 @@ class Schema extends \Zilf\Db\Schema
         'Operation would have caused one or more unique constraint violations' => 'Zilf\Db\IntegrityException',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
+    protected $tableQuoteCharacter = '"';
+
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function releaseSavepoint($name)
+    protected function findTableNames($schema = '')
     {
-        // does nothing as cubrid does not support this
+        $pdo = $this->db->getSlavePdo();
+        $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
+        $tableNames = [];
+        foreach ($tables as $table) {
+            // do not list system tables
+            if ($table['TYPE'] != 0) {
+                $tableNames[] = $table['NAME'];
+            }
+        }
+
+        return $tableNames;
     }
 
     /**
-     * Quotes a table name for use in a query.
-     * A simple table name has no schema prefix.
-     *
-     * @param  string $name table name
-     * @return string the properly quoted table name
-     */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
-    }
-
-    /**
-     * Quotes a column name for use in a query.
-     * A simple column name has no prefix.
-     *
-     * @param  string $name column name
-     * @return string the properly quoted column name
-     */
-    public function quoteSimpleColumnName($name)
-    {
-        return strpos($name, '"') !== false || $name === '*' ? $name : '"' . $name . '"';
-    }
-
-    /**
-     * Creates a query builder for the CUBRID database.
-     *
-     * @return QueryBuilder query builder instance
-     */
-    public function createQueryBuilder()
-    {
-        return new QueryBuilder($this->db);
-    }
-
-    /**
-     * Loads the metadata for the specified table.
-     *
-     * @param  string $name table name
-     * @return TableSchema driver dependent table metadata. Null if the table does not exist.
+     * {@inheritdoc}
      */
     protected function loadTableSchema($name)
     {
@@ -168,10 +154,107 @@ class Schema extends \Zilf\Db\Schema
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function loadTablePrimaryKey($tableName)
+    {
+        $primaryKey = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
+        if (empty($primaryKey)) {
+            return null;
+        }
+
+        ArrayHelper::multisort($primaryKey, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
+        return new Constraint([
+            'name' => $primaryKey[0]['KEY_NAME'],
+            'columnNames' => ArrayHelper::getColumn($primaryKey, 'ATTR_NAME'),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableForeignKeys($tableName)
+    {
+        static $actionTypes = [
+            0 => 'CASCADE',
+            1 => 'RESTRICT',
+            2 => 'NO ACTION',
+            3 => 'SET NULL',
+        ];
+
+        $foreignKeys = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
+        $foreignKeys = ArrayHelper::index($foreignKeys, null, 'FK_NAME');
+        ArrayHelper::multisort($foreignKeys, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
+        $result = [];
+        foreach ($foreignKeys as $name => $foreignKey) {
+            $result[] = new ForeignKeyConstraint([
+                'name' => $name,
+                'columnNames' => ArrayHelper::getColumn($foreignKey, 'FKCOLUMN_NAME'),
+                'foreignTableName' => $foreignKey[0]['PKTABLE_NAME'],
+                'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'PKCOLUMN_NAME'),
+                'onDelete' => isset($actionTypes[$foreignKey[0]['DELETE_RULE']]) ? $actionTypes[$foreignKey[0]['DELETE_RULE']] : null,
+                'onUpdate' => isset($actionTypes[$foreignKey[0]['UPDATE_RULE']]) ? $actionTypes[$foreignKey[0]['UPDATE_RULE']] : null,
+            ]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableIndexes($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'indexes');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function loadTableUniques($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'uniques');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableChecks($tableName)
+    {
+        throw new NotSupportedException('CUBRID does not support check constraints.');
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableDefaultValues($tableName)
+    {
+        throw new NotSupportedException('CUBRID does not support default value constraints.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function releaseSavepoint($name)
+    {
+        // does nothing as cubrid does not support this
+    }
+
+    /**
+     * Creates a query builder for the CUBRID database.
+     * @return QueryBuilder query builder instance
+     */
+    public function createQueryBuilder()
+    {
+        return new QueryBuilder($this->db);
+    }
+
+    /**
      * Loads the column information into a [[ColumnSchema]] object.
-     *
-     * @param  array $info column information
-     * @return ColumnSchema the column schema object
+     * @param array $info column information
+     * @return \Zilf\Db\ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -224,10 +307,10 @@ class Schema extends \Zilf\Db\Schema
             return $column;
         }
 
-        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' 
-            || $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' 
-            || $column->type === 'date' && $info['Default'] === 'SYS_DATE' 
-            || $column->type === 'time' && $info['Default'] === 'SYS_TIME'
+        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
+            $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
+            $column->type === 'date' && $info['Default'] === 'SYS_DATE' ||
+            $column->type === 'time' && $info['Default'] === 'SYS_TIME'
         ) {
             $column->defaultValue = new Expression($info['Default']);
         } elseif (isset($type) && $type === 'bit') {
@@ -240,32 +323,10 @@ class Schema extends \Zilf\Db\Schema
     }
 
     /**
-     * Returns all table names in the database.
-     *
-     * @param  string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array all table names in the database. The names have NO schema name prefix.
-     */
-    protected function findTableNames($schema = '')
-    {
-        $pdo = $this->db->getSlavePdo();
-        $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
-        $tableNames = [];
-        foreach ($tables as $table) {
-            // do not list system tables
-            if ($table['TYPE'] != 0) {
-                $tableNames[] = $table['NAME'];
-            }
-        }
-
-        return $tableNames;
-    }
-
-    /**
      * Determines the PDO type for the given PHP data value.
-     *
-     * @param  mixed $data the data whose PDO type is to be determined
+     * @param mixed $data the data whose PDO type is to be determined
      * @return int the PDO type
-     * @see    http://www.php.net/manual/en/pdo.constants.php
+     * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
     {
@@ -283,34 +344,75 @@ class Schema extends \Zilf\Db\Schema
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @see http://www.cubrid.org/manual/91/en/sql/transaction.html#database-concurrency
      */
     public function setTransactionIsolationLevel($level)
     {
         // translate SQL92 levels to CUBRID levels:
         switch ($level) {
-        case Transaction::SERIALIZABLE:
-            $level = '6'; // SERIALIZABLE
-            break;
-        case Transaction::REPEATABLE_READ:
-            $level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
-            break;
-        case Transaction::READ_COMMITTED:
-            $level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
-            break;
-        case Transaction::READ_UNCOMMITTED:
-            $level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
-            break;
+            case Transaction::SERIALIZABLE:
+                $level = '6'; // SERIALIZABLE
+                break;
+            case Transaction::REPEATABLE_READ:
+                $level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
+                break;
+            case Transaction::READ_COMMITTED:
+                $level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
+                break;
+            case Transaction::READ_UNCOMMITTED:
+                $level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
+                break;
         }
         parent::setTransactionIsolationLevel($level);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return new ColumnSchemaBuilder($type, $length, $this->db);
+    }
+
+    /**
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - indexes
+     * - uniques
+     * @return mixed constraints.
+     */
+    private function loadTableConstraints($tableName, $returnType)
+    {
+        $constraints = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
+        $constraints = ArrayHelper::index($constraints, null, ['TYPE', 'NAME']);
+        ArrayHelper::multisort($constraints, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);
+        $result = [
+            'indexes' => [],
+            'uniques' => [],
+        ];
+        foreach ($constraints as $type => $names) {
+            foreach ($names as $name => $constraint) {
+                $isUnique = in_array((int) $type, [0, 2], true);
+                $result['indexes'][] = new IndexConstraint([
+                    'isPrimary' => (bool) $constraint[0]['PRIMARY_KEY'],
+                    'isUnique' => $isUnique,
+                    'name' => $name,
+                    'columnNames' => ArrayHelper::getColumn($constraint, 'ATTR_NAME'),
+                ]);
+                if ($isUnique) {
+                    $result['uniques'][] = new Constraint([
+                        'name' => $name,
+                        'columnNames' => ArrayHelper::getColumn($constraint, 'ATTR_NAME'),
+                    ]);
+                }
+            }
+        }
+        foreach ($result as $type => $data) {
+            $this->setTableMetadata($tableName, $type, $data);
+        }
+
+        return $result[$returnType];
     }
 }

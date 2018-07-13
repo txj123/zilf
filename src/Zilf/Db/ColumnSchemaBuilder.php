@@ -1,13 +1,15 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
 
-use Zilf\Db\Exception\Object;
+use Zilf\System\Zilf;
+use Zilf\Db\base\BaseObject;
+use Zilf\Helpers\StringHelper;
 
 /**
  * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
@@ -15,9 +17,9 @@ use Zilf\Db\Exception\Object;
  * See [[SchemaBuilderTrait]] for more detailed description and usage examples.
  *
  * @author Vasenin Matvey <vaseninm@gmail.com>
- * @since  2.0.6
+ * @since 2.0.6
  */
-class ColumnSchemaBuilder extends Object
+class ColumnSchemaBuilder extends BaseObject
 {
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
@@ -89,6 +91,7 @@ class ColumnSchemaBuilder extends Object
         Schema::TYPE_CHAR => self::CATEGORY_STRING,
         Schema::TYPE_STRING => self::CATEGORY_STRING,
         Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_TINYINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
         Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
         Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
@@ -118,10 +121,10 @@ class ColumnSchemaBuilder extends Object
     /**
      * Create a column schema builder instance giving the type and value precision.
      *
-     * @param string              $type   type of the column. See [[$type]].
-     * @param int|string|array    $length length or precision of the column. See [[$length]].
-     * @param \Zilf\Db\Connection $db     the current database connection. See [[$db]].
-     * @param array               $config name-value pairs that will be used to initialize the object properties
+     * @param string $type type of the column. See [[$type]].
+     * @param int|string|array $length length or precision of the column. See [[$length]].
+     * @param \Zilf\Db\Connection $db the current database connection. See [[$db]].
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($type, $length = null, $db = null, $config = [])
     {
@@ -133,7 +136,6 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Adds a `NOT NULL` constraint to the column.
-     *
      * @return $this
      */
     public function notNull()
@@ -143,10 +145,9 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Adds a `NULL` constraint to the column
-     *
+     * Adds a `NULL` constraint to the column.
      * @return $this
-     * @since  2.0.9
+     * @since 2.0.9
      */
     public function null()
     {
@@ -156,7 +157,6 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Adds a `UNIQUE` constraint to the column.
-     *
      * @return $this
      */
     public function unique()
@@ -167,8 +167,7 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Sets a `CHECK` constraint for the column.
-     *
-     * @param  string $check the SQL of the `CHECK` constraint to be added.
+     * @param string $check the SQL of the `CHECK` constraint to be added.
      * @return $this
      */
     public function check($check)
@@ -179,8 +178,7 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Specify the default value for the column.
-     *
-     * @param  mixed $default the default value.
+     * @param mixed $default the default value.
      * @return $this
      */
     public function defaultValue($default)
@@ -195,10 +193,9 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Specifies the comment for column.
-     *
-     * @param  string $comment the comment
+     * @param string $comment the comment
      * @return $this
-     * @since  2.0.8
+     * @since 2.0.8
      */
     public function comment($comment)
     {
@@ -208,19 +205,18 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Marks column as unsigned.
-     *
      * @return $this
-     * @since  2.0.7
+     * @since 2.0.7
      */
     public function unsigned()
     {
         switch ($this->type) {
-        case Schema::TYPE_PK:
-            $this->type = Schema::TYPE_UPK;
-            break;
-        case Schema::TYPE_BIGPK:
-            $this->type = Schema::TYPE_UBIGPK;
-            break;
+            case Schema::TYPE_PK:
+                $this->type = Schema::TYPE_UPK;
+                break;
+            case Schema::TYPE_BIGPK:
+                $this->type = Schema::TYPE_UBIGPK;
+                break;
         }
         $this->isUnsigned = true;
         return $this;
@@ -229,10 +225,9 @@ class ColumnSchemaBuilder extends Object
     /**
      * Adds an `AFTER` constraint to the column.
      * Note: MySQL, Oracle and Cubrid support only.
-     *
-     * @param  string $after the column after which $this column will be added.
+     * @param string $after the column after which $this column will be added.
      * @return $this
-     * @since  2.0.8
+     * @since 2.0.8
      */
     public function after($after)
     {
@@ -243,9 +238,8 @@ class ColumnSchemaBuilder extends Object
     /**
      * Adds an `FIRST` constraint to the column.
      * Note: MySQL, Oracle and Cubrid support only.
-     *
      * @return $this
-     * @since  2.0.8
+     * @since 2.0.8
      */
     public function first()
     {
@@ -255,10 +249,9 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Specify the default SQL expression for the column.
-     *
-     * @param  string $default the default value expression.
+     * @param string $default the default value expression.
      * @return $this
-     * @since  2.0.7
+     * @since 2.0.7
      */
     public function defaultExpression($default)
     {
@@ -269,10 +262,9 @@ class ColumnSchemaBuilder extends Object
     /**
      * Specify additional SQL to be appended to column definition.
      * Position modifiers will be appended after column definition in databases that support them.
-     *
-     * @param  string $sql the SQL string to be appended.
+     * @param string $sql the SQL string to be appended.
      * @return $this
-     * @since  2.0.9
+     * @since 2.0.9
      */
     public function append($sql)
     {
@@ -281,25 +273,24 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Builds the full string for the column's schema
-     *
+     * Builds the full string for the column's schema.
      * @return string
      */
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
-        case self::CATEGORY_PK:
-            $format = '{type}{check}{comment}{append}';
-            break;
-        default:
-            $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
+            case self::CATEGORY_PK:
+                $format = '{type}{check}{comment}{append}';
+                break;
+            default:
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
+
         return $this->buildCompleteString($format);
     }
 
     /**
      * Builds the length/precision part of the column.
-     *
      * @return string
      */
     protected function buildLengthString()
@@ -310,12 +301,12 @@ class ColumnSchemaBuilder extends Object
         if (is_array($this->length)) {
             $this->length = implode(',', $this->length);
         }
+
         return "({$this->length})";
     }
 
     /**
      * Builds the not null constraint for the column.
-     *
      * @return string returns 'NOT NULL' if [[isNotNull]] is true,
      * 'NULL' if [[isNotNull]] is false or an empty string otherwise.
      */
@@ -325,14 +316,13 @@ class ColumnSchemaBuilder extends Object
             return ' NOT NULL';
         } elseif ($this->isNotNull === false) {
             return ' NULL';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
      * Builds the unique constraint for the column.
-     *
      * @return string returns string 'UNIQUE' if [[isUnique]] is true, otherwise it returns an empty string.
      */
     protected function buildUniqueString()
@@ -342,7 +332,6 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the default value specification for the column.
-     *
      * @return string string with default value of column.
      */
     protected function buildDefaultString()
@@ -353,21 +342,21 @@ class ColumnSchemaBuilder extends Object
 
         $string = ' DEFAULT ';
         switch (gettype($this->default)) {
-        case 'integer':
-            $string .= (string) $this->default;
-            break;
-        case 'double':
-            // ensure type cast always has . as decimal separator in all locales
-            $string .= str_replace(',', '.', (string) $this->default);
-            break;
-        case 'boolean':
-            $string .= $this->default ? 'TRUE' : 'FALSE';
-            break;
-        case 'object':
-            $string .= (string) $this->default;
-            break;
-        default:
-            $string .= "'{$this->default}'";
+            case 'integer':
+                $string .= (string) $this->default;
+                break;
+            case 'double':
+                // ensure type cast always has . as decimal separator in all locales
+                $string .= StringHelper::floatToString($this->default);
+                break;
+            case 'boolean':
+                $string .= $this->default ? 'TRUE' : 'FALSE';
+                break;
+            case 'object':
+                $string .= (string) $this->default;
+                break;
+            default:
+                $string .= "'{$this->default}'";
         }
 
         return $string;
@@ -375,7 +364,6 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the check constraint for the column.
-     *
      * @return string a string containing the CHECK constraint.
      */
     protected function buildCheckString()
@@ -385,9 +373,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the unsigned string for column. Defaults to unsupported.
-     *
      * @return string a string containing UNSIGNED keyword.
-     * @since  2.0.7
+     * @since 2.0.7
      */
     protected function buildUnsignedString()
     {
@@ -396,9 +383,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the after constraint for the column. Defaults to unsupported.
-     *
      * @return string a string containing the AFTER constraint.
-     * @since  2.0.8
+     * @since 2.0.8
      */
     protected function buildAfterString()
     {
@@ -407,9 +393,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the first constraint for the column. Defaults to unsupported.
-     *
      * @return string a string containing the FIRST constraint.
-     * @since  2.0.8
+     * @since 2.0.8
      */
     protected function buildFirstString()
     {
@@ -418,9 +403,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the custom string that's appended to column definition.
-     *
      * @return string custom string to append.
-     * @since  2.0.9
+     * @since 2.0.9
      */
     protected function buildAppendString()
     {
@@ -429,9 +413,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Returns the category of the column type.
-     *
      * @return string a string containing the column type category name.
-     * @since  2.0.8
+     * @since 2.0.8
      */
     protected function getTypeCategory()
     {
@@ -440,9 +423,8 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the comment specification for the column.
-     *
      * @return string a string containing the COMMENT keyword and the comment itself
-     * @since  2.0.8
+     * @since 2.0.8
      */
     protected function buildCommentString()
     {
@@ -450,11 +432,10 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Returns the complete column definition from input format
-     *
-     * @param  string $format the format of the definition.
+     * Returns the complete column definition from input format.
+     * @param string $format the format of the definition.
      * @return string a string containing the complete column definition.
-     * @since  2.0.8
+     * @since 2.0.8
      */
     protected function buildCompleteString($format)
     {

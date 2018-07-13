@@ -1,14 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @link http://www.Zilfframework.com/
+ * @copyright Copyright (c) 2008 Zilf Software LLC
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
 
-use Zilf\Db\Exception\Object;
-use Zilf\Db\Exception\InvalidParamException;
+use Zilf\Db\base\BaseObject;
+use Zilf\Db\base\InvalidArgumentException;
 
 /**
  * TableSchema represents the metadata of a database table.
@@ -16,9 +16,9 @@ use Zilf\Db\Exception\InvalidParamException;
  * @property array $columnNames List of column names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
-class TableSchema extends Object
+class TableSchema extends BaseObject
 {
     /**
      * @var string the name of the schema that this table belongs to.
@@ -63,8 +63,7 @@ class TableSchema extends Object
     /**
      * Gets the named column metadata.
      * This is a convenient method for retrieving a named column even if it does not exist.
-     *
-     * @param  string $name column name
+     * @param string $name column name
      * @return ColumnSchema metadata of the named column. Null if the named column does not exist.
      */
     public function getColumn($name)
@@ -74,7 +73,6 @@ class TableSchema extends Object
 
     /**
      * Returns the names of all columns in this table.
-     *
      * @return array list of column names
      */
     public function getColumnNames()
@@ -84,9 +82,8 @@ class TableSchema extends Object
 
     /**
      * Manually specifies the primary key for this table.
-     *
-     * @param  string|array $keys the primary key (can be composite)
-     * @throws InvalidParamException if the specified key cannot be found in the table.
+     * @param string|array $keys the primary key (can be composite)
+     * @throws InvalidArgumentException if the specified key cannot be found in the table.
      */
     public function fixPrimaryKey($keys)
     {
@@ -99,7 +96,7 @@ class TableSchema extends Object
             if (isset($this->columns[$key])) {
                 $this->columns[$key]->isPrimaryKey = true;
             } else {
-                throw new InvalidParamException("Primary key '$key' cannot be found in table '{$this->name}'.");
+                throw new InvalidArgumentException("Primary key '$key' cannot be found in table '{$this->name}'.");
             }
         }
     }
