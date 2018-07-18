@@ -139,7 +139,7 @@ abstract class ErrorHandler extends Component
         $msg .= (string) $exception;
         $msg .= "\nPrevious exception:\n";
         $msg .= (string) $previousException;
-        if (Zilf_DEBUG) {
+        if (Zilf::$app->is_debug) {
             if (PHP_SAPI === 'cli') {
                 echo $msg . "\n";
             } else {
@@ -328,7 +328,7 @@ abstract class ErrorHandler extends Component
             return "{$exception->getName()}: {$exception->getMessage()}";
         }
 
-        if (Zilf_DEBUG) {
+        if (Zilf::$app->is_debug) {
             return static::convertExceptionToVerboseString($exception);
         }
 

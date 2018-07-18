@@ -641,7 +641,7 @@ class Module extends ServiceLocator
         if (is_subclass_of($className, 'Zilf\Db\base\Controller')) {
             $controller = Zilf::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
-        } elseif (Zilf_DEBUG) {
+        } else {
             throw new InvalidConfigException('Controller class must extend from \\Zilf\\base\\Controller.');
         }
 
