@@ -7,6 +7,7 @@
 
 namespace Zilf\Db\base;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 
 /**
@@ -86,7 +87,7 @@ class Action extends Component
             throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
         $args = $this->controller->bindActionParams($this, $params);
-        Zilf::debug('Running action: ' . get_class($this) . '::run()', __METHOD__);
+        Log::debug('Running action: ' . get_class($this) . '::run()', __METHOD__);
         if (Zilf::$app->requestedParams === null) {
             Zilf::$app->requestedParams = $args;
         }

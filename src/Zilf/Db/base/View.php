@@ -7,6 +7,7 @@
 
 namespace Zilf\Db\base;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Helpers\FileHelper;
 use Zilf\widgets\Block;
@@ -244,7 +245,7 @@ class View extends Component implements DynamicContentAwareInterface
         ];
 
         if ($this->beforeRender($viewFile, $params)) {
-            Zilf::debug("Rendering view file: $viewFile", __METHOD__);
+            Log::debug("Rendering view file: $viewFile" . __METHOD__);
             $ext = pathinfo($viewFile, PATHINFO_EXTENSION);
             if (isset($this->renderers[$ext])) {
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
@@ -416,7 +417,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.
