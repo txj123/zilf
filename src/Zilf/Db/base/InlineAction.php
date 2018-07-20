@@ -7,6 +7,7 @@
 
 namespace Zilf\Db\base;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 
 /**
@@ -49,7 +50,7 @@ class InlineAction extends Action
     public function runWithParams($params)
     {
         $args = $this->controller->bindActionParams($this, $params);
-        Zilf::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
+        Log::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()' . __METHOD__);
         if (Zilf::$app->requestedParams === null) {
             Zilf::$app->requestedParams = $args;
         }

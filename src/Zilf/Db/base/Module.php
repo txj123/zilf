@@ -7,6 +7,7 @@
 
 namespace Zilf\Db\base;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\di\ServiceLocator;
 
@@ -422,7 +423,7 @@ class Module extends ServiceLocator
             if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
-                Zilf::debug("Loading module: $id", __METHOD__);
+                Log::debug("Loading module: $id" . __METHOD__);
                 /* @var $module Module */
                 $module = Zilf::createObject($this->_modules[$id], [$id, $this]);
                 $module->setInstance($module);

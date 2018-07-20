@@ -7,6 +7,7 @@
 
 namespace Zilf\Db;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\base\Component;
 use Zilf\Db\base\NotSupportedException;
@@ -261,7 +262,7 @@ class Command extends Component
         } catch (\Exception $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+            throw new Exception($message, $errorInfo, (int)$e->getCode(), $e);
         }
     }
 
@@ -1150,7 +1151,7 @@ class Command extends Component
                 ];
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
-                    Zilf::debug('Query result served from cache', 'Zilf\Db\Command::query');
+                    Log::debug('Query result served from cache', 'Zilf\Db\Command::query');
                     return $result[0];
                 }
             }
@@ -1169,7 +1170,7 @@ class Command extends Component
                 if ($fetchMode === null) {
                     $fetchMode = $this->fetchMode;
                 }
-                $result = call_user_func_array([$this->pdoStatement, $method], (array) $fetchMode);
+                $result = call_user_func_array([$this->pdoStatement, $method], (array)$fetchMode);
                 $this->pdoStatement->closeCursor();
             }
 
@@ -1181,7 +1182,7 @@ class Command extends Component
 
         if (isset($cache, $cacheKey, $info)) {
             $cache->set($cacheKey, [$result], $info[1], $info[2]);
-            //Zilf::debug('Saved query result in cache', 'Zilf\Db\Command::query');
+            Log::debug('Saved query result in cache' . 'Zilf\Db\Command::query');
         }
 
         return $result;

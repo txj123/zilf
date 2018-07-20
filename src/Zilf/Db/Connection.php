@@ -8,6 +8,7 @@
 namespace Zilf\Db;
 
 use PDO;
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\base\Component;
 use Zilf\Db\base\InvalidConfigException;
@@ -613,15 +614,15 @@ class Connection extends Component
             $this->pdo = $this->createPdoInstance();
             $this->initConnection();
 
-           /* if ($enableProfiling) {
-                Zilf::endProfile($token, __METHOD__);
-            }*/
+            /* if ($enableProfiling) {
+                 Zilf::endProfile($token, __METHOD__);
+             }*/
         } catch (\PDOException $e) {
-           /* if ($enableProfiling) {
-                Zilf::endProfile($token, __METHOD__);
-            }*/
+            /* if ($enableProfiling) {
+                 Zilf::endProfile($token, __METHOD__);
+             }*/
 
-            throw new Exception($e->getMessage(), $e->errorInfo, (int) $e->getCode(), $e);
+            throw new Exception($e->getMessage(), $e->errorInfo, (int)$e->getCode(), $e);
         }
     }
 
@@ -641,7 +642,7 @@ class Connection extends Component
         }
 
         if ($this->pdo !== null) {
-            Zilf::debug('Closing DB connection: ' . $this->dsn, __METHOD__);
+            Log::debug('Closing DB connection: ' . $this->dsn . __METHOD__);
             $this->pdo = null;
             $this->_schema = null;
             $this->_transaction = null;
@@ -1146,7 +1147,7 @@ class Connection extends Component
      */
     public function __sleep()
     {
-        $fields = (array) $this;
+        $fields = (array)$this;
 
         unset($fields['pdo']);
         unset($fields["\000" . __CLASS__ . "\000" . '_master']);

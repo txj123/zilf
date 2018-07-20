@@ -7,6 +7,7 @@
 
 namespace Zilf\Db;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Db\base\InvalidConfigException;
 
@@ -122,7 +123,7 @@ class Transaction extends \Zilf\Db\base\BaseObject
             if ($isolationLevel !== null) {
                 $this->db->getSchema()->setTransactionIsolationLevel($isolationLevel);
             }
-            //Zilf::debug('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : ''), __METHOD__);
+            Log::debug('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : '') . __METHOD__);
 
             $this->db->trigger(Connection::EVENT_BEGIN_TRANSACTION);
             $this->db->pdo->beginTransaction();
@@ -133,10 +134,10 @@ class Transaction extends \Zilf\Db\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            //Zilf::debug('Set savepoint ' . $this->_level, __METHOD__);
+            Log::debug('Set savepoint ' . $this->_level . __METHOD__);
             $schema->createSavepoint('LEVEL' . $this->_level);
         } else {
-            //Zilf::info('Transaction not started: nested transaction not supported', __METHOD__);
+            Log::info('Transaction not started: nested transaction not supported' . __METHOD__);
         }
         $this->_level++;
     }
@@ -153,7 +154,7 @@ class Transaction extends \Zilf\Db\base\BaseObject
 
         $this->_level--;
         if ($this->_level === 0) {
-            //Zilf::debug('Commit transaction', __METHOD__);
+            Log::debug('Commit transaction' . __METHOD__);
             $this->db->pdo->commit();
             $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
             return;
@@ -161,10 +162,10 @@ class Transaction extends \Zilf\Db\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            //Zilf::debug('Release savepoint ' . $this->_level, __METHOD__);
+            Log::debug('Release savepoint ' . $this->_level . __METHOD__);
             $schema->releaseSavepoint('LEVEL' . $this->_level);
         } else {
-            //Zilf::info('Transaction not committed: nested transaction not supported', __METHOD__);
+            Log::info('Transaction not committed: nested transaction not supported' . __METHOD__);
         }
     }
 
@@ -182,7 +183,7 @@ class Transaction extends \Zilf\Db\base\BaseObject
 
         $this->_level--;
         if ($this->_level === 0) {
-            Zilf::debug('Roll back transaction', __METHOD__);
+            Log::debug('Roll back transaction' . __METHOD__);
             $this->db->pdo->rollBack();
             $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
             return;
@@ -190,10 +191,10 @@ class Transaction extends \Zilf\Db\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            Zilf::debug('Roll back to savepoint ' . $this->_level, __METHOD__);
+            Log::debug('Roll back to savepoint ' . $this->_level . __METHOD__);
             $schema->rollBackSavepoint('LEVEL' . $this->_level);
         } else {
-            Zilf::info('Transaction not rolled back: nested transaction not supported', __METHOD__);
+            Log::info('Transaction not rolled back: nested transaction not supported' . __METHOD__);
             // throw an exception to fail the outer transaction
             throw new Exception('Roll back failed: nested transaction not supported.');
         }
@@ -216,7 +217,7 @@ class Transaction extends \Zilf\Db\base\BaseObject
         if (!$this->getIsActive()) {
             throw new Exception('Failed to set isolation level: transaction was inactive.');
         }
-        Zilf::debug('Setting transaction isolation level to ' . $level, __METHOD__);
+        Log::debug('Setting transaction isolation level to ' . $level . __METHOD__);
         $this->db->getSchema()->setTransactionIsolationLevel($level);
     }
 

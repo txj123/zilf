@@ -7,6 +7,7 @@
 
 namespace Zilf\Db\base;
 
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 
 /**
@@ -128,7 +129,7 @@ class Controller extends Component implements ViewContextInterface
             throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
         }
 
-        Zilf::debug('Route to run: ' . $action->getUniqueId(), __METHOD__);
+        Log::debug('Route to run: ' . $action->getUniqueId() . __METHOD__);
 
         if (Zilf::$app->requestedAction === null) {
             Zilf::$app->requestedAction = $action;
