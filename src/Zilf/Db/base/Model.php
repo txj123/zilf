@@ -12,6 +12,7 @@ use ArrayIterator;
 use ArrayObject;
 use IteratorAggregate;
 use ReflectionClass;
+use Zilf\Facades\Log;
 use Zilf\System\Zilf;
 use Zilf\Helpers\Inflector;
 use Zilf\validators\RequiredValidator;
@@ -733,7 +734,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @see safeAttributes()
      * @see attributes()
      */
-    public function setAttributes($values, $safeOnly = true)
+    public function setAttributes($values, $safeOnly = false)
     {
         if (is_array($values)) {
             $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
@@ -756,8 +757,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     public function onUnsafeAttribute($name, $value)
     {
-        if (Zilf_DEBUG) {
-            Zilf::debug("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
+        if (Zilf::$app->is_debug) {
+            Log::debug("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.".__METHOD__);
         }
     }
 
