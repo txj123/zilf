@@ -2,8 +2,8 @@
 
 namespace Zilf\View\Compilers;
 
-use Zilf\Support\Arr;
-use Zilf\Support\Str;
+use Zilf\Helpers\Arr;
+use Zilf\Helpers\Str;
 
 class BladeCompiler extends Compiler implements CompilerInterface
 {

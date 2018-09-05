@@ -37,6 +37,10 @@ class CacheManager
     public function __construct()
     {
         $this->app = Zilf::$container;
+        $this->app['config'] = Zilf::$container->getShare('config');
+        $this->app['redis'] = Zilf::$container->getShare('redis');
+        $this->app['db'] = Zilf::$container->getShare('db');
+        $this->app['files'] = Zilf::$container->getShare('files');
     }
 
     /**

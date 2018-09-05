@@ -3,6 +3,7 @@
 namespace Zilf\Cache;
 
 use Zilf\Support\ServiceProvider;
+use Zilf\System\Zilf;
 
 class CacheServiceProvider extends ServiceProvider
 {
@@ -20,19 +21,19 @@ class CacheServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(
-            'cache', function ($app) {
-                return new CacheManager($app);
+        Zilf::$container->register(
+            'cache', function () {
+                return new CacheManager();
             }
         );
 
-        $this->app->singleton(
+        Zilf::$container->register(
             'cache.store', function ($app) {
-                return $app['cache']->driver();
+                return Zilf::$container->getShare('cache')->driver();
             }
         );
 
-        $this->app->singleton(
+        Zilf::$container->register(
             'memcached.connector', function () {
                 return new MemcachedConnector;
             }

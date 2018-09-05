@@ -1,5 +1,31 @@
 <?php
 
+if (! function_exists('base_path')) {
+    /**
+     * Get the path to the base of the install.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function base_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->basePath().($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
+
+if (! function_exists('app_path')) {
+    /**
+     * Get the path to the application folder.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function app_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->path();
+    }
+}
+
 if (!function_exists('cookie')) {
     /**
      * Cookie 设置、获取、删除
@@ -27,7 +53,7 @@ if (!function_exists('cookie_helper')) {
     function cookie_helper($name = '', $value = '', $option = null)
     {
         // 默认设置
-        $cookie = \Zilf\System\Zilf::$container->getShare('config')->get('cookie');
+        $cookie = \Zilf\System\Zilf::$container->getShare('config')->get('app.cookie');
         $config = array(
             'prefix' => $cookie['cookie_prefix'], // cookie 名称前缀
             'expire' => $cookie['cookie_expire'], // cookie 保存时间
@@ -36,6 +62,7 @@ if (!function_exists('cookie_helper')) {
             'secure' => $cookie['cookie_secure'], //  cookie 启用安全传输
             'httponly' => $cookie['cookie_httponly'], // httponly设置
         );
+
         // 参数设置(会覆盖黙认设置)
         if (!is_null($option)) {
             if (is_numeric($option)) {
@@ -45,9 +72,11 @@ if (!function_exists('cookie_helper')) {
             }
             $config = array_merge($config, array_change_key_case($option));
         }
+
         if (!empty($config['httponly'])) {
             ini_set("session.cookie_httponly", 1);
         }
+
         // 清除指定前缀的所有cookie
         if (is_null($name)) {
             if (empty($_COOKIE)) {
@@ -68,8 +97,10 @@ if (!function_exists('cookie_helper')) {
             // 获取全部的cookie
             return $_COOKIE;
         }
+
         $name = $config['prefix'] . str_replace('.', '_', $name);
         if ('' === $value) {
+
             if (isset($_COOKIE[$name])) {
                 $value = $_COOKIE[$name];
                 if (0 === strpos($value, 'think:')) {
@@ -81,7 +112,9 @@ if (!function_exists('cookie_helper')) {
             } else {
                 return null;
             }
+
         } else {
+
             if (is_null($value)) {
                 setcookie($name, '', time() - 3600, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                 unset($_COOKIE[$name]); // 删除指定cookie
@@ -94,6 +127,7 @@ if (!function_exists('cookie_helper')) {
                 setcookie($name, $value, $expire, $config['path'], $config['domain'], $config['secure'], $config['httponly']);
                 $_COOKIE[$name] = $value;
             }
+
         }
         return null;
     }
@@ -483,5 +517,190 @@ if (!function_exists('asset_mailto')) {
     function asset_mailto($text, $email = null, $options = [])
     {
         return \Zilf\Helpers\Html::assetImg($text, $email, $options);
+    }
+}
+
+if (! function_exists('with')) {
+    /**
+     * Return the given value, optionally passed through the given callback.
+     *
+     * @param  mixed  $value
+     * @param  callable|null  $callback
+     * @return mixed
+     */
+    function with($value, callable $callback = null)
+    {
+        return is_null($callback) ? $value : $callback($value);
+    }
+}
+
+if (! function_exists('storage_path')) {
+    /**
+     * Get the path to the storage folder.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function storage_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->runtimePath().($path ? DIRECTORY_SEPARATOR.$path : $path);
+    }
+}
+
+
+if (! function_exists('env')) {
+    /**
+     * Gets the value of an environment variable.
+     *
+     * @param  string  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    function env($key, $default = null)
+    {
+        $value = getenv($key);
+
+        if ($value === false) {
+            return value($default);
+        }
+
+        switch (strtolower($value)) {
+            case 'true':
+            case '(true)':
+                return true;
+            case 'false':
+            case '(false)':
+                return false;
+            case 'empty':
+            case '(empty)':
+                return '';
+            case 'null':
+            case '(null)':
+                return;
+        }
+
+        if (($valueLength = strlen($value)) > 1 && $value[0] === '"' && $value[$valueLength - 1] === '"') {
+            return substr($value, 1, -1);
+        }
+
+        return $value;
+    }
+}
+
+if (! function_exists('collect')) {
+    /**
+     * Create a collection from the given value.
+     *
+     * @param  mixed  $value
+     * @return \Zilf\Support\Collection
+     */
+    function collect($value = null)
+    {
+        return new \Zilf\Support\Collection($value);
+    }
+}
+
+if (! function_exists('data_get')) {
+    /**
+     * Get an item from an array or object using "dot" notation.
+     *
+     * @param  mixed   $target
+     * @param  string|array  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    function data_get($target, $key, $default = null)
+    {
+        if (is_null($key)) {
+            return $target;
+        }
+
+        $key = is_array($key) ? $key : explode('.', $key);
+
+        while (! is_null($segment = array_shift($key))) {
+            if ($segment === '*') {
+                if ($target instanceof \Zilf\Support\Collection) {
+                    $target = $target->all();
+                } elseif (! is_array($target)) {
+                    return value($default);
+                }
+
+                $result = \Zilf\Helpers\Arr::pluck($target, $key);
+
+                return in_array('*', $key) ? \Zilf\Helpers\Arr::collapse($result) : $result;
+            }
+
+            if (\Zilf\Helpers\Arr::accessible($target) && \Zilf\Helpers\Arr::exists($target, $segment)) {
+                $target = $target[$segment];
+            } elseif (is_object($target) && isset($target->{$segment})) {
+                $target = $target->{$segment};
+            } else {
+                return value($default);
+            }
+        }
+
+        return $target;
+    }
+}
+
+if (! function_exists('data_set')) {
+    /**
+     * Set an item on an array or object using dot notation.
+     *
+     * @param  mixed  $target
+     * @param  string|array  $key
+     * @param  mixed  $value
+     * @param  bool  $overwrite
+     * @return mixed
+     */
+    function data_set(&$target, $key, $value, $overwrite = true)
+    {
+        $segments = is_array($key) ? $key : explode('.', $key);
+
+        if (($segment = array_shift($segments)) === '*') {
+            if (! \Zilf\Helpers\Arr::accessible($target)) {
+                $target = [];
+            }
+
+            if ($segments) {
+                foreach ($target as &$inner) {
+                    data_set($inner, $segments, $value, $overwrite);
+                }
+            } elseif ($overwrite) {
+                foreach ($target as &$inner) {
+                    $inner = $value;
+                }
+            }
+        } elseif (\Zilf\Helpers\Arr::accessible($target)) {
+            if ($segments) {
+                if (! \Zilf\Helpers\Arr::exists($target, $segment)) {
+                    $target[$segment] = [];
+                }
+
+                data_set($target[$segment], $segments, $value, $overwrite);
+            } elseif ($overwrite || ! \Zilf\Helpers\Arr::exists($target, $segment)) {
+                $target[$segment] = $value;
+            }
+        } elseif (is_object($target)) {
+            if ($segments) {
+                if (! isset($target->{$segment})) {
+                    $target->{$segment} = [];
+                }
+
+                data_set($target->{$segment}, $segments, $value, $overwrite);
+            } elseif ($overwrite || ! isset($target->{$segment})) {
+                $target->{$segment} = $value;
+            }
+        } else {
+            $target = [];
+
+            if ($segments) {
+                data_set($target[$segment], $segments, $value, $overwrite);
+            } elseif ($overwrite) {
+                $target[$segment] = $value;
+            }
+        }
+
+        return $target;
     }
 }

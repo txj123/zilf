@@ -56,6 +56,8 @@ class Url
             // e.g. /path/to/resource
             $url = ltrim($url, '/');
             $bundle = '';
+        }elseif ($bundle == 'Index'){
+            $bundle = '';
         }
 
         if ($scheme) {

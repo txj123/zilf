@@ -165,35 +165,25 @@ class Container implements ArrayAccess, ContainerInterface
         //清除已经存在的对象信息
         unset($this->_objects[$id]);
 
-        if (isset($this->_alias[$this->_id])) {  //别名存在
-            //如果$definition是数组，则作为参数传递
-            if (!empty($definition) && is_array($definition)) {
-                $this->_alias[$this->_id]['params'] = $definition;
-            }
 
-            //参数重新赋值
-            if (!empty($params)) {
-                $this->_alias[$this->_id]['params'] = $params;
-            }
+        if (is_callable($definition)) { //
 
-            $class = array(
-                'class' => $this->_alias[$this->_id]['class'],
-                'params' => $this->_alias[$this->_id]['params'],
-                'type' => $this->_alias[$this->_id]['type'],
-            );
-        } elseif (is_callable($definition)) { //
             $class = array(
                 'class' => $definition,
                 'params' => [],
                 'type' => self::TYPE_DEFINITION_CALLBACK,
             );
+
         } elseif (is_object($definition)) {  //是对象
+
             $class = array(
                 'class' => $definition,
                 'params' => [],
                 'type' => self::TYPE_DEFINITION_OBJ,
             );
+
         } elseif (is_array($definition)) {
+
             if (count($definition) != 2) {
                 throw new \Exception('注册的参数错误，只能输入controller和action方法');
             }
@@ -205,6 +195,7 @@ class Container implements ArrayAccess, ContainerInterface
                 'type' => self::TYPE_DEFINITION_STRING,
             );
             $this->setAlias($this->_id, $definition);
+
         } else {
             $class = array(
                 'class' => $definition,
@@ -272,20 +263,28 @@ class Container implements ArrayAccess, ContainerInterface
     public function setAlias($aliasName, $definition = '')
     {
         if (is_array($aliasName) && !empty($aliasName)) {
+
             foreach ($aliasName as $id => $item) {
                 $this->_alias[$id] = array(
                     'class' => $item,
                     'params' => '',
                     'type' => self::TYPE_DEFINITION_STRING,
                 );
+
+                $this->_definitions[$id] = $item;
             }
+
         } else {
+
             $aliasName = strtolower($aliasName);
             $this->_alias[$aliasName] = array(
                 'class' => $definition,
                 'params' => '',
                 'type' => self::TYPE_DEFINITION_STRING,
             );
+
+            $this->_definitions[$aliasName] = $definition;
+
         }
 
         return $this;

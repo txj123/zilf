@@ -2,8 +2,8 @@
 
 namespace Zilf\View;
 
-use Zilf\Support\Arr;
-use Zilf\Support\Str;
+use Zilf\Helpers\Arr;
+use Zilf\Helpers\Str;
 use InvalidArgumentException;
 use Zilf\View\Contracts\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;

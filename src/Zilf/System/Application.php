@@ -8,20 +8,57 @@
 
 namespace Zilf\System;
 
-use Zilf\ClassLoader\ClassMapGenerator;
-use Zilf\ClassLoader\MapClassLoader;
-use Zilf\Db\Connection;
-use Zilf\Di\Container;
 use Zilf\Debug\Debug;
+use Zilf\Di\Container;
 use Zilf\Debug\Exceptions\NotFoundHttpException;
 use Zilf\HttpFoundation\Response;
 use Zilf\Routing\Route;
+use Zilf\Support\Request;
 
 class Application
 {
+    /**
+     * Zilf 框架的版本号
+     */
+    const VERSION = '5.6.24';
+
+    /**
+     * web服务器根目录的路径
+     */
+    protected $basePath;
+
+    /**
+     * 数据存储路径
+     */
+    protected $databasePath;
+
+    /**
+     * 缓存路径
+     */
+    protected $runtimePath;
+
+    /**
+     * 环境路径
+     */
+    protected $environmentPath;
+
+    /**
+     * 环境变量文件名
+     */
+    protected $environmentFile;
+
+    protected $bootstrappers = [
+        \Zilf\System\Bootstrap\LoadEnvironmentVariables::class,
+        \Zilf\System\Bootstrap\LoadConfiguration::class,
+//        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
+//        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
+        \Zilf\System\Bootstrap\RegisterProviders::class,
+//        \Illuminate\Foundation\Bootstrap\BootProviders::class,
+    ];
+
     public $charset = 'UTF-8';
 
-    public $bundle = 'Http';      //http请求的bundle的名称
+    public $bundle = 'Index';      //http请求的bundle的名称
     public $controller = 'Index'; //http请求的类的名称
     public $action = 'index';    //http请求的类的方法名称
     public $params = [];        //http请求的参数信息，注：非get,post的参数，是url如：/aa/bb/cc/dd/ee中获取的参数
@@ -43,31 +80,28 @@ class Application
 
     public $database = 'db.default';
 
-    /**
-     * Application constructor.
-     *
-     * @param $environment //配置文件
-     */
-    public function __construct($environment)
+
+    public function __construct($publicPath = null)
     {
         Zilf::$container = new Container();
         Zilf::$app = $this;
-        $this->environment = $environment;
 
-        //注册服务
-        new Services();
+        if ($publicPath) {
+            $this->setBasePath($publicPath);
+        }
 
-        //设置时区
-        $this->setTimeZone();
+        $this->registerCoreContainerAliases();
+
+        $this->bootstrapWith($this->bootstrappers);
 
         //设置异常信息
-        $this->setHandler();
+        Debug::enable();
 
-        //加载路由库
-        if (PHP_SAPI !== 'cli') {
-            $pathInfo = Zilf::$container['request']->getPathInfo();
-            $this->setRoute($pathInfo);
-        } else {
+        Zilf::$container->register('request', Request::createFromGlobals());
+
+        //终端访问
+        if ($this->runningInConsole()) {
+
             $argv = $_SERVER['argv'];
             $this->setRoute(isset($argv[1]) ? $argv[1] : '');
 
@@ -77,24 +111,148 @@ class Application
             }
             unset($argc);
             unset($argv);
-        }
 
-        //加载服务信息
-        $services = APP_PATH . '/config/services.php';
-        if (file_exists($services)) {
-            include $services;
-        }
+        } else {
 
-        //初始化数据库
-        $params = Zilf::$container->getShare('config')->get('db');
-        foreach ($params as $key => $row) {
-            Zilf::$container->register(
-                'db.'.$key, function () use ($row) {
-                    $connect = new Connection($row);
-                    $connect->open();
-                    return $connect;
+            $pathInfo = Zilf::$container->get('request')->getPathInfo();
+            $this->setRoute($pathInfo);
+
+        }
+    }
+
+    public function bootstrapWith(array $bootstrappers)
+    {
+        foreach ($bootstrappers as $bootstrapper) {
+            (new $bootstrapper)->bootstrap();
+        }
+    }
+
+    public function setBasePath($publicPath)
+    {
+        $this->basePath = dirname(rtrim($publicPath, '\/'));
+
+        return $this;
+    }
+
+    public function path($path = '')
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'app' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function basePath($path = '')
+    {
+        return $this->basePath . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function langPath()
+    {
+        return $this->resourcePath() . DIRECTORY_SEPARATOR . 'lang';
+    }
+
+    public function publicPath()
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'public';
+    }
+
+    public function runtimePath()
+    {
+        return $this->runtimePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'runtime';
+    }
+
+    public function configPath($path = '')
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'config' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function databasePath($path = '')
+    {
+        return ($this->databasePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'database') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function resourcePath($path = '')
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'resources' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function routesPath($path = '')
+    {
+        return $this->basePath . DIRECTORY_SEPARATOR . 'routes' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function environmentPath()
+    {
+        return $this->environmentPath ?: $this->basePath;
+    }
+
+    /**
+     * Set the environment file to be loaded during bootstrapping.
+     *
+     * @param  string  $file
+     * @return $this
+     */
+    public function loadEnvironmentFrom($file)
+    {
+        $this->environmentFile = $file;
+
+        return $this;
+    }
+
+    public function environmentFile()
+    {
+        return $this->environmentFile ?: '.env';
+    }
+
+    /**
+     * @param string $pathInfo
+     * @throws \Exception
+     */
+    public function setRoute($pathInfo = '')
+    {
+        //自定义路由
+        $route = Zilf::$container->get('router');
+        $routes_config = $this->routesPath() . '/routes.php';
+
+        if (file_exists($routes_config)) {
+            //加载路由的配置文件
+            include $routes_config;
+
+            $class_exec = $route->dispatch($pathInfo);
+            if ($class_exec) {
+
+                list($pcre, $pattern, $cb, $options) = $class_exec;
+                $segments = explode('\\', $cb[0]);
+
+                $this->bundle = $segments[2];
+                $this->controller = rtrim($segments[4], $this->controller_suffix);
+                $this->action = $cb[1] . $this->action_suffix;
+                $this->params = isset($options['vars']) ? $options['vars'] : [];
+
+            } else {
+                $pathInfo = trim($pathInfo, '/');
+
+                //设置路由
+                if ($pathInfo) {
+                    $this->segments = explode('/', $pathInfo);
+
+                    $this->getBundle();
+                    $this->getController();
+                    $this->getAction();
+                    $this->getParams();
+
+                } else {
+                    //获取默认的配置
+                    $framework = Zilf::$container->getShare('config')->get('framework');
+
+                    if (!empty($framework)) {
+                        foreach ($framework as $key => $value) {
+                            if ($value) {
+                                $this->$key = $value;
+                            }
+                        }
+                    }
                 }
-            );
+
+            }
         }
     }
 
@@ -105,7 +263,8 @@ class Application
      */
     function run()
     {
-        $class = 'App\\'.ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
+        $class = 'App\\Http\\' . ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
+
         if (!class_exists($class)) {
             $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
 
@@ -181,61 +340,6 @@ class Application
     }
 
     /**
-     * 获取路由信息
-     *
-     * @param string $pathInfo
-     */
-    public function setRoute($pathInfo = '')
-    {
-        //自定义路由
-        $route = Zilf::$container->get('route');
-        $routes_config = APP_PATH . '/config/routes.php';
-        if (file_exists($routes_config)) {
-            //加载路由的配置文件
-            include $routes_config;
-
-            $class_exec = $route->dispatch($pathInfo);
-            if ($class_exec) {
-
-                list($pcre, $pattern, $cb, $options) = $class_exec;
-                $segments = explode('\\', $cb[0]);
-
-                $this->bundle = $segments[1];
-                $this->controller = rtrim($segments[3], $this->controller_suffix);
-                $this->action = $cb[1] . $this->action_suffix;
-                $this->params = isset($options['vars']) ? $options['vars'] : [];
-
-            } else {
-                $pathInfo = trim($pathInfo, '/');
-
-                //设置路由
-                if ($pathInfo) {
-                    $this->segments = explode('/', $pathInfo);
-
-                    $this->getBundle();
-                    $this->getController();
-                    $this->getAction();
-                    $this->getParams();
-
-                }else{
-                    //获取默认的配置
-                    $framework = Zilf::$container->getShare('config')->get('framework');
-
-                    if (!empty($framework)) {
-                        foreach ($framework as $key => $value) {
-                            if ($value) {
-                                $this->$key = $value;
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-    }
-
-
-    /**
      * 根据url,获取当前包的名称
      */
     function getBundle()
@@ -292,87 +396,12 @@ class Application
      */
     public function getDb($databaseName = '')
     {
-        return Zilf::$container->get($this->database);
+        return Zilf::$container->getShare($databaseName ? $databaseName : $this->database);
     }
 
     public function setDb($databaseName)
     {
         $this->database = $databaseName;
-    }
-
-    /**
-     * 获取缓存文件夹的路径
-     *
-     * @return string
-     */
-    public function getRuntime()
-    {
-        $runtime = Zilf::$container->getShare('config')->get('runtime');
-        if (empty($runtime)) {
-            $runtime = APP_PATH . DIRECTORY_SEPARATOR . 'runtime';
-        }
-        return $runtime;
-    }
-
-    /**
-     * 设置时区
-     */
-    public function setTimeZone()
-    {
-        //设置时区
-        $timezone = Zilf::$container->getShare('config')->get('timezone');
-
-        if (!empty($timezone)) {
-            date_default_timezone_set($timezone);
-            Zilf::$container->getShare('config')->offsetUnset('timeZone');  //释放内存
-        } elseif (!ini_get('date.timezone')) {
-            date_default_timezone_set('UTC');
-        }
-    }
-
-    /**
-     * 获取当前的时区
-     *
-     * @return string
-     */
-    public function getTimeZone()
-    {
-        return date_default_timezone_get();
-    }
-
-    /**
-     *
-     */
-    private function setHandler()
-    {
-        $handle = new Debug();
-        $handle->bootstrap();
-
-        switch ($this->environment) {
-        case 'dev':
-        case 'development':
-            ini_set('display_errors', 1);
-            error_reporting(-1);
-            $this->is_debug = true;
-            break;
-
-        case 'testing':
-            ini_set('display_errors', 1);
-            error_reporting(E_ALL & ~E_NOTICE);
-            $this->is_debug = true;
-            break;
-
-        case 'pro':
-        case 'prod':
-        case 'production':
-            ini_set('display_errors', 0);
-            break;
-
-        default:
-            header('HTTP/1.1 503 Service Unavailable.', true, 503);
-            echo 'The application environment is not set correctly.';
-            exit(1); // EXIT_ERROR
-        }
     }
 
     /**
@@ -391,5 +420,25 @@ class Application
     public function getEnvironment()
     {
         return $this->environment;
+    }
+
+    public function registerCoreContainerAliases()
+    {
+        Zilf::$container->setAlias([
+            'app' => \Zilf\System\Application::class,
+            'blade.compiler' => \Zilf\View\Compilers\BladeCompiler::class,
+            'cache' => \Zilf\Cache\CacheManager::class,
+            'cache.store' => \Zilf\Cache\Repository::class,
+            'config' => \Zilf\Config\Repository::class,
+            'encrypter' => \Zilf\Security\Encrypt\Encrypter::class,
+            'db' => \Zilf\Db\Connection::class,
+            'files' => \Zilf\Filesystem\Filesystem::class,
+            'log' => \Zilf\Log\LogManager::class,
+            'redis' => \Zilf\Redis\RedisManager::class,
+            'request' => \Zilf\Support\Request::class,
+            'router' => \Zilf\Routing\Route::class,
+            'validator' => \Zilf\Validation\Factory::class,
+            'view' => \Zilf\View\Factory::class,
+        ]);
     }
 }

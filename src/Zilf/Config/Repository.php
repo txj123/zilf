@@ -3,6 +3,7 @@
 namespace Zilf\Config;
 
 use ArrayAccess;
+use Zilf\Helpers\Arr;
 
 class Repository implements ArrayAccess
 {
@@ -12,12 +13,6 @@ class Repository implements ArrayAccess
      * @var array
      */
     protected $items = [];
-
-    /**
-     * @var array
-     * 其他的扩展参数
-     */
-    protected $otherItems = [];
 
     /**
      * Create a new configuration repository.
@@ -38,47 +33,59 @@ class Repository implements ArrayAccess
      */
     public function has($key)
     {
-        return isset($this->items[$key]) ? $this->items[$key] : '';
+        return Arr::has($this->items, $key);
     }
 
     /**
      * Get the specified configuration value.
      *
-     * @param  string $key
-     * @param  mixed  $default
+     * @param  array|string $key
+     * @param  mixed $default
      * @return mixed
      */
     public function get($key, $default = null)
     {
-        if(substr_count($key, '.') > 0) {
-            $paramArr = explode('.', $key);
-            $data = $this->items[$paramArr[0]];
+        if (is_array($key)) {
+            return $this->getMany($key);
+        }
 
-            if(isset($data[$paramArr[1]])) {
-                $data = $data[$paramArr[1]];
+        return Arr::get($this->items, $key, $default);
+    }
+
+    /**
+     * Get many configuration values.
+     *
+     * @param  array $keys
+     * @return array
+     */
+    public function getMany($keys)
+    {
+        $config = [];
+
+        foreach ($keys as $key => $default) {
+            if (is_numeric($key)) {
+                list($key, $default) = [$default, null];
             }
 
-            return $data ? $data : $default;
-        }else{
-            return isset($this->items[$key]) ? $this->items[$key] : $default;
+            $config[$key] = Arr::get($this->items, $key, $default);
         }
+
+        return $config;
     }
 
     /**
      * Set a given configuration value.
      *
      * @param  array|string $key
-     * @param  mixed        $value
+     * @param  mixed $value
      * @return void
      */
     public function set($key, $value = null)
     {
-        if (is_array($key)) {
-            foreach ($key as $innerKey => $innerValue) {
-                $this->items[$innerKey] = $innerValue;
-            }
-        } else {
-            $this->items[$key] = $value;
+        $keys = is_array($key) ? $key : [$key => $value];
+
+        foreach ($keys as $key => $value) {
+            Arr::set($this->items, $key, $value);
         }
     }
 
@@ -86,7 +93,7 @@ class Repository implements ArrayAccess
      * Prepend a value onto an array configuration value.
      *
      * @param  string $key
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return void
      */
     public function prepend($key, $value)
@@ -102,7 +109,7 @@ class Repository implements ArrayAccess
      * Push a value onto an array configuration value.
      *
      * @param  string $key
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return void
      */
     public function push($key, $value)
@@ -150,7 +157,7 @@ class Repository implements ArrayAccess
      * Set a configuration option.
      *
      * @param  string $key
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return void
      */
     public function offsetSet($key, $value)
