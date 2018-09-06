@@ -59,7 +59,6 @@ class Container implements ArrayAccess, ContainerInterface
         if (empty($id)) {
             throw new \Exception('参数 id 不能为空');
         }
-        $id = strtolower($id);
         $this->_id = $id;
 
         //别名
@@ -120,7 +119,6 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function getShare(string $id, array $params = [])
     {
-        $id = strtolower($id);
         if (isset($this->_objects[$id]) && !empty($this->_objects[$id])) {
             return $this->_objects[$id];
         } elseif (!isset($this->_definitions[$id])) {

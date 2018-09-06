@@ -17,16 +17,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
+use Zilf\System\Zilf;
 
 class Application extends SymfonyApplication
 {
-    /**
-     * The Laravel application instance.
-     *
-     * @var \Illuminate\Contracts\Container\Container
-     */
-    protected $laravel;
-
     /**
      * The output from the previous command.
      *
@@ -51,7 +45,7 @@ class Application extends SymfonyApplication
     /**
      * Create a new Artisan console application.
      *
-     * @param  string  $version
+     * @param  string $version
      * @return void
      */
     public function __construct($version)
@@ -99,7 +93,7 @@ class Application extends SymfonyApplication
     /**
      * Format the given command as a fully-qualified executable command.
      *
-     * @param  string  $string
+     * @param  string $string
      * @return string
      */
     public static function formatCommandString($string)
@@ -110,7 +104,7 @@ class Application extends SymfonyApplication
     /**
      * Register a console "starting" bootstrapper.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return void
      */
     public static function starting(Closure $callback)
@@ -143,18 +137,18 @@ class Application extends SymfonyApplication
     /**
      * Run an Artisan console command by name.
      *
-     * @param  string  $command
-     * @param  array  $parameters
-     * @param  \Symfony\Component\Console\Output\OutputInterface|null  $outputBuffer
+     * @param  string $command
+     * @param  array $parameters
+     * @param  \Symfony\Component\Console\Output\OutputInterface|null $outputBuffer
      * @return int
      */
     public function call($command, array $parameters = [], $outputBuffer = null)
     {
         if (is_subclass_of($command, SymfonyCommand::class)) {
-            $command = $this->laravel->make($command)->getName();
+            $command = Zilf::$container->build($command)->getName();
         }
 
-        if (! $this->has($command)) {
+        if (!$this->has($command)) {
             throw new CommandNotFoundException(sprintf('The command "%s" does not exist.', $command));
         }
 
@@ -179,14 +173,14 @@ class Application extends SymfonyApplication
     public function output()
     {
         return $this->lastOutput && method_exists($this->lastOutput, 'fetch')
-                        ? $this->lastOutput->fetch()
-                        : '';
+            ? $this->lastOutput->fetch()
+            : '';
     }
 
     /**
      * Add a command to the console.
      *
-     * @param  \Symfony\Component\Console\Command\Command  $command
+     * @param  \Symfony\Component\Console\Command\Command $command
      * @return \Symfony\Component\Console\Command\Command
      */
     public function add(SymfonyCommand $command)
@@ -197,7 +191,7 @@ class Application extends SymfonyApplication
     /**
      * Add the command to the parent instance.
      *
-     * @param  \Symfony\Component\Console\Command\Command  $command
+     * @param  \Symfony\Component\Console\Command\Command $command
      * @return \Symfony\Component\Console\Command\Command
      */
     protected function addToParent(SymfonyCommand $command)
@@ -208,19 +202,18 @@ class Application extends SymfonyApplication
     /**
      * Add a command, resolving through the application.
      *
-     * @param  string  $command
+     * @param  string $command
      * @return \Symfony\Component\Console\Command\Command
      */
     public function resolve($command)
     {
-        //$this->laravel->make($command)
         return $this->add(new $command);
     }
 
     /**
      * Resolve an array of commands through the application.
      *
-     * @param  array|mixed  $commands
+     * @param  array|mixed $commands
      * @return $this
      */
     public function resolveCommands($commands)

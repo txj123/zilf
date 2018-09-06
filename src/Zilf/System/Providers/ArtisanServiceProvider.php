@@ -2,6 +2,7 @@
 
 namespace Zilf\System\Providers;
 
+use Zilf\Console\Commands\ServeCommand;
 use Zilf\Support\ServiceProvider;
 use Illuminate\Queue\Console\TableCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Console\UpCommand;
 use Illuminate\Foundation\Console\DownCommand;
 use Illuminate\Auth\Console\ClearResetsCommand;
 use Illuminate\Cache\Console\CacheTableCommand;
-use Illuminate\Foundation\Console\ServeCommand;
 use Illuminate\Foundation\Console\PresetCommand;
 use Illuminate\Queue\Console\FailedTableCommand;
 use Illuminate\Foundation\Console\AppNameCommand;
@@ -85,6 +85,7 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected $commands = [
         'CacheClear' =>  'Zilf\Cache\Console\ClearCommand',
+        'serve' =>  'Zilf\Console\Commands\ServeCommand',
         /*'CacheForget' => 'command.cache.forget',
         'ClearCompiled' => 'command.clear-compiled',
         'ClearResets' => 'command.auth.resets.clear',
@@ -880,7 +881,7 @@ class ArtisanServiceProvider extends ServiceProvider
     protected function registerServeCommand()
     {
         Zilf::$container->register('command.serve', function () {
-            return new ServeCommand;
+            return new ServeCommand();
         });
     }
 

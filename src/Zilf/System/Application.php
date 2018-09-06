@@ -187,7 +187,7 @@ class Application
     /**
      * Set the environment file to be loaded during bootstrapping.
      *
-     * @param  string  $file
+     * @param  string $file
      * @return $this
      */
     public function loadEnvironmentFrom($file)
@@ -232,17 +232,12 @@ class Application
 
                 //设置路由
                 if ($pathInfo) {
-                    $this->segments = explode('/', $pathInfo);
 
-                    $this->getBundle();
-                    $this->getController();
-                    $this->getAction();
-                    $this->getParams();
+                    $this->segments = explode('/', $pathInfo);
 
                 } else {
                     //获取默认的配置
-                    $framework = Zilf::$container->getShare('config')->get('framework');
-
+                    $framework = Zilf::$container->getShare('config')->get('app.framework');
                     if (!empty($framework)) {
                         foreach ($framework as $key => $value) {
                             if ($value) {
@@ -263,19 +258,23 @@ class Application
      */
     function run()
     {
-        $class = 'App\\Http\\' . ucfirst($this->bundle) . '\\Controllers\\' . ucfirst($this->controller) . $this->controller_suffix;
-
+        $class = $this->getUnBundleUrl();
         if (!class_exists($class)) {
-            $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
 
-            if ($referer = Zilf::$container['request']->headers->get('referer')) {
-                $message .= sprintf(' (from "%s")', $referer);
+            $class = $this->getBundleUrl();
+            if (!class_exists($class)) {
+                $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
+
+                if ($referer = Zilf::$container['request']->headers->get('referer')) {
+                    $message .= sprintf(' (from "%s")', $referer);
+                }
+                throw new NotFoundHttpException($message);
             }
-            throw new NotFoundHttpException($message);
         }
 
-        $object = Zilf::$container->build($class, []);
+        unset($this->segments);
 
+        $object = Zilf::$container->build($class, []);
         if (method_exists($object, $this->action)) {
 
             //将参数追加到GET里面
@@ -300,9 +299,52 @@ class Application
                 throw new \LogicException($msg);
             }
             $response->send();
+
         } else {
             throw new \Exception('类: ' . $class . ' 调用的方法：' . $this->action . ' 不存在！');
         }
+    }
+
+    public function getBundleUrl()
+    {
+        $segments = $this->segments;
+
+        if ($segments) {
+            $this->bundle = ucfirst(strtolower(array_shift($segments)));
+        }
+
+        if ($segments) {
+            $this->controller = ucfirst(array_shift($segments));
+        }
+
+        if ($segments) {
+            $this->action = array_shift($segments);
+        }
+
+        if ($segments) {
+            $this->params = $segments;
+        }
+
+        return 'App\\Http\\' . $this->bundle . '\\Controllers\\' . $this->controller . $this->controller_suffix;
+    }
+
+    public function getUnBundleUrl()
+    {
+        $segments = $this->segments;
+
+        if ($segments) {
+            $this->controller = ucfirst(array_shift($segments));
+        }
+
+        if ($segments) {
+            $this->action = array_shift($segments);
+        }
+
+        if ($segments) {
+            $this->params = $segments;
+        }
+
+        return 'App\\Http\\' . $this->bundle . '\\Controllers\\' . $this->controller . $this->controller_suffix;
     }
 
     private function varToString($var)
@@ -337,55 +379,6 @@ class Application
         }
 
         return (string)$var;
-    }
-
-    /**
-     * 根据url,获取当前包的名称
-     */
-    function getBundle()
-    {
-        $segment = isset($this->segments[0]) ? $this->segments[0] : '';
-        $segment = strtolower($segment);
-
-        if (!empty($segment)) {
-            $bundles = Zilf::$container->getShare('config')->get('bundles');
-            if (isset($bundles[$segment])) {
-                $this->bundle = ucfirst($segment);
-                //移除bundel
-                array_shift($this->segments);
-            }
-        }
-    }
-
-    /**
-     * @return mixed|string
-     * 获取控制器
-     */
-    function getController()
-    {
-        if (!empty($this->segments)) {
-            $this->controller = array_shift($this->segments);
-        }
-    }
-
-    /**
-     * @return mixed|string
-     * 获取方法
-     */
-    function getAction()
-    {
-        if (!empty($this->segments)) {
-            $this->action = array_shift($this->segments);
-        }
-    }
-
-    /**
-     * 获取参数
-     */
-    function getParams()
-    {
-        $this->params = $this->segments;
-        unset($this->segments);
     }
 
     /**
@@ -439,6 +432,7 @@ class Application
             'router' => \Zilf\Routing\Route::class,
             'validator' => \Zilf\Validation\Factory::class,
             'view' => \Zilf\View\Factory::class,
+            'consoleKernel' => \App\Console\Kernel::class
         ]);
     }
 }

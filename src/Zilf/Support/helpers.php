@@ -26,6 +26,19 @@ if (! function_exists('app_path')) {
     }
 }
 
+if (! function_exists('public_path')) {
+    /**
+     * Get the path to the application folder.
+     *
+     * @param  string  $path
+     * @return string
+     */
+    function public_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->publicPath();
+    }
+}
+
 if (!function_exists('cookie')) {
     /**
      * Cookie 设置、获取、删除
