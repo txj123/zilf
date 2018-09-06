@@ -2,8 +2,6 @@
 
 namespace Zilf\Facades;
 
-use App\Console\Kernel as ConsoleKernelContract;
-
 /**
  * @method static int handle(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output = null)
  * @method static int call(string $command, array $parameters = [], $outputBuffer = null)
@@ -22,6 +20,6 @@ class Artisan extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return ConsoleKernelContract::class;
+        return 'consoleKernel';
     }
 }

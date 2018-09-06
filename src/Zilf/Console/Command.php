@@ -17,13 +17,6 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
 class Command extends SymfonyCommand
 {
     /**
-     * The Laravel application instance.
-     *
-     * @var \Illuminate\Contracts\Foundation\Application
-     */
-    protected $laravel;
-
-    /**
      * The input interface implementation.
      *
      * @var \Symfony\Component\Console\Input\InputInterface
@@ -179,7 +172,6 @@ class Command extends SymfonyCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         return call_user_func_array([$this, 'handle'],[]);
-        //return $this->laravel->call([$this, 'handle']);
     }
 
     /**
@@ -570,26 +562,5 @@ class Command extends SymfonyCommand
     public function getOutput()
     {
         return $this->output;
-    }
-
-    /**
-     * Get the Laravel application instance.
-     *
-     * @return \Illuminate\Contracts\Foundation\Application
-     */
-    public function getLaravel()
-    {
-        return $this->laravel;
-    }
-
-    /**
-     * Set the Laravel application instance.
-     *
-     * @param  \Illuminate\Contracts\Container\Container  $laravel
-     * @return void
-     */
-    public function setLaravel($laravel)
-    {
-        $this->laravel = $laravel;
     }
 }
