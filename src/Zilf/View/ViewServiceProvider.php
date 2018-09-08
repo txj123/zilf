@@ -74,7 +74,7 @@ class ViewServiceProvider
     public function registerViewFinder()
     {
         Zilf::$container->register('view.finder', function ($app) {
-            return new FileViewFinder(Zilf::$container->getShare('files'), [Zilf::$app->resourcePath()]);
+            return new FileViewFinder(Zilf::$container['files'], [Zilf::$app->resourcePath()]);
         });
     }
 

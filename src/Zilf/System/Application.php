@@ -274,19 +274,19 @@ class Application
 
         unset($this->segments);
 
+        //将参数追加到GET里面
+        if (!empty($this->params)) {
+            foreach ($this->params as $key => $row) {
+                if ($row === '') {
+                } else {
+                    $_GET['zget' . $key] = $row;
+                }
+            }
+            Zilf::$container->get('request')->query->add($_GET);
+        }
+
         $object = Zilf::$container->build($class, []);
         if (method_exists($object, $this->action)) {
-
-            //将参数追加到GET里面
-            if (!empty($this->params)) {
-                foreach ($this->params as $key => $row) {
-                    if ($row === '') {
-                    } else {
-                        $_GET['zget' . $key] = $row;
-                    }
-                }
-                Zilf::$container->get('request')->query->add($_GET);
-            }
 
             $response = call_user_func_array(array($object, $this->action), $this->params);
             if (!$response instanceof Response) {

@@ -179,7 +179,7 @@ class Html
             $options['rel'] = 'stylesheet';
         }
 
-        $version = $options['version'] ?? config('assets.css_version');
+        $version = $options['version'] ?? config('app.assets.css_version');
         unset($options['version']);
         $options['href'] = Url::assetUrl($url, $version, $urlName);
         unset($version);
@@ -236,7 +236,7 @@ class Html
      */
     private static function getJsHtml($url, $options, $urlName= 'default')
     {
-        $version = $options['version'] ?? config('assets.js_version');
+        $version = $options['version'] ?? config('app.assets.js_version');
         unset($options['version']);
         $options['src'] = Url::assetUrl($url, $version, $urlName);
         unset($version);
@@ -332,7 +332,7 @@ class Html
      */
     private static function getImgHtml($src, $options = [],$urlName= 'default')
     {
-        $version = $options['version'] ?? config('assets.css_version');
+        $version = $options['version'] ?? config('app.assets.css_version');
         unset($options['version']);
         $options['src'] = Url::assetUrl($src, $version, $urlName);
         if (!isset($options['alt'])) {
