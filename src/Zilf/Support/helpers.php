@@ -9,7 +9,7 @@ if (! function_exists('base_path')) {
      */
     function base_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->basePath().($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return \Zilf\System\Zilf::$app->basePath($path);
     }
 }
 
@@ -22,22 +22,66 @@ if (! function_exists('app_path')) {
      */
     function app_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->path();
+        return \Zilf\System\Zilf::$app->path($path);
     }
 }
 
 if (! function_exists('public_path')) {
-    /**
-     * Get the path to the application folder.
-     *
-     * @param  string  $path
-     * @return string
-     */
+
     function public_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->publicPath();
+        return \Zilf\System\Zilf::$app->publicPath($path);
     }
 }
+
+if (! function_exists('database_path')) {
+
+    function database_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->databasePath($path);
+    }
+}
+
+if (! function_exists('lang_path')) {
+
+    function lang_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->langPath($path);
+    }
+}
+
+if (! function_exists('runtime_path')) {
+
+    function runtime_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->runtimePath($path);
+    }
+}
+
+if (! function_exists('config_path')) {
+
+    function config_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->configPath($path);
+    }
+}
+
+if (! function_exists('resource_path')) {
+
+    function resource_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->resourcePath($path);
+    }
+}
+
+if (! function_exists('routes_path')) {
+
+    function routes_path($path = '')
+    {
+        return \Zilf\System\Zilf::$app->routesPath($path);
+    }
+}
+
 
 if (!function_exists('cookie')) {
     /**
