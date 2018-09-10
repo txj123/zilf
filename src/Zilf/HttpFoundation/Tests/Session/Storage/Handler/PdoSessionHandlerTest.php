@@ -15,7 +15,7 @@ use Zilf\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 
 /**
  * @requires extension pdo_sqlite
- * @group time-sensitive
+ * @group    time-sensitive
  */
 class PdoSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {

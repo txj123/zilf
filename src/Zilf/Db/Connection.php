@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -132,7 +132,7 @@ use Zilf\caching\CacheInterface;
  * This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Connection extends Component
 {
@@ -292,16 +292,16 @@ class Connection extends Component
      */
     public $pdoClass;
     /**
-     * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
+     * @var        string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
      * you may configure this property to use your extended version of the class.
      * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
-     * @see createCommand
-     * @since 2.0.7
+     * @see        createCommand
+     * @since      2.0.7
      * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
      */
     public $commandClass = 'Zilf\Db\Command';
     /**
-     * @var array mapping between PDO driver names and [[Command]] classes.
+     * @var   array mapping between PDO driver names and [[Command]] classes.
      * The keys of the array are PDO driver names while the values are either the corresponding
      * command class names or configurations. Please refer to [[Zilf::createObject()]] for
      * details on how to specify a configuration.
@@ -396,25 +396,25 @@ class Connection extends Component
      */
     public $masterConfig = [];
     /**
-     * @var bool whether to shuffle [[masters]] before getting one.
+     * @var   bool whether to shuffle [[masters]] before getting one.
      * @since 2.0.11
-     * @see masters
+     * @see   masters
      */
     public $shuffleMasters = true;
     /**
-     * @var bool whether to enable logging of database queries. Defaults to true.
+     * @var   bool whether to enable logging of database queries. Defaults to true.
      * You may want to disable this option in a production environment to gain performance
      * if you do not need the information being logged.
      * @since 2.0.12
-     * @see enableProfiling
+     * @see   enableProfiling
      */
     public $enableLogging = true;
     /**
-     * @var bool whether to enable profiling of opening database connection and database queries. Defaults to true.
+     * @var   bool whether to enable profiling of opening database connection and database queries. Defaults to true.
      * You may want to disable this option in a production environment to gain performance
      * if you do not need the information being logged.
      * @since 2.0.12
-     * @see enableLogging
+     * @see   enableLogging
      */
     public $enableProfiling = true;
 
@@ -446,6 +446,7 @@ class Connection extends Component
 
     /**
      * Returns a value indicating whether the DB connection is established.
+     *
      * @return bool whether the DB connection is established
      */
     public function getIsActive()
@@ -471,17 +472,17 @@ class Connection extends Component
      * Note that query cache is only meaningful for queries that return results. For queries performed with
      * [[Command::execute()]], query cache will not be used.
      *
-     * @param callable $callable a PHP callable that contains DB queries which will make use of query cache.
-     * The signature of the callable is `function (Connection $db)`.
-     * @param int $duration the number of seconds that query results can remain valid in the cache. If this is
-     * not set, the value of [[queryCacheDuration]] will be used instead.
-     * Use 0 to indicate that the cached data will never expire.
-     * @param \Zilf\caching\Dependency $dependency the cache dependency associated with the cached query results.
+     * @param  callable                 $callable   a PHP callable that contains DB queries which will make use of query cache.
+     *                                              The signature of the callable is `function (Connection $db)`.
+     * @param  int                      $duration   the number of seconds that query results can remain valid in the cache. If this is
+     *                                              not set, the value of [[queryCacheDuration]] will be used instead. Use 0 to
+     *                                              indicate that the cached data will never expire.
+     * @param  \Zilf\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
      * @throws \Exception|\Throwable if there is any exception during query
-     * @see enableQueryCache
-     * @see queryCache
-     * @see noCache()
+     * @see    enableQueryCache
+     * @see    queryCache
+     * @see    noCache()
      */
     public function cache(callable $callable, $duration = null, $dependency = null)
     {
@@ -516,13 +517,13 @@ class Connection extends Component
      * });
      * ```
      *
-     * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
-     * The signature of the callable is `function (Connection $db)`.
+     * @param  callable $callable a PHP callable that contains DB queries which should not use query cache.
+     *                            The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
      * @throws \Exception|\Throwable if there is any exception during query
-     * @see enableQueryCache
-     * @see queryCache
-     * @see cache()
+     * @see    enableQueryCache
+     * @see    queryCache
+     * @see    cache()
      */
     public function noCache(callable $callable)
     {
@@ -543,9 +544,10 @@ class Connection extends Component
     /**
      * Returns the current query cache information.
      * This method is used internally by [[Command]].
-     * @param int $duration the preferred caching duration. If null, it will be ignored.
-     * @param \Zilf\caching\Dependency $dependency the preferred caching dependency. If null, it will be ignored.
-     * @return array the current query cache information, or null if query cache is not enabled.
+     *
+     * @param    int                      $duration   the preferred caching duration. If null, it will be ignored.
+     * @param    \Zilf\caching\Dependency $dependency the preferred caching dependency. If null, it will be ignored.
+     * @return   array the current query cache information, or null if query cache is not enabled.
      * @internal
      */
     public function getQueryCacheInfo($duration, $dependency)
@@ -581,6 +583,7 @@ class Connection extends Component
     /**
      * Establishes a DB connection.
      * It does nothing if a DB connection has already been established.
+     *
      * @throws Exception if connection fails
      */
     public function open()
@@ -659,6 +662,7 @@ class Connection extends Component
      * This method is called by [[open]] to establish a DB connection.
      * The default implementation will create a PHP PDO instance.
      * You may override this method if the default PDO needs to be adapted for certain DBMS.
+     *
      * @return PDO the pdo instance
      */
     protected function createPdoInstance()
@@ -709,8 +713,9 @@ class Connection extends Component
 
     /**
      * Creates a command for execution.
-     * @param string $sql the SQL statement to be executed
-     * @param array $params the parameters to be bound to the SQL statement
+     *
+     * @param  string $sql    the SQL statement to be executed
+     * @param  array  $params the parameters to be bound to the SQL statement
      * @return Command the DB command
      */
     public function createCommand($sql = null, $params = [])
@@ -724,13 +729,16 @@ class Connection extends Component
         }
         $config['db'] = $this;
         $config['sql'] = $sql;
-        /** @var Command $command */
+        /**
+ * @var Command $command 
+*/
         $command = Zilf::createObject($config);
         return $command->bindValues($params);
     }
 
     /**
      * Returns the currently active transaction.
+     *
      * @return Transaction|null the currently active transaction. Null if no active transaction.
      */
     public function getTransaction()
@@ -740,8 +748,9 @@ class Connection extends Component
 
     /**
      * Starts a transaction.
-     * @param string|null $isolationLevel The isolation level to use for this transaction.
-     * See [[Transaction::begin()]] for details.
+     *
+     * @param  string|null $isolationLevel The isolation level to use for this transaction.
+     *                                     See [[Transaction::begin()]] for details.
      * @return Transaction the transaction initiated
      */
     public function beginTransaction($isolationLevel = null)
@@ -759,9 +768,9 @@ class Connection extends Component
     /**
      * Executes callback provided in a transaction.
      *
-     * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
-     * @param string|null $isolationLevel The isolation level to use for this transaction.
-     * See [[Transaction::begin()]] for details.
+     * @param  callable    $callback       a valid PHP callback that performs the job. Accepts connection instance as parameter.
+     * @param  string|null $isolationLevel The isolation level to use for this transaction.
+     *                                     See [[Transaction::begin()]] for details.
      * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
      * @return mixed result of callback function
      */
@@ -790,8 +799,9 @@ class Connection extends Component
      * Rolls back given [[Transaction]] object if it's still active and level match.
      * In some cases rollback can fail, so this method is fail safe. Exception thrown
      * from rollback will be caught and just logged with [[\Zilf::error()]].
+     *
      * @param Transaction $transaction Transaction object given from [[beginTransaction()]].
-     * @param int $level Transaction level just after [[beginTransaction()]] call.
+     * @param int         $level       Transaction level just after [[beginTransaction()]] call.
      */
     private function rollbackTransactionOnLevel($transaction, $level)
     {
@@ -808,6 +818,7 @@ class Connection extends Component
 
     /**
      * Returns the schema information for the database opened by this connection.
+     *
      * @return Schema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
      */
@@ -830,6 +841,7 @@ class Connection extends Component
 
     /**
      * Returns the query builder for the current DB connection.
+     *
      * @return QueryBuilder the query builder for the current DB connection.
      */
     public function getQueryBuilder()
@@ -850,8 +862,9 @@ class Connection extends Component
 
     /**
      * Obtains the schema information for the named table.
-     * @param string $name table name.
-     * @param bool $refresh whether to reload the table schema even if it is found in the cache.
+     *
+     * @param  string $name    table name.
+     * @param  bool   $refresh whether to reload the table schema even if it is found in the cache.
      * @return TableSchema table schema information. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
@@ -861,9 +874,10 @@ class Connection extends Component
 
     /**
      * Returns the ID of the last inserted row or sequence value.
-     * @param string $sequenceName name of the sequence object (required by some DBMS)
+     *
+     * @param  string $sequenceName name of the sequence object (required by some DBMS)
      * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @see http://php.net/manual/en/pdo.lastinsertid.php
+     * @see    http://php.net/manual/en/pdo.lastinsertid.php
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -873,9 +887,10 @@ class Connection extends Component
     /**
      * Quotes a string value for use in a query.
      * Note that if the parameter is not a string, it will be returned without change.
-     * @param string $value string to be quoted
+     *
+     * @param  string $value string to be quoted
      * @return string the properly quoted string
-     * @see http://php.net/manual/en/pdo.quote.php
+     * @see    http://php.net/manual/en/pdo.quote.php
      */
     public function quoteValue($value)
     {
@@ -887,7 +902,8 @@ class Connection extends Component
      * If the table name contains schema prefix, the prefix will also be properly quoted.
      * If the table name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
-     * @param string $name table name
+     *
+     * @param  string $name table name
      * @return string the properly quoted table name
      */
     public function quoteTableName($name)
@@ -900,7 +916,8 @@ class Connection extends Component
      * If the column name contains prefix, the prefix will also be properly quoted.
      * If the column name is already quoted or contains special characters including '(', '[[' and '{{',
      * then this method will do nothing.
-     * @param string $name column name
+     *
+     * @param  string $name column name
      * @return string the properly quoted column name
      */
     public function quoteColumnName($name)
@@ -914,7 +931,8 @@ class Connection extends Component
      * tokens enclosed within double square brackets are column names. They will be quoted accordingly.
      * Also, the percentage character "%" at the beginning or ending of a table name will be replaced
      * with [[tablePrefix]].
-     * @param string $sql the SQL to be quoted
+     *
+     * @param  string $sql the SQL to be quoted
      * @return string the quoted SQL
      */
     public function quoteSql($sql)
@@ -935,6 +953,7 @@ class Connection extends Component
     /**
      * Returns the name of the DB driver. Based on the the current [[dsn]], in case it was not set explicitly
      * by an end user.
+     *
      * @return string name of the DB driver
      */
     public function getDriverName()
@@ -952,6 +971,7 @@ class Connection extends Component
 
     /**
      * Changes the current driver name.
+     *
      * @param string $driverName name of the DB driver
      */
     public function setDriverName($driverName)
@@ -961,8 +981,9 @@ class Connection extends Component
 
     /**
      * Returns a server version as a string comparable by [[\version_compare()]].
+     *
      * @return string server version as a string.
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public function getServerVersion()
     {
@@ -973,7 +994,8 @@ class Connection extends Component
      * Returns the PDO instance for the currently active slave connection.
      * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.
-     * @param bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
+     *
+     * @param  bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
      * @return PDO the PDO instance for the currently active slave connection. `null` is returned if no slave connection
      * is available and `$fallbackToMaster` is false.
      */
@@ -990,6 +1012,7 @@ class Connection extends Component
     /**
      * Returns the PDO instance for the currently active master connection.
      * This method will open the master DB connection and then return [[pdo]].
+     *
      * @return PDO the PDO instance for the currently active master connection.
      */
     public function getMasterPdo()
@@ -1001,7 +1024,8 @@ class Connection extends Component
     /**
      * Returns the currently active slave connection.
      * If this method is called for the first time, it will try to open a slave connection when [[enableSlaves]] is true.
-     * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
+     *
+     * @param  bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
      * @return Connection the currently active slave connection. `null` is returned if there is no slave available and
      * `$fallbackToMaster` is false.
      */
@@ -1021,8 +1045,9 @@ class Connection extends Component
     /**
      * Returns the currently active master connection.
      * If this method is called for the first time, it will try to open a master connection.
+     *
      * @return Connection the currently active master connection. `null` is returned if there is no master available.
-     * @since 2.0.11
+     * @since  2.0.11
      */
     public function getMaster()
     {
@@ -1047,8 +1072,8 @@ class Connection extends Component
      * });
      * ```
      *
-     * @param callable $callback a PHP callable to be executed by this method. Its signature is
-     * `function (Connection $db)`. Its return value will be returned by this method.
+     * @param  callable $callback a PHP callable to be executed by this method. Its signature is
+     *                            `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
      * @throws \Exception|\Throwable if there is any exception thrown from the callback
      */
@@ -1078,8 +1103,9 @@ class Connection extends Component
      * Opens the connection to a server in the pool.
      * This method implements the load balancing among the given list of the servers.
      * Connections will be tried in random order.
-     * @param array $pool the list of connection configurations in the server pool
-     * @param array $sharedConfig the configuration common to those given in `$pool`.
+     *
+     * @param  array $pool         the list of connection configurations in the server pool
+     * @param  array $sharedConfig the configuration common to those given in `$pool`.
      * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
@@ -1093,11 +1119,12 @@ class Connection extends Component
      * Opens the connection to a server in the pool.
      * This method implements the load balancing among the given list of the servers.
      * Connections will be tried in sequential order.
-     * @param array $pool the list of connection configurations in the server pool
-     * @param array $sharedConfig the configuration common to those given in `$pool`.
+     *
+     * @param  array $pool         the list of connection configurations in the server pool
+     * @param  array $sharedConfig the configuration common to those given in `$pool`.
      * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
-     * @since 2.0.11
+     * @since  2.0.11
      */
     protected function openFromPoolSequentially(array $pool, array $sharedConfig)
     {
@@ -1143,6 +1170,7 @@ class Connection extends Component
 
     /**
      * Close the connection before serializing.
+     *
      * @return array
      */
     public function __sleep()

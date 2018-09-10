@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -38,7 +38,7 @@ use Zilf\di\ServiceLocator;
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Module extends ServiceLocator
 {
@@ -148,9 +148,10 @@ class Module extends ServiceLocator
 
     /**
      * Constructor.
-     * @param string $id the ID of this module.
+     *
+     * @param string $id     the ID of this module.
      * @param Module $parent the parent module (if any).
-     * @param array $config name-value pairs that will be used to initialize the object properties.
+     * @param array  $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($id, $parent = null, $config = [])
     {
@@ -163,6 +164,7 @@ class Module extends ServiceLocator
      * Returns the currently requested instance of this module class.
      * If the module class is not currently requested, `null` will be returned.
      * This method is provided so that you access the module instance from anywhere within the module.
+     *
      * @return static|null the currently requested instance of this module class, or `null` if the module class is not requested.
      */
     public static function getInstance()
@@ -173,8 +175,9 @@ class Module extends ServiceLocator
 
     /**
      * Sets the currently requested instance of this module class.
+     *
      * @param Module|null $instance the currently requested instance of this module class.
-     * If it is `null`, the instance of the calling class will be removed, if any.
+     *                              If it is `null`, the instance of the calling class will be removed, if any.
      */
     public static function setInstance($instance)
     {
@@ -207,6 +210,7 @@ class Module extends ServiceLocator
     /**
      * Returns an ID that uniquely identifies this module among all modules within the current application.
      * Note that if the module is an application, an empty string will be returned.
+     *
      * @return string the unique ID of the module.
      */
     public function getUniqueId()
@@ -217,6 +221,7 @@ class Module extends ServiceLocator
     /**
      * Returns the root directory of the module.
      * It defaults to the directory containing the module class file.
+     *
      * @return string the root directory of the module.
      */
     public function getBasePath()
@@ -232,7 +237,8 @@ class Module extends ServiceLocator
     /**
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
-     * @param string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
+     *
+     * @param  string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
@@ -250,6 +256,7 @@ class Module extends ServiceLocator
      * Returns the directory that contains the controller classes according to [[controllerNamespace]].
      * Note that in order for this method to return a value, you must define
      * an alias for the root namespace of [[controllerNamespace]].
+     *
      * @return string the directory that contains the controller classes.
      * @throws InvalidArgumentException if there is no alias defined for the root namespace of [[controllerNamespace]].
      */
@@ -260,6 +267,7 @@ class Module extends ServiceLocator
 
     /**
      * Returns the directory that contains the view files for this module.
+     *
      * @return string the root directory of view files. Defaults to "[[basePath]]/views".
      */
     public function getViewPath()
@@ -273,7 +281,8 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the view files.
-     * @param string $path the root directory of view files.
+     *
+     * @param  string $path the root directory of view files.
      * @throws InvalidArgumentException if the directory is invalid.
      */
     public function setViewPath($path)
@@ -283,6 +292,7 @@ class Module extends ServiceLocator
 
     /**
      * Returns the directory that contains layout view files for this module.
+     *
      * @return string the root directory of layout files. Defaults to "[[viewPath]]/layouts".
      */
     public function getLayoutPath()
@@ -296,7 +306,8 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory or [path alias](guide:concept-aliases) of layout files.
+     *
+     * @param  string $path the root directory or [path alias](guide:concept-aliases) of layout files.
      * @throws InvalidArgumentException if the directory is invalid
      */
     public function setLayoutPath($path)
@@ -307,8 +318,9 @@ class Module extends ServiceLocator
     /**
      * Returns current module version.
      * If version is not explicitly set, [[defaultVersion()]] method will be used to determine its value.
+     *
      * @return string the version of this module.
-     * @since 2.0.11
+     * @since  2.0.11
      */
     public function getVersion()
     {
@@ -325,15 +337,16 @@ class Module extends ServiceLocator
 
     /**
      * Sets current module version.
-     * @param string|callable $version the version of this module.
-     * Version can be specified as a PHP callback, which can accept module instance as an argument and should
-     * return the actual version. For example:
      *
-     * ```php
-     * function (Module $module) {
-     *     //return string
-     * }
-     * ```
+     * @param string|callable $version the version of this module.
+     *                                 Version can be specified as a PHP callback, which can accept module instance as an argument and should
+     *                                 return the actual version. For example:
+     *
+     *                                 ```php
+     *                                 function (Module $module) {
+     *                                 //return string
+     *                                 }
+     *                                 ```
      *
      * @since 2.0.11
      */
@@ -345,8 +358,9 @@ class Module extends ServiceLocator
     /**
      * Returns default module version.
      * Child class may override this method to provide more specific version detection.
+     *
      * @return string the version of this module.
-     * @since 2.0.11
+     * @since  2.0.11
      */
     protected function defaultVersion()
     {
@@ -361,19 +375,20 @@ class Module extends ServiceLocator
      * Defines path aliases.
      * This method calls [[Zilf::setAlias()]] to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
+     *
      * @property array list of path aliases to be defined. The array keys are alias names
      * (must start with `@`) and the array values are the corresponding paths or aliases.
      * See [[setAliases()]] for an example.
-     * @param array $aliases list of path aliases to be defined. The array keys are alias names
-     * (must start with `@`) and the array values are the corresponding paths or aliases.
-     * For example,
+     * @param    array $aliases list of path aliases to be defined. The array keys are alias names
+     *                          (must start with `@`) and the array values are the corresponding paths or aliases.
+     *                          For example,
      *
-     * ```php
-     * [
-     *     '@models' => '@app/models', // an existing alias
-     *     '@backend' => __DIR__ . '/../backend',  // a directory
-     * ]
-     * ```
+     *                          ```php
+     *                          [
+     *                          '@models' => '@app/models', // an existing alias
+     *                          '@backend' => __DIR__ . '/../backend',  // a directory
+     *                          ]
+     *                          ```
      */
     public function setAliases($aliases)
     {
@@ -385,7 +400,8 @@ class Module extends ServiceLocator
     /**
      * Checks whether the child module of the specified ID exists.
      * This method supports checking the existence of both child and grand child modules.
-     * @param string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
+     *
+     * @param  string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
      * @return bool whether the named module exists. Both loaded and unloaded modules
      * are considered.
      */
@@ -404,11 +420,12 @@ class Module extends ServiceLocator
     /**
      * Retrieves the child module of the specified ID.
      * This method supports retrieving both child modules and grand child modules.
-     * @param string $id module ID (case-sensitive). To retrieve grand child modules,
-     * use ID path relative to this module (e.g. `admin/content`).
-     * @param bool $load whether to load the module if it is not yet loaded.
+     *
+     * @param  string $id   module ID (case-sensitive). To retrieve grand child modules,
+     *                      use ID path relative to this module (e.g. `admin/content`).
+     * @param  bool   $load whether to load the module if it is not yet loaded.
      * @return Module|null the module instance, `null` if the module does not exist.
-     * @see hasModule()
+     * @see    hasModule()
      */
     public function getModule($id, $load = true)
     {
@@ -436,14 +453,15 @@ class Module extends ServiceLocator
 
     /**
      * Adds a sub-module to this module.
-     * @param string $id module ID.
-     * @param Module|array|null $module the sub-module to be added to this module. This can
-     * be one of the following:
      *
-     * - a [[Module]] object
-     * - a configuration array: when [[getModule()]] is called initially, the array
-     *   will be used to instantiate the sub-module
-     * - `null`: the named sub-module will be removed from this module
+     * @param string            $id     module ID.
+     * @param Module|array|null $module the sub-module to be added to this module. This can
+     *                                  be one of the following:
+     *
+     *                                  - a [[Module]] object
+     *                                  - a configuration array: when [[getModule()]] is called initially, the array
+     *                                  will be used to instantiate the sub-module
+     *                                  - `null`: the named sub-module will be removed from this module
      */
     public function setModule($id, $module)
     {
@@ -456,9 +474,10 @@ class Module extends ServiceLocator
 
     /**
      * Returns the sub-modules in this module.
-     * @param bool $loadedOnly whether to return the loaded sub-modules only. If this is set `false`,
-     * then all sub-modules registered in this module will be returned, whether they are loaded or not.
-     * Loaded modules will be returned as objects, while unloaded modules as configuration arrays.
+     *
+     * @param  bool $loadedOnly whether to return the loaded sub-modules only. If this is set `false`,
+     *                          then all sub-modules registered in this module will be returned, whether they are loaded or not.
+     *                          Loaded modules will be returned as objects, while unloaded modules as configuration arrays.
      * @return array the modules (indexed by their IDs).
      */
     public function getModules($loadedOnly = false)
@@ -513,8 +532,9 @@ class Module extends ServiceLocator
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
      * If the route is empty, the method will use [[defaultRoute]].
-     * @param string $route the route that specifies the action.
-     * @param array $params the parameters to be passed to the action
+     *
+     * @param  string $route  the route that specifies the action.
+     * @param  array  $params the parameters to be passed to the action
      * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully.
      */
@@ -555,7 +575,7 @@ class Module extends ServiceLocator
      * If any of the above steps resolves into a controller, it is returned together with the rest
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
-     * @param string $route the route consisting of module, controller and action IDs.
+     * @param  string $route the route consisting of module, controller and action IDs.
      * @return array|bool If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
@@ -611,7 +631,7 @@ class Module extends ServiceLocator
      *
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
-     * @param string $id the controller ID.
+     * @param  string $id the controller ID.
      * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
@@ -631,9 +651,11 @@ class Module extends ServiceLocator
             return null;
         }
 
-        $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
+        $className = preg_replace_callback(
+            '%-([a-z0-9_])%i', function ($matches) {
                 return ucfirst($matches[1]);
-            }, ucfirst($className)) . 'Controller';
+            }, ucfirst($className)
+        ) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
@@ -652,8 +674,8 @@ class Module extends ServiceLocator
     /**
      * Checks if class name or prefix is incorrect
      *
-     * @param string $className
-     * @param string $prefix
+     * @param  string $className
+     * @param  string $prefix
      * @return bool
      */
     private function isIncorrectClassNameOrPrefix($className, $prefix)
@@ -692,7 +714,7 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action to be executed.
+     * @param  Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
@@ -719,8 +741,8 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action just executed.
-     * @param mixed $result the action return result.
+     * @param  Action $action the action just executed.
+     * @param  mixed  $result the action return result.
      * @return mixed the processed action result.
      */
     public function afterAction($action, $result)

@@ -150,9 +150,9 @@ class Container implements ArrayAccess, ContainerInterface
      *      return new \Zilf\Curl\Curl();
      * });
      *
-     * @param  string $id 为别名,或者类的对象字符串
+     * @param  string $id         为别名,或者类的对象字符串
      * @param  string $definition 支持类的对象,类的对象字符串，回调函数
-     * @param  array $params 传递的参数，数组或者字符串，允许为空
+     * @param  array  $params     传递的参数，数组或者字符串，允许为空
      * @return $this
      * @throws \Exception
      */
@@ -217,7 +217,7 @@ class Container implements ArrayAccess, ContainerInterface
      *
      * @param  $id
      * @param  $definition
-     * @param  array $params
+     * @param  array      $params
      * @return $this
      */
     public function set(string $id, $definition, $params = [])
@@ -253,7 +253,7 @@ class Container implements ArrayAccess, ContainerInterface
      * 设置类的别名
      *
      * @param  string|array $aliasName
-     * @param  string $definition //回调函数
+     * @param  string       $definition //回调函数
      *                                  字符串
      *                                  对象
      * @return $this
@@ -326,7 +326,7 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 重新命名别名的名称
      *
-     * @param  string $aliasName 原来的别名
+     * @param  string $aliasName    原来的别名
      * @param  string $newAliasName 新的别名
      * @return $this
      * @throws \Exception
@@ -363,7 +363,7 @@ class Container implements ArrayAccess, ContainerInterface
      * 根绝类的字符串，返回类的对象
      *
      * @param  string $definition 字符串
-     * @param  array $params 传递的参数
+     * @param  array  $params     传递的参数
      * @return mixed
      * @throws \Exception
      */
@@ -468,7 +468,7 @@ class Container implements ArrayAccess, ContainerInterface
     }
 
     /**
-     * @param string $id
+     * @param  string $id
      * @return mixed
      */
     public function offsetExists($id)
@@ -491,7 +491,7 @@ class Container implements ArrayAccess, ContainerInterface
      * Offset to set
      *
      * @param string $id
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function offsetSet($id, $value)
     {

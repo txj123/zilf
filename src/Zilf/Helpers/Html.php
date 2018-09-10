@@ -70,7 +70,7 @@ class Html
     ];
 
     /**
-     * @var array list of tag attributes that should be specially handled when their values are of array type.
+     * @var   array list of tag attributes that should be specially handled when their values are of array type.
      * In particular, if the value of the `data` attribute is `['name' => 'xyz', 'age' => 13]`, two attributes
      * will be generated instead of one: `data-name="xyz" data-age="13"`.
      * @since 2.0.3
@@ -168,9 +168,9 @@ class Html
     }
 
     /**
-     * @param $url
-     * @param array  $options
-     * @param string $urlName
+     * @param  $url
+     * @param  array  $options
+     * @param  string $urlName
      * @return string
      */
     private static function getCssHtml($url, $options = [], $urlName = 'default')
@@ -229,9 +229,9 @@ class Html
     }
 
     /**
-     * @param $url
-     * @param $options
-     * @param $urlName
+     * @param  $url
+     * @param  $options
+     * @param  $urlName
      * @return string
      */
     private static function getJsHtml($url, $options, $urlName= 'default')
@@ -325,9 +325,9 @@ class Html
     }
 
     /**
-     * @param $src
-     * @param array  $options
-     * @param string $urlName
+     * @param  $src
+     * @param  array  $options
+     * @param  string $urlName
      * @return string
      */
     private static function getImgHtml($src, $options = [],$urlName= 'default')

@@ -24,18 +24,22 @@ class RedisServiceProvider
         /**
          * redis 的连接对象
          */
-        Zilf::$container->register('redis',function (){
-            $config = Zilf::$container->getShare('config')->get('cache.redis');
+        Zilf::$container->register(
+            'redis', function () {
+                $config = Zilf::$container->getShare('config')->get('cache.redis');
 
-            return new RedisManager(Arr::pull($config, 'client', 'predis'), $config);
-        });
+                return new RedisManager(Arr::pull($config, 'client', 'predis'), $config);
+            }
+        );
 
         /**
          * redis的连接服务
          */
-        Zilf::$container->register('redis.connection',function (){
-            return Zilf::$container->get('redis')->connection();
-        });
+        Zilf::$container->register(
+            'redis.connection', function () {
+                return Zilf::$container->get('redis')->connection();
+            }
+        );
     }
 
     /**

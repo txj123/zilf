@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -15,7 +15,7 @@ use Zilf\Db\ExpressionInterface;
  * in DBAL of framework.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 interface ConditionInterface extends ExpressionInterface
 {
@@ -24,7 +24,7 @@ interface ConditionInterface extends ExpressionInterface
      * [Query Builder – Operator format](guide:db-query-builder#operator-format) guide article.
      *
      * @param string $operator operator in uppercase.
-     * @param array $operands array of corresponding operands
+     * @param array  $operands array of corresponding operands
      *
      * @return $this
      * @throws InvalidParamException if input parameters are not suitable for this condition

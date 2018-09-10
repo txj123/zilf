@@ -1,7 +1,7 @@
 <?php
 /**
- * @license     MIT License https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
- * @link        http://mobiledetect.net
+ * @license MIT License https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
+ * @link    http://mobiledetect.net
  *
  * Compile the providers list.
  * The providers list is updated weekly.

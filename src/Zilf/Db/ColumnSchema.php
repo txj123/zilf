@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -14,7 +14,7 @@ use Zilf\Helpers\StringHelper;
  * ColumnSchema class describes the metadata of a column in a database table.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class ColumnSchema extends BaseObject
 {
@@ -83,7 +83,8 @@ class ColumnSchema extends BaseObject
     /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
+     *
+     * @param  mixed $value input value
      * @return mixed converted value
      */
     public function phpTypecast($value)
@@ -94,7 +95,8 @@ class ColumnSchema extends BaseObject
     /**
      * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
      * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
+     *
+     * @param  mixed $value input value
      * @return mixed converted value. This may also be an array containing the value as the first element
      * and the PDO type as the second element.
      */
@@ -108,9 +110,10 @@ class ColumnSchema extends BaseObject
     /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
-     * @param mixed $value input value
+     *
+     * @param  mixed $value input value
      * @return mixed converted value
-     * @since 2.0.3
+     * @since  2.0.3
      */
     protected function typecast($value)
     {
@@ -123,7 +126,8 @@ class ColumnSchema extends BaseObject
                     Schema::TYPE_BINARY,
                     Schema::TYPE_CHAR
                 ],
-                true)
+                true
+            )
         ) {
             return null;
         }
@@ -145,24 +149,24 @@ class ColumnSchema extends BaseObject
         }
 
         switch ($this->phpType) {
-            case 'resource':
-            case 'string':
-                if (is_resource($value)) {
-                    return $value;
-                }
-                if (is_float($value)) {
-                    // ensure type cast always has . as decimal separator in all locales
-                    return StringHelper::floatToString($value);
-                }
-                return (string) $value;
-            case 'integer':
-                return (int) $value;
-            case 'boolean':
-                // treating a 0 bit value as false too
-                // https://github.com/Zilfsoft/Zilf2/issues/9006
-                return (bool) $value && $value !== "\0";
-            case 'double':
-                return (float) $value;
+        case 'resource':
+        case 'string':
+            if (is_resource($value)) {
+                return $value;
+            }
+            if (is_float($value)) {
+                // ensure type cast always has . as decimal separator in all locales
+                return StringHelper::floatToString($value);
+            }
+            return (string) $value;
+        case 'integer':
+            return (int) $value;
+        case 'boolean':
+            // treating a 0 bit value as false too
+            // https://github.com/Zilfsoft/Zilf2/issues/9006
+            return (bool) $value && $value !== "\0";
+        case 'double':
+            return (float) $value;
         }
 
         return $value;

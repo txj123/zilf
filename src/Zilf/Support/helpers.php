@@ -4,7 +4,7 @@ if (! function_exists('base_path')) {
     /**
      * Get the path to the base of the install.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     function base_path($path = '')
@@ -17,7 +17,7 @@ if (! function_exists('app_path')) {
     /**
      * Get the path to the application folder.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     function app_path($path = '')
@@ -415,7 +415,7 @@ if (!function_exists('hashids_encode')) {
 
 if (!function_exists('hashids_decode')) {
     /**
-     * @param $hash
+     * @param  $hash
      * @return mixed
      */
     function hashids_decode($hash)
@@ -478,8 +478,8 @@ if (!function_exists('password_check')) {
 
 if (!function_exists('html_encode')) {
     /**
-     * @param $content
-     * @param bool    $doubleEncode
+     * @param  $content
+     * @param  bool    $doubleEncode
      * @return string
      */
     function html_encode($content, $doubleEncode = true)
@@ -490,7 +490,7 @@ if (!function_exists('html_encode')) {
 
 if (!function_exists('html_decode')) {
     /**
-     * @param $content
+     * @param  $content
      * @return string
      */
     function html_decode($content)
@@ -501,9 +501,9 @@ if (!function_exists('html_decode')) {
 
 if (!function_exists('asset_link')) {
     /**
-     * @param $url
-     * @param string $version
-     * @param string $urlName
+     * @param  $url
+     * @param  string $version
+     * @param  string $urlName
      * @return string
      */
     function asset_link($url, $version = '', $urlName = 'default')
@@ -514,9 +514,9 @@ if (!function_exists('asset_link')) {
 
 if (!function_exists('asset_css')) {
     /**
-     * @param $url
-     * @param array  $options
-     * @param string $urlName
+     * @param  $url
+     * @param  array  $options
+     * @param  string $urlName
      * @return string
      */
     function asset_css($url, $options = [], $urlName = 'default')
@@ -527,9 +527,9 @@ if (!function_exists('asset_css')) {
 
 if (!function_exists('asset_js')) {
     /**
-     * @param $url
-     * @param array  $options
-     * @param string $urlName
+     * @param  $url
+     * @param  array  $options
+     * @param  string $urlName
      * @return string
      */
     function asset_js($url, $options = [], $urlName = 'default')
@@ -540,9 +540,9 @@ if (!function_exists('asset_js')) {
 
 if (!function_exists('asset_img')) {
     /**
-     * @param $url
-     * @param array  $options
-     * @param string $urlName
+     * @param  $url
+     * @param  array  $options
+     * @param  string $urlName
      * @return string
      */
     function asset_img($url, $options = [], $urlName = 'default')
@@ -553,9 +553,9 @@ if (!function_exists('asset_img')) {
 
 if (!function_exists('asset_a')) {
     /**
-     * @param $text
-     * @param null  $url
-     * @param array $options
+     * @param  $text
+     * @param  null  $url
+     * @param  array $options
      * @return string
      */
     function asset_a($text, $url = null, $options = [])
@@ -566,9 +566,9 @@ if (!function_exists('asset_a')) {
 
 if (!function_exists('asset_mailto')) {
     /**
-     * @param $text
-     * @param null  $email
-     * @param array $options
+     * @param  $text
+     * @param  null  $email
+     * @param  array $options
      * @return string
      */
     function asset_mailto($text, $email = null, $options = [])
@@ -581,8 +581,8 @@ if (! function_exists('with')) {
     /**
      * Return the given value, optionally passed through the given callback.
      *
-     * @param  mixed  $value
-     * @param  callable|null  $callback
+     * @param  mixed         $value
+     * @param  callable|null $callback
      * @return mixed
      */
     function with($value, callable $callback = null)
@@ -595,7 +595,7 @@ if (! function_exists('storage_path')) {
     /**
      * Get the path to the storage folder.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return string
      */
     function storage_path($path = '')
@@ -609,8 +609,8 @@ if (! function_exists('env')) {
     /**
      * Gets the value of an environment variable.
      *
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     function env($key, $default = null)
@@ -622,18 +622,18 @@ if (! function_exists('env')) {
         }
 
         switch (strtolower($value)) {
-            case 'true':
-            case '(true)':
-                return true;
-            case 'false':
-            case '(false)':
-                return false;
-            case 'empty':
-            case '(empty)':
-                return '';
-            case 'null':
-            case '(null)':
-                return;
+        case 'true':
+        case '(true)':
+            return true;
+        case 'false':
+        case '(false)':
+            return false;
+        case 'empty':
+        case '(empty)':
+            return '';
+        case 'null':
+        case '(null)':
+            return;
         }
 
         if (($valueLength = strlen($value)) > 1 && $value[0] === '"' && $value[$valueLength - 1] === '"') {
@@ -648,7 +648,7 @@ if (! function_exists('collect')) {
     /**
      * Create a collection from the given value.
      *
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return \Zilf\Support\Collection
      */
     function collect($value = null)
@@ -661,9 +661,9 @@ if (! function_exists('data_get')) {
     /**
      * Get an item from an array or object using "dot" notation.
      *
-     * @param  mixed   $target
-     * @param  string|array  $key
-     * @param  mixed   $default
+     * @param  mixed        $target
+     * @param  string|array $key
+     * @param  mixed        $default
      * @return mixed
      */
     function data_get($target, $key, $default = null)
@@ -704,10 +704,10 @@ if (! function_exists('data_set')) {
     /**
      * Set an item on an array or object using dot notation.
      *
-     * @param  mixed  $target
-     * @param  string|array  $key
-     * @param  mixed  $value
-     * @param  bool  $overwrite
+     * @param  mixed        $target
+     * @param  string|array $key
+     * @param  mixed        $value
+     * @param  bool         $overwrite
      * @return mixed
      */
     function data_set(&$target, $key, $value, $overwrite = true)

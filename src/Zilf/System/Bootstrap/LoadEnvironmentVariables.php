@@ -40,7 +40,8 @@ class LoadEnvironmentVariables
         if ($app->runningInConsole() && ($input = new ArgvInput)->hasParameterOption('--env')) {
             if ($this->setEnvironmentFilePath(
                 $app, $app->environmentFile() . '.' . $input->getParameterOption('--env')
-            )) {
+            )
+            ) {
                 return;
             }
         }
@@ -58,7 +59,7 @@ class LoadEnvironmentVariables
      * Load a custom environment file.
      *
      * @param  \Zilf\System\Application $app
-     * @param  string $file
+     * @param  string                   $file
      * @return bool
      */
     protected function setEnvironmentFilePath($app, $file)

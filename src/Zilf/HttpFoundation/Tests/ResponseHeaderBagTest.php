@@ -275,7 +275,7 @@ class ResponseHeaderBagTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideMakeDispositionFail
+     * @dataProvider      provideMakeDispositionFail
      * @expectedException \InvalidArgumentException
      */
     public function testMakeDispositionFail($disposition, $filename)
