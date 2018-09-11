@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -13,7 +13,7 @@ namespace Zilf\Db\base;
  * The method [[getViewPath()]] should be implemented to return the view path that may be prefixed to a relative view name.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 interface ViewContextInterface
 {

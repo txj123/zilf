@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\cubrid;
@@ -13,7 +13,7 @@ use Zilf\Db\ColumnSchemaBuilder as AbstractColumnSchemaBuilder;
  * ColumnSchemaBuilder is the schema builder for Cubrid databases.
  *
  * @author Chris Harris <chris@buckshotsoftware.com>
- * @since 2.0.8
+ * @since  2.0.8
  */
 class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
@@ -57,14 +57,14 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     public function __toString()
     {
         switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}{append}{pos}';
-                break;
-            case self::CATEGORY_NUMERIC:
-                $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{append}{pos}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
+        case self::CATEGORY_PK:
+            $format = '{type}{check}{comment}{append}{pos}';
+            break;
+        case self::CATEGORY_NUMERIC:
+            $format = '{type}{length}{unsigned}{notnull}{unique}{default}{check}{comment}{append}{pos}';
+            break;
+        default:
+            $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}{pos}';
         }
 
         return $this->buildCompleteString($format);

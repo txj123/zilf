@@ -44,7 +44,7 @@ class RedisManager
 
 
     /**
-     * @param null $name
+     * @param  null $name
      * @return Connections\Connection
      */
     public function connection($name = null)

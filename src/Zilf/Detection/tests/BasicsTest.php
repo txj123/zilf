@@ -1,7 +1,7 @@
 <?php
 /**
- * @license     MIT License https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
- * @link        http://mobiledetect.net
+ * @license MIT License https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
+ * @link    http://mobiledetect.net
  */
 class BasicTest extends PHPUnit_Framework_TestCase
 {
@@ -104,7 +104,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider headersProvider
-     * @covers Mobile_Detect::getHttpHeader
+     * @covers       Mobile_Detect::getHttpHeader
      */
     public function testConstructorInjection(array $headers)
     {
@@ -128,7 +128,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider headersProvider
-     * @covers Mobile_Detect::getHttpHeader
+     * @covers       Mobile_Detect::getHttpHeader
      */
     public function testInvalidHeader($headers)
     {
@@ -155,8 +155,8 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider userAgentProvider
-     * @covers Mobile_Detect::setUserAgent
-     * @covers Mobile_Detect::getUserAgent
+     * @covers       Mobile_Detect::setUserAgent
+     * @covers       Mobile_Detect::getUserAgent
      */
     public function testGetUserAgent($headers, $expectedUserAgent)
     {
@@ -338,7 +338,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider quickHeadersData
-     * @covers Mobile_Detect::checkHttpHeadersForMobile
+     * @covers       Mobile_Detect::checkHttpHeadersForMobile
      */
     public function testQuickHeaders($headers)
     {
@@ -372,7 +372,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider quickNonMobileHeadersData
-     * @covers Mobile_Detect::checkHttpHeadersForMobile
+     * @covers       Mobile_Detect::checkHttpHeadersForMobile
      */
     public function testNonMobileQuickHeaders($headers)
     {
@@ -434,7 +434,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider versionDataProvider
-     * @covers Mobile_Detect::version
+     * @covers       Mobile_Detect::version
      */
     public function testVersionExtraction($userAgent, $property, $stringVersion, $floatVersion)
     {
@@ -518,7 +518,7 @@ class BasicTest extends PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider crazyVersionNumbers
-     * @covers Mobile_Detect::prepareVersionNo
+     * @covers       Mobile_Detect::prepareVersionNo
      */
     public function testPrepareVersionNo($raw, $expected)
     {

@@ -18,7 +18,7 @@ class DOMDocumentWrapper
     public $id;
     /**
      * @todo Rewrite as method and quess if null.
-     * @var unknown_type
+     * @var  unknown_type
      */
     public $contentType = '';
     public $xpath;
@@ -30,7 +30,7 @@ class DOMDocumentWrapper
     public $eventsGlobal = array();
     /**
      * @TODO iframes support http://code.google.com/p/phpquery/issues/detail?id=28
-     * @var unknown_type
+     * @var  unknown_type
      */
     public $frames = array();
     /**
@@ -56,7 +56,7 @@ class DOMDocumentWrapper
     }
     public function load($markup, $contentType = null, $newDocumentID = null) 
     {
-        //		phpQuery::$documents[$id] = $this;
+        //        phpQuery::$documents[$id] = $this;
         $this->contentType = strtolower($contentType);
         if ($markup instanceof DOMDOCUMENT) {
             $this->document = $markup;
@@ -67,13 +67,13 @@ class DOMDocumentWrapper
             $loaded = $this->loadMarkup($markup);
         }
         if ($loaded) {
-            //			$this->document->formatOutput = true;
+            //            $this->document->formatOutput = true;
             $this->document->preserveWhiteSpace = true;
             $this->xpath = new DOMXPath($this->document);
             $this->afterMarkupLoad();
             return true;
             // remember last loaded document
-            //			return phpQuery::selectDocument($id);
+            //            return phpQuery::selectDocument($id);
         }
         return false;
     }
@@ -136,7 +136,7 @@ class DOMDocumentWrapper
         }
         $this->document = new DOMDocument($version, $charset);
         $this->charset = $this->document->encoding;
-        //		$this->document->encoding = $charset;
+        //        $this->document->encoding = $charset;
         $this->document->formatOutput = true;
         $this->document->preserveWhiteSpace = true;
     }
@@ -267,7 +267,7 @@ class DOMDocumentWrapper
         }
         if ($requestedCharset && $documentCharset && $requestedCharset != $documentCharset) {
             // TODO place for charset conversion
-            //			$charset = $requestedCharset;
+            //            $charset = $requestedCharset;
         }
         $return = false;
         if ($this->isDocumentFragment) {
@@ -284,7 +284,7 @@ class DOMDocumentWrapper
             // see http://pl2.php.net/manual/en/book.dom.php#78929
             // LIBXML_DTDLOAD (>= PHP 5.1)
             // does XML ctalogues works with LIBXML_NONET
-            //		$this->document->resolveExternals = true;
+            //        $this->document->resolveExternals = true;
             // TODO test LIBXML_COMPACT for performance improvement
             // create document
             $this->documentCreate($charset);
@@ -301,8 +301,8 @@ class DOMDocumentWrapper
                 ? LIBXML_DTDLOAD|LIBXML_DTDATTR|LIBXML_NONET
                 : LIBXML_DTDLOAD|LIBXML_DTDATTR|LIBXML_NONET|LIBXML_NOWARNING|LIBXML_NOERROR;
                 $return = $this->document->loadXML($markup, $libxmlStatic);
-                // 				if (! $return)
-                // 					$return = $this->document->loadHTML($markup);
+                //                 if (! $return)
+                //                     $return = $this->document->loadHTML($markup);
             }
             if ($return) {
                 $this->root = $this->document;
@@ -328,14 +328,14 @@ class DOMDocumentWrapper
         }
         // XXX ok ?
         return strpos($markup, "<!DOCTYPE html") !== false;
-        //		return stripos($doctype, 'xhtml') !== false;
-        //		$doctype = isset($dom->doctype) && is_object($dom->doctype)
-        //			? $dom->doctype->publicId
-        //			: self::$defaultDoctype;
+        //        return stripos($doctype, 'xhtml') !== false;
+        //        $doctype = isset($dom->doctype) && is_object($dom->doctype)
+        //            ? $dom->doctype->publicId
+        //            : self::$defaultDoctype;
     }
     protected function isXML($markup) 
     {
-        //		return strpos($markup, '<?xml') !== false && stripos($markup, 'xhtml') === false;
+        //        return strpos($markup, '<?xml') !== false && stripos($markup, 'xhtml') === false;
         return strpos(substr($markup, 0, 100), '<'.'?xml') !== false;
     }
 
@@ -357,7 +357,7 @@ class DOMDocumentWrapper
     }
     /**
      *
-     * @param $markup
+     * @param  $markup
      * @return array contentType, charset
      */
     protected function contentTypeFromHTML($markup) 
@@ -469,9 +469,9 @@ class DOMDocumentWrapper
     }
     /**
      *
-     * @param $source
-     * @param $target
-     * @param $sourceCharset
+     * @param  $source
+     * @param  $target
+     * @param  $sourceCharset
      * @return array Array of imported nodes.
      */
     public function import($source, $sourceCharset = null) 
@@ -481,30 +481,30 @@ class DOMDocumentWrapper
         if ($source instanceof DOMNODE && !($source instanceof DOMNODELIST)) {
             $source = array($source);
         }
-        //		if (is_array($source)) {
-        //			foreach($source as $node) {
-        //				if (is_string($node)) {
-        //					// string markup
-        //					$fake = $this->documentFragmentCreate($node, $sourceCharset);
-        //					if ($fake === false)
-        //						throw new Exception("Error loading documentFragment markup");
-        //					else
-        //						$return = array_merge($return, 
-        //							$this->import($fake->root->childNodes)
-        //						);
-        //				} else {
-        //					$return[] = $this->document->importNode($node, true);
-        //				}
-        //			}
-        //			return $return;
-        //		} else {
-        //			// string markup
-        //			$fake = $this->documentFragmentCreate($source, $sourceCharset);
-        //			if ($fake === false)
-        //				throw new Exception("Error loading documentFragment markup");
-        //			else
-        //				return $this->import($fake->root->childNodes);
-        //		}
+        //        if (is_array($source)) {
+        //            foreach($source as $node) {
+        //                if (is_string($node)) {
+        //                    // string markup
+        //                    $fake = $this->documentFragmentCreate($node, $sourceCharset);
+        //                    if ($fake === false)
+        //                        throw new Exception("Error loading documentFragment markup");
+        //                    else
+        //                        $return = array_merge($return, 
+        //                            $this->import($fake->root->childNodes)
+        //                        );
+        //                } else {
+        //                    $return[] = $this->document->importNode($node, true);
+        //                }
+        //            }
+        //            return $return;
+        //        } else {
+        //            // string markup
+        //            $fake = $this->documentFragmentCreate($source, $sourceCharset);
+        //            if ($fake === false)
+        //                throw new Exception("Error loading documentFragment markup");
+        //            else
+        //                return $this->import($fake->root->childNodes);
+        //        }
         if (is_array($source) || $source instanceof DOMNODELIST) {
             // dom nodes
             self::debug('Importing nodes to document');
@@ -539,7 +539,7 @@ class DOMDocumentWrapper
         if (! $charset) {
             $charset = $this->charset;
         }
-        //	$fake->documentCreate($this->charset);
+        //    $fake->documentCreate($this->charset);
         if ($source instanceof DOMNODE && !($source instanceof DOMNODELIST)) {
             $source = array($source);
         }
@@ -561,8 +561,8 @@ class DOMDocumentWrapper
     }
     /**
      *
-     * @param $document DOMDocumentWrapper
-     * @param $markup
+     * @param  $document DOMDocumentWrapper
+     * @param  $markup
      * @return $document
      */
     private function documentFragmentLoadMarkup($fragment, $charset, $markup = null) 
@@ -651,7 +651,7 @@ class DOMDocumentWrapper
             if ($this->isDocumentFragment && ! $innerMarkup) {
                 foreach($nodes as $i => $node) {
                     if ($node->isSameNode($this->root)) {
-                        //	var_dump($node);
+                        //    var_dump($node);
                         $nodes = array_slice($nodes, 0, $i)
                         + phpQuery::DOMNodeListToArray($node->childNodes)
                         + array_slice($nodes, $i+1);
@@ -694,10 +694,10 @@ class DOMDocumentWrapper
             if ($this->isDocumentFragment) {
                 // documentFragment, html only...
                 self::debug("Getting markup, DocumentFragment detected");
-                //				return $this->markup(
-                ////					$this->document->getElementsByTagName('body')->item(0)
-                //					$this->document->root, true
-                //				);
+                //                return $this->markup(
+                ////                    $this->document->getElementsByTagName('body')->item(0)
+                //                    $this->document->root, true
+                //                );
                 $markup = $this->documentFragmentToMarkup($this);
                 // no need for markupFixXHTML, as it's done thought markup($nodes) method
                 return $markup;

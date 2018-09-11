@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Helpers;
@@ -16,14 +16,15 @@ use Zilf\System\Zilf;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alex Makarov <sam@rmcreative.ru>
- * @since 2.0
+ * @since  2.0
  */
 class BaseStringHelper
 {
     /**
      * Returns the number of bytes in the given string.
      * This method ensures the string is treated as a byte array by using `mb_strlen()`.
-     * @param string $string the string being measured for length
+     *
+     * @param  string $string the string being measured for length
      * @return int the number of bytes in the given string.
      */
     public static function byteLength($string)
@@ -34,12 +35,14 @@ class BaseStringHelper
     /**
      * Returns the portion of string specified by the start and length parameters.
      * This method ensures the string is treated as a byte array by using `mb_substr()`.
-     * @param string $string the input string. Must be one character or longer.
-     * @param int $start the starting position
-     * @param int $length the desired portion length. If not specified or `null`, there will be
-     * no limit on length i.e. the output will be until the end of the string.
+     *
+     * @param  string $string the input string. Must be one character or longer.
+     * @param  int    $start  the starting position
+     * @param  int    $length the desired portion length. If not specified or `null`, there will be
+     *                        no limit on length i.e. the output will be until the end of the
+     *                        string.
      * @return string the extracted part of string, or FALSE on failure or an empty string.
-     * @see http://www.php.net/manual/en/function.substr.php
+     * @see    http://www.php.net/manual/en/function.substr.php
      */
     public static function byteSubstr($string, $start, $length = null)
     {
@@ -54,10 +57,10 @@ class BaseStringHelper
      * file paths, php's `basename()` should work fine for you.
      * Note: this method is not aware of the actual filesystem, or path components such as "..".
      *
-     * @param string $path A path string.
-     * @param string $suffix If the name component ends in suffix this will also be cut off.
+     * @param  string $path   A path string.
+     * @param  string $suffix If the name component ends in suffix this will also be cut off.
      * @return string the trailing name component of the given path.
-     * @see http://www.php.net/manual/en/function.basename.php
+     * @see    http://www.php.net/manual/en/function.basename.php
      */
     public static function basename($path, $suffix = '')
     {
@@ -77,9 +80,9 @@ class BaseStringHelper
      * This method is similar to `dirname()` except that it will treat
      * both \ and / as directory separators, independent of the operating system.
      *
-     * @param string $path A path string.
+     * @param  string $path A path string.
      * @return string the parent directory's path.
-     * @see http://www.php.net/manual/en/function.basename.php
+     * @see    http://www.php.net/manual/en/function.basename.php
      */
     public static function dirname($path)
     {
@@ -94,12 +97,12 @@ class BaseStringHelper
     /**
      * Truncates a string to the number of characters specified.
      *
-     * @param string $string The string to truncate.
-     * @param int $length How many characters from original string to include into truncated string.
-     * @param string $suffix String to append to the end of truncated string.
-     * @param string $encoding The charset to use, defaults to charset currently used by application.
-     * @param bool $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
-     * This parameter is available since version 2.0.1.
+     * @param  string $string   The string to truncate.
+     * @param  int    $length   How many characters from original string to include into truncated string.
+     * @param  string $suffix   String to append to the end of truncated string.
+     * @param  string $encoding The charset to use, defaults to charset currently used by application.
+     * @param  bool   $asHtml   Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     *                          This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
     public static function truncate($string, $length, $suffix = '...', $encoding = null, $asHtml = false)
@@ -121,11 +124,11 @@ class BaseStringHelper
     /**
      * Truncates a string to the number of words specified.
      *
-     * @param string $string The string to truncate.
-     * @param int $count How many words from original string to include into truncated string.
-     * @param string $suffix String to append to the end of truncated string.
-     * @param bool $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
-     * This parameter is available since version 2.0.1.
+     * @param  string $string The string to truncate.
+     * @param  int    $count  How many words from original string to include into truncated string.
+     * @param  string $suffix String to append to the end of truncated string.
+     * @param  bool   $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     *                        This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
     public static function truncateWords($string, $count, $suffix = '...', $asHtml = false)
@@ -145,12 +148,12 @@ class BaseStringHelper
     /**
      * Truncate a string while preserving the HTML.
      *
-     * @param string $string The string to truncate
-     * @param int $count
-     * @param string $suffix String to append to the end of the truncated string.
-     * @param string|bool $encoding
+     * @param  string      $string   The string to truncate
+     * @param  int         $count
+     * @param  string      $suffix   String to append to the end of the truncated string.
+     * @param  string|bool $encoding
      * @return string
-     * @since 2.0.1
+     * @since  2.0.1
      */
     protected static function truncateHtml($string, $count, $suffix, $encoding = false)
     {
@@ -208,9 +211,9 @@ class BaseStringHelper
      * Check if given string starts with specified substring.
      * Binary and multibyte safe.
      *
-     * @param string $string Input string
-     * @param string $with Part to search inside the $string
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value.
+     * @param  string $string        Input string
+     * @param  string $with          Part to search inside the $string
+     * @param  bool   $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value.
      * @return bool Returns true if first input starts with second input, false otherwise
      */
     public static function startsWith($string, $with, $caseSensitive = true)
@@ -230,9 +233,9 @@ class BaseStringHelper
      * Check if given string ends with specified substring.
      * Binary and multibyte safe.
      *
-     * @param string $string Input string to check
-     * @param string $with Part to search inside of the $string.
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the ending of the string in order to get a true value.
+     * @param  string $string        Input string to check
+     * @param  string $with          Part to search inside of the $string.
+     * @param  bool   $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the ending of the string in order to get a true value.
      * @return bool Returns true if first input ends with second input, false otherwise
      */
     public static function endsWith($string, $with, $caseSensitive = true)
@@ -256,15 +259,19 @@ class BaseStringHelper
     /**
      * Explodes string into array, optionally trims values and skips empty ones.
      *
-     * @param string $string String to be exploded.
-     * @param string $delimiter Delimiter. Default is ','.
-     * @param mixed $trim Whether to trim each element. Can be:
-     *   - boolean - to trim normally;
-     *   - string - custom characters to trim. Will be passed as a second argument to `trim()` function.
-     *   - callable - will be called for each value instead of trim. Takes the only argument - value.
-     * @param bool $skipEmpty Whether to skip empty strings between delimiters. Default is false.
+     * @param  string $string    String to be exploded.
+     * @param  string $delimiter Delimiter. Default is ','.
+     * @param  mixed  $trim      Whether to trim each element. Can be:
+     *                           - boolean - to trim normally; -
+     *                           string - custom characters to trim.
+     *                           Will be passed as a second argument
+     *                           to `trim()` function. - callable -
+     *                           will be called for each value instead
+     *                           of trim. Takes the only argument -
+     *                           value.
+     * @param  bool   $skipEmpty Whether to skip empty strings between delimiters. Default is false.
      * @return array
-     * @since 2.0.4
+     * @since  2.0.4
      */
     public static function explode($string, $delimiter = ',', $trim = true, $skipEmpty = false)
     {
@@ -281,9 +288,13 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result, function ($value) {
-                return $value !== '';
-            }));
+            $result = array_values(
+                array_filter(
+                    $result, function ($value) {
+                        return $value !== '';
+                    }
+                )
+            );
         }
 
         return $result;
@@ -291,9 +302,10 @@ class BaseStringHelper
 
     /**
      * Counts words in a string.
+     *
      * @since 2.0.8
      *
-     * @param string $string
+     * @param  string $string
      * @return int
      */
     public static function countWords($string)
@@ -304,9 +316,10 @@ class BaseStringHelper
     /**
      * Returns string representation of number value with replaced commas to dots, if decimal point
      * of current locale is comma.
-     * @param int|float|string $value
+     *
+     * @param  int|float|string $value
      * @return string
-     * @since 2.0.11
+     * @since  2.0.11
      */
     public static function normalizeNumber($value)
     {
@@ -328,10 +341,10 @@ class BaseStringHelper
      * > Note: Base 64 padding `=` may be at the end of the returned string.
      * > `=` is not transparent to URL encoding.
      *
-     * @see https://tools.ietf.org/html/rfc4648#page-7
-     * @param string $input the string to encode.
+     * @see    https://tools.ietf.org/html/rfc4648#page-7
+     * @param  string $input the string to encode.
      * @return string encoded string.
-     * @since 2.0.12
+     * @since  2.0.12
      */
     public static function base64UrlEncode($input)
     {
@@ -341,10 +354,10 @@ class BaseStringHelper
     /**
      * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
-     * @see https://tools.ietf.org/html/rfc4648#page-7
-     * @param string $input encoded string.
+     * @see    https://tools.ietf.org/html/rfc4648#page-7
+     * @param  string $input encoded string.
      * @return string decoded string.
-     * @since 2.0.12
+     * @since  2.0.12
      */
     public static function base64UrlDecode($input)
     {
@@ -355,9 +368,10 @@ class BaseStringHelper
      * Safely casts a float to string independent of the current locale.
      *
      * The decimal separator will always be `.`.
-     * @param float|int $number a floating point number or integer.
+     *
+     * @param  float|int $number a floating point number or integer.
      * @return string the string representation of the number.
-     * @since 2.0.13
+     * @since  2.0.13
      */
     public static function floatToString($number)
     {
@@ -369,16 +383,21 @@ class BaseStringHelper
     /**
      * Checks if the passed string would match the given shell wildcard pattern.
      * This function emulates [[fnmatch()]], which may be unavailable at certain environment, using PCRE.
-     * @param string $pattern the shell wildcard pattern.
-     * @param string $string the tested string.
-     * @param array $options options for matching. Valid options are:
      *
-     * - caseSensitive: bool, whether pattern should be case sensitive. Defaults to `true`.
-     * - escape: bool, whether backslash escaping is enabled. Defaults to `true`.
-     * - filePath: bool, whether slashes in string only matches slashes in the given pattern. Defaults to `false`.
+     * @param string $pattern the shell wildcard pattern.
+     * @param string $string  the tested string.
+     * @param array  $options options for matching. Valid options are:
+     *                        - caseSensitive: bool, whether pattern
+     *                        should be case sensitive. Defaults to
+     *                        `true`. - escape: bool, whether
+     *                        backslash escaping is enabled. Defaults
+     *                        to `true`. - filePath: bool, whether
+     *                        slashes in string only matches slashes
+     *                        in the given pattern. Defaults to
+     *                        `false`.
      *
      * @return bool whether the string matches pattern or not.
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public static function matchWildcard($pattern, $string, $options = [])
     {
@@ -422,11 +441,11 @@ class BaseStringHelper
     /**
      * This method provides a unicode-safe implementation of built-in PHP function `ucfirst()`.
      *
-     * @param string $string the string to be proceeded
-     * @param string $encoding Optional, defaults to "UTF-8"
+     * @param  string $string   the string to be proceeded
+     * @param  string $encoding Optional, defaults to "UTF-8"
      * @return string
-     * @see http://php.net/manual/en/function.ucfirst.php
-     * @since 2.0.16
+     * @see    http://php.net/manual/en/function.ucfirst.php
+     * @since  2.0.16
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
@@ -439,18 +458,20 @@ class BaseStringHelper
     /**
      * This method provides a unicode-safe implementation of built-in PHP function `ucwords()`.
      *
-     * @param string $string the string to be proceeded
-     * @param string $encoding Optional, defaults to "UTF-8"
-     * @see http://php.net/manual/en/function.ucwords.php
+     * @param  string $string   the string to be proceeded
+     * @param  string $encoding Optional, defaults to "UTF-8"
+     * @see    http://php.net/manual/en/function.ucwords.php
      * @return string
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
         $words = preg_split("/\s/u", $string, -1, PREG_SPLIT_NO_EMPTY);
 
-        $titelized = array_map(function ($word) use ($encoding) {
-            return static::mb_ucfirst($word, $encoding);
-        }, $words);
+        $titelized = array_map(
+            function ($word) use ($encoding) {
+                return static::mb_ucfirst($word, $encoding);
+            }, $words
+        );
 
         return implode(' ', $titelized);
     }

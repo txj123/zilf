@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -16,14 +16,15 @@ namespace Zilf\Db\base;
  * To implement the [[instance()]] method you may use [[StaticInstanceTrait]].
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0.13
- * @see StaticInstanceTrait
+ * @since  2.0.13
+ * @see    StaticInstanceTrait
  */
 interface StaticInstanceInterface
 {
     /**
      * Returns static class instance, which can be used to obtain meta information.
-     * @param bool $refresh whether to re-create static instance even, if it is already cached.
+     *
+     * @param  bool $refresh whether to re-create static instance even, if it is already cached.
      * @return static class instance.
      */
     public static function instance($refresh = false);

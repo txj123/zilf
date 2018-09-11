@@ -15,7 +15,7 @@ use Zilf\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 
 /**
  * @requires extension memcached
- * @group time-sensitive
+ * @group    time-sensitive
  */
 class MemcachedSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {

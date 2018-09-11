@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\sqlite;
@@ -28,7 +28,7 @@ use Zilf\Helpers\ArrayHelper;
  * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 {
@@ -123,13 +123,15 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
         ArrayHelper::multisort($foreignKeys, 'seq', SORT_ASC, SORT_NUMERIC);
         $result = [];
         foreach ($foreignKeys as $table => $foreignKey) {
-            $result[] = new ForeignKeyConstraint([
+            $result[] = new ForeignKeyConstraint(
+                [
                 'columnNames' => ArrayHelper::getColumn($foreignKey, 'from'),
                 'foreignTableName' => $table,
                 'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'to'),
                 'onDelete' => isset($foreignKey[0]['on_delete']) ? $foreignKey[0]['on_delete'] : null,
                 'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
-            ]);
+                ]
+            );
         }
 
         return $result;
@@ -156,10 +158,14 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
      */
     protected function loadTableChecks($tableName)
     {
-        $sql = $this->db->createCommand('SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
+        $sql = $this->db->createCommand(
+            'SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
             ':tableName' => $tableName,
-        ])->queryScalar();
-        /** @var $code SqlToken[]|SqlToken[][]|SqlToken[][][] */
+            ]
+        )->queryScalar();
+        /**
+ * @var $code SqlToken[]|SqlToken[][]|SqlToken[][][] 
+*/
         $code = (new SqlTokenizer($sql))->tokenize();
         $pattern = (new SqlTokenizer('any CREATE any TABLE any()'))->tokenize();
         if (!$code[0]->matches($pattern, 0, $firstMatchIndex, $lastMatchIndex)) {
@@ -181,10 +187,12 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
             if (isset($createTableToken[$firstMatchIndex - 2]) && $createTableToken->matches($pattern, $firstMatchIndex - 2)) {
                 $name = $createTableToken[$firstMatchIndex - 1]->content;
             }
-            $result[] = new CheckConstraint([
+            $result[] = new CheckConstraint(
+                [
                 'name' => $name,
                 'expression' => $checkSql,
-            ]);
+                ]
+            );
         }
 
         return $result;
@@ -192,6 +200,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -202,6 +211,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
     /**
      * Creates a query builder for the MySQL database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
+     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -211,6 +221,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
+     *
      * @return ColumnSchemaBuilder column schema builder instance
      */
     public function createColumnSchemaBuilder($type, $length = null)
@@ -220,7 +231,8 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Collects the table column metadata.
-     * @param TableSchema $table the table metadata
+     *
+     * @param  TableSchema $table the table metadata
      * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
@@ -248,6 +260,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Collects the foreign key column details for the given table.
+     *
      * @param TableSchema $table the table metadata
      */
     protected function findConstraints($table)
@@ -277,7 +290,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
+     * @param  TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
      */
     public function findUniqueIndexes($table)
@@ -303,7 +316,8 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
+     *
+     * @param  array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -358,33 +372,35 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Sets the isolation level of the current transaction.
-     * @param string $level The transaction isolation level to use for this transaction.
-     * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
+     *
+     * @param  string $level The transaction isolation level to use for this transaction.
+     *                       This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
      * @throws NotSupportedException when unsupported isolation levels are used.
      * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
-     * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
+     * @see    http://www.sqlite.org/pragma.html#pragma_read_uncommitted
      */
     public function setTransactionIsolationLevel($level)
     {
         switch ($level) {
-            case Transaction::SERIALIZABLE:
-                $this->db->createCommand('PRAGMA read_uncommitted = False;')->execute();
-                break;
-            case Transaction::READ_UNCOMMITTED:
-                $this->db->createCommand('PRAGMA read_uncommitted = True;')->execute();
-                break;
-            default:
-                throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
+        case Transaction::SERIALIZABLE:
+            $this->db->createCommand('PRAGMA read_uncommitted = False;')->execute();
+            break;
+        case Transaction::READ_UNCOMMITTED:
+            $this->db->createCommand('PRAGMA read_uncommitted = True;')->execute();
+            break;
+        default:
+            throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
         }
     }
 
     /**
      * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
-     * - primaryKey
-     * - indexes
-     * - uniques
+     *
+     * @param  string $tableName  table name.
+     * @param  string $returnType return type:
+     *                            - primaryKey
+     *                            - indexes
+     *                            - uniques
      * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
@@ -419,21 +435,27 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
                     $index['origin'] = 'u';
                 }
             }
-            $result['indexes'][] = new IndexConstraint([
+            $result['indexes'][] = new IndexConstraint(
+                [
                 'isPrimary' => $index['origin'] === 'pk',
                 'isUnique' => (bool) $index['unique'],
                 'name' => $index['name'],
                 'columnNames' => ArrayHelper::getColumn($columns, 'name'),
-            ]);
+                ]
+            );
             if ($index['origin'] === 'u') {
-                $result['uniques'][] = new Constraint([
+                $result['uniques'][] = new Constraint(
+                    [
                     'name' => $index['name'],
                     'columnNames' => ArrayHelper::getColumn($columns, 'name'),
-                ]);
+                    ]
+                );
             } elseif ($index['origin'] === 'pk') {
-                $result['primaryKey'] = new Constraint([
+                $result['primaryKey'] = new Constraint(
+                    [
                     'columnNames' => ArrayHelper::getColumn($columns, 'name'),
-                ]);
+                    ]
+                );
             }
         }
         foreach ($result as $type => $data) {
@@ -445,9 +467,10 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Return whether the specified identifier is a SQLite system identifier.
-     * @param string $identifier
+     *
+     * @param  string $identifier
      * @return bool
-     * @see https://www.sqlite.org/src/artifact/74108007d286232f
+     * @see    https://www.sqlite.org/src/artifact/74108007d286232f
      */
     private function isSystemIdentifier($identifier)
     {

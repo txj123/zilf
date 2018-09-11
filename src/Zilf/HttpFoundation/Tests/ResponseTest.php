@@ -813,7 +813,7 @@ class ResponseTest extends ResponseTestCase
 
     /**
      * @expectedException \UnexpectedValueException
-     * @dataProvider invalidContentProvider
+     * @dataProvider      invalidContentProvider
      */
     public function testSetContentInvalid($content)
     {

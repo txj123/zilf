@@ -28,8 +28,8 @@ class MessageLogged
     /**
      * Create a new event instance.
      *
-     * @param  string  $level
-     * @param  string  $message
+     * @param  string $level
+     * @param  string $message
      * @param  array  $context
      * @return void
      */

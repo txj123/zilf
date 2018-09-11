@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -23,7 +23,7 @@ use Zilf\Db\base\InvalidConfigException;
  * PostgreSQL it will be compiled to `WHERE "items" @> ARRAY[1, 2, 3]::integer[]`.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, \IteratorAggregate
 {
@@ -49,12 +49,13 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * ArrayExpression constructor.
      *
-     * @param array|QueryInterface|mixed $value the array content. Either represented as an array of values or a Query that
-     * returns these values. A single value will be considered as an array containing one element.
-     * @param string|null $type the type of the array elements. Defaults to `null` which means the type is
-     * not explicitly specified. In case when type is not specified explicitly and DBMS can not guess it from the context,
-     * SQL error will be raised.
-     * @param int $dimension the number of indices needed to select an element
+     * @param array|QueryInterface|mixed $value     the array content. Either represented as an array of values or a Query that
+     *                                              returns these values. A single value will be considered as an array
+     *                                              containing one element.
+     * @param string|null                $type      the type of the array elements. Defaults to `null` which means the type is
+     *                                              not explicitly specified. In case when type is not specified explicitly
+     *                                              and DBMS can not guess it from the context, SQL error will be raised.
+     * @param int                        $dimension the number of indices needed to select an element
      */
     public function __construct($value, $type = null, $dimension = 1)
     {
@@ -69,7 +70,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return null|string
-     * @see type
+     * @see    type
      */
     public function getType()
     {
@@ -78,7 +79,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return array|mixed|QueryInterface
-     * @see value
+     * @see    value
      */
     public function getValue()
     {
@@ -87,7 +88,7 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
 
     /**
      * @return int the number of indices needed to select an element
-     * @see dimensions
+     * @see    dimensions
      */
     public function getDimension()
     {
@@ -97,15 +98,15 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Whether a offset exists
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
-     * @param mixed $offset <p>
-     * An offset to check for.
-     * </p>
+     * @link   http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param  mixed $offset <p>
+     *                       An offset to check for.
+     *                       </p>
      * @return bool true on success or false on failure.
      * </p>
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public function offsetExists($offset)
     {
@@ -115,12 +116,12 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Offset to retrieve
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
-     * @param mixed $offset <p>
-     * The offset to retrieve.
-     * </p>
+     * @link   http://php.net/manual/en/arrayaccess.offsetget.php
+     * @param  mixed $offset <p>
+     *                       The offset to retrieve.
+     *                       </p>
      * @return mixed Can return all value types.
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public function offsetGet($offset)
     {
@@ -130,15 +131,18 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Offset to set
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
-     * @param mixed $offset <p>
-     * The offset to assign the value to.
-     * </p>
-     * @param mixed $value <p>
-     * The value to set.
-     * </p>
+     * @link   http://php.net/manual/en/arrayaccess.offsetset.php
+     * @param  mixed $offset <p>
+     *                       The offset to assign the value to.
+     *                       </p>
+     * @param  mixed $value  <p>
+     *                       The
+     *                       value
+     *                       to
+     *                       set.
+     *                       </p>
      * @return void
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public function offsetSet($offset, $value)
     {
@@ -148,12 +152,12 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Offset to unset
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
-     * @param mixed $offset <p>
-     * The offset to unset.
-     * </p>
+     * @link   http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param  mixed $offset <p>
+     *                       The offset to unset.
+     *                       </p>
      * @return void
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public function offsetUnset($offset)
     {
@@ -163,12 +167,12 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Count elements of an object
      *
-     * @link http://php.net/manual/en/countable.count.php
+     * @link   http://php.net/manual/en/countable.count.php
      * @return int The custom count as an integer.
      * </p>
      * <p>
      * The return value is cast to an integer.
-     * @since 2.0.14
+     * @since  2.0.14
      */
     public function count()
     {
@@ -178,10 +182,10 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     /**
      * Retrieve an external iterator
      *
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
+     * @link   http://php.net/manual/en/iteratoraggregate.getiterator.php
      * @return Traversable An instance of an object implementing <b>Iterator</b> or
      * <b>Traversable</b>
-     * @since 2.0.14.1
+     * @since  2.0.14.1
      * @throws InvalidConfigException when ArrayExpression contains QueryInterface object
      */
     public function getIterator()

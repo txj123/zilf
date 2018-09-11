@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -11,7 +11,7 @@ namespace Zilf\Db;
  * Exception represents an exception that is caused by violation of DB constraints.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
- * @since 2.0
+ * @since  2.0
  */
 class IntegrityException extends Exception
 {

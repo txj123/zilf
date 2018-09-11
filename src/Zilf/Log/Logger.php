@@ -26,8 +26,8 @@ class Logger implements LoggerInterface
     /**
      * Create a new log writer instance.
      *
-     * @param  \Psr\Log\LoggerInterface  $logger
-     * @param  \Illuminate\Contracts\Events\Dispatcher|null  $dispatcher
+     * @param  \Psr\Log\LoggerInterface                     $logger
+     * @param  \Illuminate\Contracts\Events\Dispatcher|null $dispatcher
      * @return void
      */
     public function __construct(LoggerInterface $logger, Dispatcher $dispatcher = null)
@@ -42,7 +42,7 @@ class Logger implements LoggerInterface
     /**
      * Log an emergency message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -54,7 +54,7 @@ class Logger implements LoggerInterface
     /**
      * Log an alert message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -66,7 +66,7 @@ class Logger implements LoggerInterface
     /**
      * Log a critical message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -78,7 +78,7 @@ class Logger implements LoggerInterface
     /**
      * Log an error message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -90,7 +90,7 @@ class Logger implements LoggerInterface
     /**
      * Log a warning message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -102,7 +102,7 @@ class Logger implements LoggerInterface
     /**
      * Log a notice to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -114,7 +114,7 @@ class Logger implements LoggerInterface
     /**
      * Log an informational message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -126,7 +126,7 @@ class Logger implements LoggerInterface
     /**
      * Log a debug message to the logs.
      *
-     * @param  string  $message
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -138,8 +138,8 @@ class Logger implements LoggerInterface
     /**
      * Log a message to the logs.
      *
-     * @param  string  $level
-     * @param  string  $message
+     * @param  string $level
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -151,8 +151,8 @@ class Logger implements LoggerInterface
     /**
      * Dynamically pass log calls into the writer.
      *
-     * @param  string  $level
-     * @param  string  $message
+     * @param  string $level
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -164,8 +164,8 @@ class Logger implements LoggerInterface
     /**
      * Write a message to the log.
      *
-     * @param  string  $level
-     * @param  string  $message
+     * @param  string $level
+     * @param  string $message
      * @param  array  $context
      * @return void
      */
@@ -179,7 +179,7 @@ class Logger implements LoggerInterface
     /**
      * Register a new callback handler for when a log event is triggered.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return void
      *
      * @throws \RuntimeException
@@ -196,9 +196,9 @@ class Logger implements LoggerInterface
     /**
      * Fires a log event.
      *
-     * @param  string  $level
-     * @param  string  $message
-     * @param  array   $context
+     * @param  string $level
+     * @param  string $message
+     * @param  array  $context
      * @return void
      */
     protected function fireLogEvent($level, $message, array $context = [])
@@ -214,7 +214,7 @@ class Logger implements LoggerInterface
     /**
      * Format the parameters for the logger.
      *
-     * @param  mixed  $message
+     * @param  mixed $message
      * @return mixed
      */
     protected function formatMessage($message)
@@ -253,7 +253,7 @@ class Logger implements LoggerInterface
     /**
      * Set the event dispatcher instance.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $dispatcher
+     * @param  \Illuminate\Contracts\Events\Dispatcher $dispatcher
      * @return void
      */
     public function setEventDispatcher(Dispatcher $dispatcher)
@@ -264,7 +264,7 @@ class Logger implements LoggerInterface
     /**
      * Dynamically proxy method calls to the underlying logger.
      *
-     * @param  string  $method
+     * @param  string $method
      * @param  array  $parameters
      * @return mixed
      */

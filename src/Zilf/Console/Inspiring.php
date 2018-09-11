@@ -30,6 +30,6 @@ class Inspiring
             'Genius is one percent inspiration and ninety-nine percent perspiration. - Thomas Edison',
             'Computer science is no more about computers than astronomy is about telescopes. - Edsger Dijkstra',
         ];
-        return $arr[array_rand($arr,1)];
+        return $arr[array_rand($arr, 1)];
     }
 }

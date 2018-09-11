@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\sqlite;
@@ -16,7 +16,7 @@ use Zilf\Helpers\StringHelper;
  * {@inheritdoc}
  *
  * @author Sergey Makinen <sergey@makinen.ru>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class Command extends \Zilf\Db\Command
 {
@@ -69,8 +69,9 @@ class Command extends \Zilf\Db\Command
     /**
      * Splits the specified SQL code into individual SQL statements and returns them
      * or `false` if there's a single statement.
-     * @param string $sql
-     * @param array $params
+     *
+     * @param  string $sql
+     * @param  array  $params
      * @return string[]|false
      */
     private function splitStatements($sql, $params)
@@ -95,8 +96,9 @@ class Command extends \Zilf\Db\Command
 
     /**
      * Returns named bindings used in the specified statement token.
-     * @param SqlToken $statement
-     * @param array $params
+     *
+     * @param  SqlToken $statement
+     * @param  array    $params
      * @return array
      */
     private function extractUsedParams(SqlToken $statement, $params)

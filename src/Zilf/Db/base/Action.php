@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -35,7 +35,7 @@ use Zilf\System\Zilf;
  * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Action extends Component
 {
@@ -52,9 +52,9 @@ class Action extends Component
     /**
      * Constructor.
      *
-     * @param string $id the ID of this action
+     * @param string     $id         the ID of this action
      * @param Controller $controller the controller that owns this action
-     * @param array $config name-value pairs that will be used to initialize the object properties
+     * @param array      $config     name-value pairs that will be used to initialize the object properties
      */
     public function __construct($id, $controller, $config = [])
     {
@@ -77,7 +77,7 @@ class Action extends Component
      * Runs this action with the specified parameters.
      * This method is mainly invoked by the controller.
      *
-     * @param array $params the parameters to be bound to the action's run() method.
+     * @param  array $params the parameters to be bound to the action's run() method.
      * @return mixed the result of the action
      * @throws InvalidConfigException if the action class does not have a run() method
      */

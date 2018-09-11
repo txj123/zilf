@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -24,7 +24,7 @@ use Zilf\Helpers\StringHelper;
  * For more details and usage information on Event, see the [guide article on events](guide:concept-events).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class Event extends BaseObject
 {
@@ -57,7 +57,7 @@ class Event extends BaseObject
      */
     private static $_events = [];
     /**
-     * @var array the globally registered event handlers attached for wildcard patterns (event name wildcard => handlers)
+     * @var   array the globally registered event handlers attached for wildcard patterns (event name wildcard => handlers)
      * @since 2.0.14
      */
     private static $_eventWildcards = [];
@@ -90,15 +90,16 @@ class Event extends BaseObject
      *
      * For more details about how to declare an event handler, please refer to [[Component::on()]].
      *
-     * @param string $class the fully qualified class name to which the event handler needs to attach.
-     * @param string $name the event name.
+     * @param string   $class   the fully qualified class name to which the event handler needs to attach.
+     * @param string   $name    the event name.
      * @param callable $handler the event handler.
-     * @param mixed $data the data to be passed to the event handler when the event is triggered.
-     * When the event handler is invoked, this data can be accessed via [[Event::data]].
-     * @param bool $append whether to append new event handler to the end of the existing
-     * handler list. If `false`, the new handler will be inserted at the beginning of the existing
-     * handler list.
-     * @see off()
+     * @param mixed    $data    the data to be passed to the event handler when the event is triggered.
+     *                          When the event handler is invoked, this data can be accessed via
+     *                          [[Event::data]].
+     * @param bool     $append  whether to append new event handler to the end of the existing
+     *                          handler list. If `false`, the new handler will be inserted at
+     *                          the beginning of the existing handler list.
+     * @see   off()
      */
     public static function on($class, $name, $handler, $data = null, $append = true)
     {
@@ -128,12 +129,12 @@ class Event extends BaseObject
      * Note: in case wildcard pattern is passed for class name or event name, only the handlers registered with this
      * wildcard will be removed, while handlers registered with plain names matching this wildcard will remain.
      *
-     * @param string $class the fully qualified class name from which the event handler needs to be detached.
-     * @param string $name the event name.
-     * @param callable $handler the event handler to be removed.
-     * If it is `null`, all handlers attached to the named event will be removed.
+     * @param  string   $class   the fully qualified class name from which the event handler needs to be detached.
+     * @param  string   $name    the event name.
+     * @param  callable $handler the event handler to be removed.
+     *                           If it is `null`, all handlers attached to the named event will be removed.
      * @return bool whether a handler is found and detached.
-     * @see on()
+     * @see    on()
      */
     public static function off($class, $name, $handler = null)
     {
@@ -188,8 +189,9 @@ class Event extends BaseObject
 
     /**
      * Detaches all registered class-level event handlers.
-     * @see on()
-     * @see off()
+     *
+     * @see   on()
+     * @see   off()
      * @since 2.0.10
      */
     public static function offAll()
@@ -202,8 +204,9 @@ class Event extends BaseObject
      * Returns a value indicating whether there is any handler attached to the specified class-level event.
      * Note that this method will also check all parent classes to see if there is any handler attached
      * to the named event.
-     * @param string|object $class the object or the fully qualified class name specifying the class-level event.
-     * @param string $name the event name.
+     *
+     * @param  string|object $class the object or the fully qualified class name specifying the class-level event.
+     * @param  string        $name  the event name.
      * @return bool whether there is any handler attached to the event.
      */
     public static function hasHandlers($class, $name)
@@ -255,9 +258,10 @@ class Event extends BaseObject
      * Triggers a class-level event.
      * This method will cause invocation of event handlers that are attached to the named event
      * for the specified class and all its parent classes.
+     *
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.
-     * @param string $name the event name.
-     * @param Event $event the event parameter. If not set, a default [[Event]] object will be created.
+     * @param string        $name  the event name.
+     * @param Event         $event the event parameter. If not set, a default [[Event]] object will be created.
      */
     public static function trigger($class, $name, $event = null)
     {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -18,9 +18,9 @@ namespace Zilf\Db;
  *
  * To see possible types, check [PDO::PARAM_* constants](http://php.net/manual/en/pdo.constants.php).
  *
- * @see http://php.net/manual/en/pdostatement.bindparam.php
+ * @see    http://php.net/manual/en/pdostatement.bindparam.php
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 final class PdoValue implements ExpressionInterface
 {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -16,7 +16,7 @@ use Zilf\Db\Query;
  * Class InConditionBuilder builds objects of [[InCondition]]
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class InConditionBuilder implements ExpressionBuilderInterface
 {
@@ -27,8 +27,8 @@ class InConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|InCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
+     * @param  ExpressionInterface|InCondition $expression the expression to be built.
+     * @param  array                           $params     the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
     public function build(ExpressionInterface $expression, array &$params = [])
@@ -78,9 +78,9 @@ class InConditionBuilder implements ExpressionBuilderInterface
     /**
      * Builds $values to be used in [[InCondition]]
      *
-     * @param ConditionInterface|InCondition $condition
-     * @param array $values
-     * @param array $params the binding parameters
+     * @param  ConditionInterface|InCondition $condition
+     * @param  array                          $values
+     * @param  array                          $params    the binding parameters
      * @return array of prepared for SQL placeholders
      */
     protected function buildValues(ConditionInterface $condition, $values, &$params)
@@ -107,10 +107,10 @@ class InConditionBuilder implements ExpressionBuilderInterface
     /**
      * Builds SQL for IN condition.
      *
-     * @param string $operator
-     * @param array|string $columns
-     * @param Query $values
-     * @param array $params
+     * @param  string       $operator
+     * @param  array|string $columns
+     * @param  Query        $values
+     * @param  array        $params
      * @return string SQL
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
@@ -137,10 +137,10 @@ class InConditionBuilder implements ExpressionBuilderInterface
     /**
      * Builds SQL for IN condition.
      *
-     * @param string $operator
-     * @param array|\Traversable $columns
-     * @param array $values
-     * @param array $params
+     * @param  string             $operator
+     * @param  array|\Traversable $columns
+     * @param  array              $values
+     * @param  array              $params
      * @return string SQL
      */
     protected function buildCompositeInCondition($operator, $columns, $values, &$params)

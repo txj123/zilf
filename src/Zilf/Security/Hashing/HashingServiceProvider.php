@@ -15,6 +15,6 @@ class HashingServiceProvider
      */
     public function register()
     {
-        Zilf::$container->register('hashing','Zilf\Security\Hashing\PasswordHashing');
+        Zilf::$container->register('hashing', 'Zilf\Security\Hashing\PasswordHashing');
     }
 }

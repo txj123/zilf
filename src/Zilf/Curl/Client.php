@@ -642,8 +642,8 @@ class Client
     }
 
     /**
-     * @param $url
-     * @param array $parameters
+     * @param  $url
+     * @param  array $parameters
      * @return CurlResponse
      */
     public function get($url, $parameters = [])
@@ -654,8 +654,8 @@ class Client
     }
 
     /**
-     * @param $url
-     * @param mixed $parameters
+     * @param  $url
+     * @param  mixed $parameters
      * @return CurlResponse
      */
     public function post($url, $parameters = '')
@@ -666,9 +666,9 @@ class Client
     }
 
     /**
-     * @param string $method
-     * @param string $url
-     * @param mixed  $parameters
+     * @param  string $method
+     * @param  string $url
+     * @param  mixed  $parameters
      * @return CurlResponse
      */
     public function request($method = '', $url = '', $parameters = '')
@@ -735,8 +735,8 @@ class Client
     }
 
     /**
-     * @param $url
-     * @param array $parameters
+     * @param  $url
+     * @param  array $parameters
      * @return array
      */
     public function getAsync($url,$parameters = [])
@@ -745,8 +745,8 @@ class Client
     }
 
     /**
-     * @param $url
-     * @param array $parameters
+     * @param  $url
+     * @param  array $parameters
      * @return array
      */
     public function postAsync($url,$parameters = [])
@@ -755,9 +755,9 @@ class Client
     }
 
     /**
-     * @param string $method
-     * @param string $url
-     * @param string $parameters
+     * @param  string $method
+     * @param  string $url
+     * @param  string $parameters
      * @return array
      */
     public function requestAsync($method = '', $url = '', $parameters = '')
@@ -841,8 +841,8 @@ class Client
     }
 
     /**
-     * @param $cookie_name
-     * @param string      $path cookie的存储路径,为空则为系统默认的缓存路径
+     * @param  $cookie_name
+     * @param  string      $path cookie的存储路径,为空则为系统默认的缓存路径
      * @return $this
      */
     public function set_open_cookie($cookie_name, $path = '')
@@ -1040,7 +1040,7 @@ class Client
     }
 
     /**
-     * @param $data
+     * @param  $data
      * @return $this
      */
     public function set_parameters($data)
@@ -1060,7 +1060,7 @@ class Client
     }
 
     /**
-     * @param $time
+     * @param  $time
      * @return $this
      */
     public function setTimeout($time)
@@ -1080,7 +1080,7 @@ class Client
     }
 
     /**
-     * @param $url
+     * @param  $url
      * @return $this
      */
     public function set_Url($url)
@@ -1100,7 +1100,7 @@ class Client
     }
 
     /**
-     * @param $method
+     * @param  $method
      * @return $this
      */
     public function set_method($method)
@@ -1138,8 +1138,8 @@ class Client
     }
 
     /**
-     * @param $name
-     * @param $value
+     * @param  $name
+     * @param  $value
      * @return $this
      */
     function __set($name, $value)

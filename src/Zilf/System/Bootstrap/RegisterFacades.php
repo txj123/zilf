@@ -12,7 +12,7 @@ class RegisterFacades
     /**
      * Bootstrap the given application.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Foundation\Application $app
      * @return void
      */
     public function bootstrap(Application $app)
@@ -21,9 +21,11 @@ class RegisterFacades
 
         Facade::setFacadeApplication($app);
 
-        AliasLoader::getInstance(array_merge(
-            $app->make('config')->get('app.aliases', []),
-            $app->make(PackageManifest::class)->aliases()
-        ))->register();
+        AliasLoader::getInstance(
+            array_merge(
+                $app->make('config')->get('app.aliases', []),
+                $app->make(PackageManifest::class)->aliases()
+            )
+        )->register();
     }
 }

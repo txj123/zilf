@@ -34,10 +34,10 @@ require_once 'Zend/Validate/Hostname.php';
 
 
 /**
- * @category   Zend
- * @package    Zend_Validate
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @category  Zend
+ * @package   Zend_Validate
+ * @copyright Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Validate_EmailAddress extends Zend_Validate_Abstract
 {
@@ -112,8 +112,8 @@ class Zend_Validate_EmailAddress extends Zend_Validate_Abstract
     }
 
     /**
-     * @param Zend_Validate_Hostname $hostnameValidator OPTIONAL
-     * @param int                    $allow             OPTIONAL
+     * @param  Zend_Validate_Hostname $hostnameValidator OPTIONAL
+     * @param  int                    $allow             OPTIONAL
      * @return void
      */
     public function setHostnameValidator(Zend_Validate_Hostname $hostnameValidator = null, $allow = Zend_Validate_Hostname::ALLOW_DNS)

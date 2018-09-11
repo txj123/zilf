@@ -37,7 +37,7 @@ abstract class ServiceProvider
     /**
      * Create a new service provider instance.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Foundation\Application $app
      * @return void
      */
     public function __construct()
@@ -48,35 +48,35 @@ abstract class ServiceProvider
     /**
      * Merge the given configuration with the existing configuration.
      *
-     * @param  string  $path
-     * @param  string  $key
+     * @param  string $path
+     * @param  string $key
      * @return void
      */
     protected function mergeConfigFrom($path, $key)
     {
         $config = $this->app['config']->get($key, []);
 
-        $this->app['config']->set($key, array_merge(require $path, $config));
+        $this->app['config']->set($key, array_merge(include $path, $config));
     }
 
     /**
      * Load the given routes file if routes are not already cached.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return void
      */
     protected function loadRoutesFrom($path)
     {
         if (! $this->app->routesAreCached()) {
-            require $path;
+            include $path;
         }
     }
 
     /**
      * Register a view file namespace.
      *
-     * @param  string|array  $path
-     * @param  string  $namespace
+     * @param  string|array $path
+     * @param  string       $namespace
      * @return void
      */
     protected function loadViewsFrom($path, $namespace)
@@ -95,8 +95,8 @@ abstract class ServiceProvider
     /**
      * Register a translation file namespace.
      *
-     * @param  string  $path
-     * @param  string  $namespace
+     * @param  string $path
+     * @param  string $namespace
      * @return void
      */
     protected function loadTranslationsFrom($path, $namespace)
@@ -107,7 +107,7 @@ abstract class ServiceProvider
     /**
      * Register a JSON translation file path.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return void
      */
     protected function loadJsonTranslationsFrom($path)
@@ -118,23 +118,25 @@ abstract class ServiceProvider
     /**
      * Register a database migration path.
      *
-     * @param  array|string  $paths
+     * @param  array|string $paths
      * @return void
      */
     protected function loadMigrationsFrom($paths)
     {
-        $this->app->afterResolving('migrator', function ($migrator) use ($paths) {
-            foreach ((array) $paths as $path) {
-                $migrator->path($path);
+        $this->app->afterResolving(
+            'migrator', function ($migrator) use ($paths) {
+                foreach ((array) $paths as $path) {
+                    $migrator->path($path);
+                }
             }
-        });
+        );
     }
 
     /**
      * Register paths to be published by the publish command.
      *
      * @param  array  $paths
-     * @param  string  $group
+     * @param  string $group
      * @return void
      */
     protected function publishes(array $paths, $group = null)
@@ -151,7 +153,7 @@ abstract class ServiceProvider
     /**
      * Ensure the publish array for the service provider is initialized.
      *
-     * @param  string  $class
+     * @param  string $class
      * @return void
      */
     protected function ensurePublishArrayInitialized($class)
@@ -164,7 +166,7 @@ abstract class ServiceProvider
     /**
      * Add a publish group / tag to the service provider.
      *
-     * @param  string  $group
+     * @param  string $group
      * @param  array  $paths
      * @return void
      */
@@ -182,8 +184,8 @@ abstract class ServiceProvider
     /**
      * Get the paths to publish.
      *
-     * @param  string  $provider
-     * @param  string  $group
+     * @param  string $provider
+     * @param  string $group
      * @return array
      */
     public static function pathsToPublish($provider = null, $group = null)
@@ -192,16 +194,18 @@ abstract class ServiceProvider
             return $paths;
         }
 
-        return collect(static::$publishes)->reduce(function ($paths, $p) {
-            return array_merge($paths, $p);
-        }, []);
+        return collect(static::$publishes)->reduce(
+            function ($paths, $p) {
+                return array_merge($paths, $p);
+            }, []
+        );
     }
 
     /**
      * Get the paths for the provider or group (or both).
      *
-     * @param  string|null  $provider
-     * @param  string|null  $group
+     * @param  string|null $provider
+     * @param  string|null $group
      * @return array
      */
     protected static function pathsForProviderOrGroup($provider, $group)
@@ -220,8 +224,8 @@ abstract class ServiceProvider
     /**
      * Get the paths for the provider and group.
      *
-     * @param  string  $provider
-     * @param  string  $group
+     * @param  string $provider
+     * @param  string $group
      * @return array
      */
     protected static function pathsForProviderAndGroup($provider, $group)
@@ -256,16 +260,18 @@ abstract class ServiceProvider
     /**
      * Register the package's custom Artisan commands.
      *
-     * @param  array|mixed  $commands
+     * @param  array|mixed $commands
      * @return void
      */
     public function commands($commands)
     {
         $commands = is_array($commands) ? $commands : func_get_args();
 
-        Artisan::starting(function ($artisan) use ($commands) {
-            $artisan->resolveCommands($commands);
-        });
+        Artisan::starting(
+            function ($artisan) use ($commands) {
+                $artisan->resolveCommands($commands);
+            }
+        );
     }
 
     /**

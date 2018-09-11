@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -14,7 +14,7 @@ use Zilf\Db\Query;
  * Condition that represents `EXISTS` operator.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class ExistsCondition implements ConditionInterface
 {
@@ -32,7 +32,7 @@ class ExistsCondition implements ConditionInterface
      * ExistsCondition constructor.
      *
      * @param string $operator the operator to use (e.g. `EXISTS` or `NOT EXISTS`)
-     * @param Query $query the [[Query]] object representing the sub-query.
+     * @param Query  $query    the [[Query]] object representing the sub-query.
      */
     public function __construct($operator, $query)
     {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -15,7 +15,7 @@ use Zilf\System\Zilf;
  * For more details and usage information on ErrorException, see the [guide article on handling errors](guide:runtime-handling-errors).
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
- * @since 2.0
+ * @since  2.0
  */
 class ErrorException extends \ErrorException
 {
@@ -24,7 +24,8 @@ class ErrorException extends \ErrorException
      *
      * PHP Zend runtime won't call the error handler on fatals, HHVM will, with an error code of 16777217
      * We will handle fatal error a bit different on HHVM.
-     * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
+     *
+     * @see   https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
      * @since 2.0.6
      */
     const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
@@ -32,7 +33,8 @@ class ErrorException extends \ErrorException
 
     /**
      * Constructs the exception.
-     * @link http://php.net/manual/en/errorexception.construct.php
+     *
+     * @link  http://php.net/manual/en/errorexception.construct.php
      * @param $message [optional]
      * @param $code [optional]
      * @param $severity [optional]
@@ -77,7 +79,7 @@ class ErrorException extends \ErrorException
     /**
      * Returns if error is one of fatal type.
      *
-     * @param array $error error got from error_get_last()
+     * @param  array $error error got from error_get_last()
      * @return bool if error is one of fatal type
      */
     public static function isFatalError($error)
