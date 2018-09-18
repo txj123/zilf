@@ -48,14 +48,18 @@ class QueueServiceProvider
      */
     protected function registerManager()
     {
-        Zilf::$container->register('queue', function () {
-            // Once we have an instance of the queue manager, we will register the various
-            // resolvers for the queue connectors. These connectors are responsible for
-            // creating the classes that accept queue configs and instantiate queues.
-            return tap(new QueueManager(), function ($manager) {
-                $this->registerConnectors($manager);
-            });
-        });
+        Zilf::$container->register(
+            'queue', function () {
+                // Once we have an instance of the queue manager, we will register the various
+                // resolvers for the queue connectors. These connectors are responsible for
+                // creating the classes that accept queue configs and instantiate queues.
+                return tap(
+                    new QueueManager(), function ($manager) {
+                        $this->registerConnectors($manager);
+                    }
+                );
+            }
+        );
     }
 
     /**
@@ -65,15 +69,17 @@ class QueueServiceProvider
      */
     protected function registerConnection()
     {
-        Zilf::$container->register('queue.connection', function () {
-            return Zilf::$container['queue']->connection();
-        });
+        Zilf::$container->register(
+            'queue.connection', function () {
+                return Zilf::$container['queue']->connection();
+            }
+        );
     }
 
     /**
      * Register the connectors on the queue manager.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     public function registerConnectors($manager)
@@ -86,79 +92,91 @@ class QueueServiceProvider
     /**
      * Register the Null queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     protected function registerNullConnector($manager)
     {
-        $manager->addConnector('null', function () {
-            return new NullConnector;
-        });
+        $manager->addConnector(
+            'null', function () {
+                return new NullConnector;
+            }
+        );
     }
 
     /**
      * Register the Sync queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     protected function registerSyncConnector($manager)
     {
-        $manager->addConnector('sync', function () {
-            return new SyncConnector;
-        });
+        $manager->addConnector(
+            'sync', function () {
+                return new SyncConnector;
+            }
+        );
     }
 
     /**
      * Register the database queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     protected function registerDatabaseConnector($manager)
     {
-        $manager->addConnector('database', function () {
-            return new DatabaseConnector(Zilf::$container->getShare('db.default'));
-        });
+        $manager->addConnector(
+            'database', function () {
+                return new DatabaseConnector(Zilf::$container->getShare('db.default'));
+            }
+        );
     }
 
     /**
      * Register the Redis queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     protected function registerRedisConnector($manager)
     {
-        $manager->addConnector('redis', function () {
-            return new RedisConnector(Zilf::$container->getShare('redis'));
-        });
+        $manager->addConnector(
+            'redis', function () {
+                return new RedisConnector(Zilf::$container->getShare('redis'));
+            }
+        );
     }
 
     /**
      * Register the Beanstalkd queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     protected function registerBeanstalkdConnector($manager)
     {
-        $manager->addConnector('beanstalkd', function () {
-            return new BeanstalkdConnector;
-        });
+        $manager->addConnector(
+            'beanstalkd', function () {
+                return new BeanstalkdConnector;
+            }
+        );
     }
 
     /**
      * Register the Amazon SQS queue connector.
      *
-     * @param  \Illuminate\Queue\QueueManager  $manager
+     * @param  \Illuminate\Queue\QueueManager $manager
      * @return void
      */
     protected function registerSqsConnector($manager)
     {
-        $manager->addConnector('sqs', function () {
-            return new SqsConnector;
-        });
+        $manager->addConnector(
+            'sqs', function () {
+                return new SqsConnector;
+            }
+        );
     }
 
     /**
@@ -168,9 +186,11 @@ class QueueServiceProvider
      */
     protected function registerWorker()
     {
-        Zilf::$container->register('queue.worker', function () {
-            return new Worker(Zilf::$container['queue']);
-        });
+        Zilf::$container->register(
+            'queue.worker', function () {
+                return new Worker(Zilf::$container['queue']);
+            }
+        );
     }
 
     /**
@@ -180,9 +200,11 @@ class QueueServiceProvider
      */
     protected function registerListener()
     {
-        Zilf::$container->register('queue.listener', function () {
-            return new Listener(Zilf::$app->basePath());
-        });
+        Zilf::$container->register(
+            'queue.listener', function () {
+                return new Listener(Zilf::$app->basePath());
+            }
+        );
     }
 
     /**
@@ -192,19 +214,21 @@ class QueueServiceProvider
      */
     protected function registerFailedJobServices()
     {
-        Zilf::$container->register('queue.failer', function () {
-            $config = $this->app['config']['queue.failed'];
+        Zilf::$container->register(
+            'queue.failer', function () {
+                $config = $this->app['config']['queue.failed'];
 
-            return isset($config['table'])
+                return isset($config['table'])
                         ? $this->databaseFailedJobProvider($config)
                         : new NullFailedJobProvider;
-        });
+            }
+        );
     }
 
     /**
      * Create a new database failed job provider.
      *
-     * @param  array  $config
+     * @param  array $config
      * @return \Illuminate\Queue\Failed\DatabaseFailedJobProvider
      */
     protected function databaseFailedJobProvider($config)

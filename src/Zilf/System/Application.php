@@ -50,10 +50,10 @@ class Application
     protected $bootstrappers = [
         \Zilf\System\Bootstrap\LoadEnvironmentVariables::class,
         \Zilf\System\Bootstrap\LoadConfiguration::class,
-//        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
-//        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
+    //        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
+    //        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
         \Zilf\System\Bootstrap\RegisterProviders::class,
-//        \Illuminate\Foundation\Bootstrap\BootProviders::class,
+    //        \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
 
     public $charset = 'UTF-8';
@@ -205,7 +205,7 @@ class Application
     }
 
     /**
-     * @param string $pathInfo
+     * @param  string $pathInfo
      * @throws \Exception
      */
     public function setRoute($pathInfo = '')
@@ -429,7 +429,8 @@ class Application
 
     public function registerCoreContainerAliases()
     {
-        Zilf::$container->setAlias([
+        Zilf::$container->setAlias(
+            [
             'app' => \Zilf\System\Application::class,
             'blade.compiler' => \Zilf\View\Compilers\BladeCompiler::class,
             'cache' => \Zilf\Cache\CacheManager::class,
@@ -446,6 +447,7 @@ class Application
             'view' => \Zilf\View\Factory::class,
             'consoleKernel' => \App\Console\Kernel::class,
             'queue' => \Zilf\Queue\QueueManager::class,
-        ]);
+            ]
+        );
     }
 }

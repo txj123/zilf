@@ -45,7 +45,7 @@ class ScheduleRunCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     public function __construct(Schedule $schedule)
@@ -86,7 +86,7 @@ class ScheduleRunCommand extends Command
     /**
      * Run the given single server event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event  $event
+     * @param  \Illuminate\Console\Scheduling\Event $event
      * @return void
      */
     protected function runSingleServerEvent($event)
@@ -101,7 +101,7 @@ class ScheduleRunCommand extends Command
     /**
      * Run the given event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event  $event
+     * @param  \Illuminate\Console\Scheduling\Event $event
      * @return void
      */
     protected function runEvent($event)

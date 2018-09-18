@@ -40,9 +40,9 @@ class Url
     }
 
     /**
-     * @param string $url
-     * @param string $params
-     * @param bool   $scheme
+     * @param  string $url
+     * @param  string $params
+     * @param  bool   $scheme
      * @return string
      */
     public static function toRoute($url = '', $params = '', $scheme = true)
@@ -56,7 +56,7 @@ class Url
             // e.g. /path/to/resource
             $url = ltrim($url, '/');
             $bundle = '';
-        }elseif ($bundle == 'Index'){
+        }elseif ($bundle == 'Index') {
             $bundle = '';
         }
 

@@ -41,7 +41,7 @@ class Pipeline
     /**
      * Create a new class instance.
      *
-     * @param  \Illuminate\Contracts\Container\Container|null  $container
+     * @param  \Illuminate\Contracts\Container\Container|null $container
      * @return void
      */
     public function __construct(Container $container = null)
@@ -52,7 +52,7 @@ class Pipeline
     /**
      * Set the object being sent through the pipeline.
      *
-     * @param  mixed  $passable
+     * @param  mixed $passable
      * @return $this
      */
     public function send($passable)
@@ -65,7 +65,7 @@ class Pipeline
     /**
      * Set the array of pipes.
      *
-     * @param  array|mixed  $pipes
+     * @param  array|mixed $pipes
      * @return $this
      */
     public function through($pipes)
@@ -78,7 +78,7 @@ class Pipeline
     /**
      * Set the method to call on the pipes.
      *
-     * @param  string  $method
+     * @param  string $method
      * @return $this
      */
     public function via($method)
@@ -91,7 +91,7 @@ class Pipeline
     /**
      * Run the pipeline with a final destination callback.
      *
-     * @param  \Closure  $destination
+     * @param  \Closure $destination
      * @return mixed
      */
     public function then(Closure $destination)
@@ -106,7 +106,7 @@ class Pipeline
     /**
      * Get the final piece of the Closure onion.
      *
-     * @param  \Closure  $destination
+     * @param  \Closure $destination
      * @return \Closure
      */
     protected function prepareDestination(Closure $destination)

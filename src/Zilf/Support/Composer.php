@@ -25,8 +25,8 @@ class Composer
     /**
      * Create a new Composer manager instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @param  string|null  $workingPath
+     * @param  \Illuminate\Filesystem\Filesystem $files
+     * @param  string|null                       $workingPath
      * @return void
      */
     public function __construct(Filesystem $files, $workingPath = null)
@@ -38,7 +38,7 @@ class Composer
     /**
      * Regenerate the Composer autoloader files.
      *
-     * @param  string  $extra
+     * @param  string $extra
      * @return void
      */
     public function dumpAutoloads($extra = '')
@@ -87,7 +87,7 @@ class Composer
     /**
      * Set the working path used by the class.
      *
-     * @param  string  $path
+     * @param  string $path
      * @return $this
      */
     public function setWorkingPath($path)

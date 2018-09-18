@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\mssql;
@@ -15,7 +15,7 @@ use Zilf\Db\Expression;
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
- * @since 2.0
+ * @since  2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
@@ -52,10 +52,12 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(parent::defaultExpressionBuilders(), [
+        return array_merge(
+            parent::defaultExpressionBuilders(), [
             'Zilf\Db\conditions\InCondition' => 'Zilf\Db\mssql\conditions\InConditionBuilder',
             'Zilf\Db\conditions\LikeCondition' => 'Zilf\Db\mssql\conditions\LikeConditionBuilder',
-        ]);
+            ]
+        );
     }
 
     /**
@@ -77,10 +79,11 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\Zilf\Db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\Zilf\Db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\Zilf\Db\Query::offset]] for more details.
+     *
+     * @param  string $sql     the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param  array  $orderBy the order by columns. See [[\Zilf\Db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param  int    $limit   the limit number. See [[\Zilf\Db\Query::limit]] for more details.
+     * @param  int    $offset  the offset number. See [[\Zilf\Db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -104,10 +107,11 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\Zilf\Db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\Zilf\Db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\Zilf\Db\Query::offset]] for more details.
+     *
+     * @param  string $sql     the existing SQL (without ORDER BY/LIMIT/OFFSET)
+     * @param  array  $orderBy the order by columns. See [[\Zilf\Db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param  int    $limit   the limit number. See [[\Zilf\Db\Query::limit]] for more details.
+     * @param  int    $offset  the offset number. See [[\Zilf\Db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -134,8 +138,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
+     *
+     * @param  string $oldName the table to be renamed. The name will be properly quoted by the method.
+     * @param  string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($oldName, $newName)
@@ -145,9 +150,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
+     *
+     * @param  string $table   the table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param  string $oldName the old name of the column. The name will be properly quoted by the method.
+     * @param  string $newName the new name of the column. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB column.
      */
     public function renameColumn($table, $oldName, $newName)
@@ -160,11 +166,13 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
-     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
+     *
+     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param  string $type   the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
+     *                        into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+     *                        For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become
+     *                        'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
@@ -200,9 +208,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
+     *
+     * @param  string $tableName the name of the table whose primary key sequence will be reset
+     * @param  mixed  $value     the value for the primary key of the next new row inserted. If this is not set,
+     *                           the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
@@ -228,9 +237,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table the table name.
+     *
+     * @param  bool   $check  whether to turn on or off the integrity check.
+     * @param  string $schema the schema of the tables.
+     * @param  string $table  the table name.
      * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
@@ -252,6 +262,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -261,6 +272,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -270,6 +282,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -279,6 +292,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -289,7 +303,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Returns an array of column names given model name.
      *
-     * @param string $modelClass name of the model class
+     * @param  string $modelClass name of the model class
      * @return array|null array of column names
      */
     protected function getAllColumnNames($modelClass = null)
@@ -303,9 +317,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     }
 
     /**
-     * @return bool whether the version of the MSSQL being used is older than 2012.
-     * @throws \Zilf\Db\base\InvalidConfigException
-     * @throws \Zilf\Db\Exception
+     * @return     bool whether the version of the MSSQL being used is older than 2012.
+     * @throws     \Zilf\Db\base\InvalidConfigException
+     * @throws     \Zilf\Db\Exception
      * @deprecated 2.0.14 Use [[Schema::getServerVersion]] with [[\version_compare()]].
      */
     protected function isOldMssql()
@@ -315,6 +329,7 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -324,8 +339,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     * @param string $table the table that data will be saved into.
-     * @param array $columns the column data (name => value) to be saved into the table.
+     *
+     * @param  string $table   the table that data will be saved into.
+     * @param  array  $columns the column data (name => value) to be saved into the table.
      * @return array normalized columns
      */
     private function normalizeTableRowData($table, $columns, &$params)
@@ -355,12 +371,15 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
      * @see http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /** @var Constraint[] $constraints */
+        /**
+ * @var Constraint[] $constraints 
+*/
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);

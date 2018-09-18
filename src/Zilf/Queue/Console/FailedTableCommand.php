@@ -38,8 +38,8 @@ class FailedTableCommand extends Command
     /**
      * Create a new failed queue jobs table command instance.
      *
-     * @param  \Zilf\Filesystem\Filesystem  $files
-     * @param  \Zilf\Support\Composer    $composer
+     * @param  \Zilf\Filesystem\Filesystem $files
+     * @param  \Zilf\Support\Composer      $composer
      * @return void
      */
     public function __construct(Filesystem $files, Composer $composer)
@@ -71,7 +71,7 @@ class FailedTableCommand extends Command
     /**
      * Create a base migration file for the table.
      *
-     * @param  string  $table
+     * @param  string $table
      * @return string
      */
     protected function createBaseMigration($table = 'failed_jobs')
@@ -84,9 +84,9 @@ class FailedTableCommand extends Command
     /**
      * Replace the generated migration with the failed job table stub.
      *
-     * @param  string  $path
-     * @param  string  $table
-     * @param  string  $tableClassName
+     * @param  string $path
+     * @param  string $table
+     * @param  string $tableClassName
      * @return void
      */
     protected function replaceMigration($path, $table, $tableClassName)

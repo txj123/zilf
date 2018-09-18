@@ -24,11 +24,15 @@ class BusServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Zilf::$container->register(Dispatcher::class, function () {
-            return new Dispatcher(function ($connection = null) {
-                return Zilf::$container['queue']->connection($connection);
-            });
-        });
+        Zilf::$container->register(
+            Dispatcher::class, function () {
+                return new Dispatcher(
+                    function ($connection = null) {
+                        return Zilf::$container['queue']->connection($connection);
+                    }
+                );
+            }
+        );
     }
 
     /**

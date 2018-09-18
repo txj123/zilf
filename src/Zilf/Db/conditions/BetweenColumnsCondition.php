@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -36,7 +36,7 @@ use Zilf\Db\Query;
  * ```
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class BetweenColumnsCondition implements ConditionInterface
 {
@@ -62,9 +62,9 @@ class BetweenColumnsCondition implements ConditionInterface
      * Creates a condition with the `BETWEEN` operator.
      *
      * @param mixed the value to compare against
-     * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param string|ExpressionInterface $intervalStartColumn the column name or expression that is a beginning of the interval
-     * @param string|ExpressionInterface $intervalEndColumn the column name or expression that is an end of the interval
+     * @param string                             $operator            the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @param string|ExpressionInterface         $intervalStartColumn the column name or expression that is a beginning of the interval
+     * @param string|ExpressionInterface         $intervalEndColumn   the column name or expression that is an end of the interval
      */
     public function __construct($value, $operator, $intervalStartColumn, $intervalEndColumn)
     {
@@ -108,6 +108,7 @@ class BetweenColumnsCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)

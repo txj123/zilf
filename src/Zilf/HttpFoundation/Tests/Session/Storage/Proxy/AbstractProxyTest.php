@@ -87,7 +87,7 @@ class AbstractProxyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @runInSeparateProcess
-     * @preserveGlobalState disabled
+     * @preserveGlobalState  disabled
      */
     public function testIsActive()
     {
@@ -98,7 +98,7 @@ class AbstractProxyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @runInSeparateProcess
-     * @preserveGlobalState disabled
+     * @preserveGlobalState  disabled
      */
     public function testName()
     {
@@ -110,8 +110,8 @@ class AbstractProxyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @expectedException \LogicException
+     * @preserveGlobalState  disabled
+     * @expectedException    \LogicException
      */
     public function testNameException()
     {
@@ -121,7 +121,7 @@ class AbstractProxyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @runInSeparateProcess
-     * @preserveGlobalState disabled
+     * @preserveGlobalState  disabled
      */
     public function testId()
     {
@@ -133,8 +133,8 @@ class AbstractProxyTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     * @expectedException \LogicException
+     * @preserveGlobalState  disabled
+     * @expectedException    \LogicException
      */
     public function testIdException()
     {

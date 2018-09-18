@@ -38,8 +38,8 @@ class TableCommand extends Command
     /**
      * Create a new queue job table command instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @param  \Illuminate\Support\Composer    $composer
+     * @param  \Illuminate\Filesystem\Filesystem $files
+     * @param  \Illuminate\Support\Composer      $composer
      * @return void
      */
     public function __construct(Filesystem $files, Composer $composer)
@@ -71,7 +71,7 @@ class TableCommand extends Command
     /**
      * Create a base migration file for the table.
      *
-     * @param  string  $table
+     * @param  string $table
      * @return string
      */
     protected function createBaseMigration($table = 'jobs')
@@ -84,9 +84,9 @@ class TableCommand extends Command
     /**
      * Replace the generated migration with the job table stub.
      *
-     * @param  string  $path
-     * @param  string  $table
-     * @param  string  $tableClassName
+     * @param  string $path
+     * @param  string $table
+     * @param  string $tableClassName
      * @return void
      */
     protected function replaceMigration($path, $table, $tableClassName)

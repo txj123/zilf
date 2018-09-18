@@ -37,7 +37,7 @@ class ScheduleFinishCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     public function __construct(Schedule $schedule)
@@ -54,8 +54,10 @@ class ScheduleFinishCommand extends Command
      */
     public function handle()
     {
-        collect($this->schedule->events())->filter(function ($value) {
-            return $value->mutexName() == $this->argument('id');
-        })->each->callAfterCallbacks($this->laravel);
+        collect($this->schedule->events())->filter(
+            function ($value) {
+                return $value->mutexName() == $this->argument('id');
+            }
+        )->each->callAfterCallbacks($this->laravel);
     }
 }

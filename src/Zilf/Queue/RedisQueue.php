@@ -47,11 +47,11 @@ class RedisQueue extends Queue
     /**
      * Create a new Redis queue instance.
      *
-     * @param  \Zilf\Redis\RedisManager  $redis
-     * @param  string  $default
-     * @param  string  $connection
-     * @param  int  $retryAfter
-     * @param  int|null  $blockFor
+     * @param  \Zilf\Redis\RedisManager $redis
+     * @param  string                   $default
+     * @param  string                   $connection
+     * @param  int                      $retryAfter
+     * @param  int|null                 $blockFor
      * @return void
      */
     public function __construct(RedisManager $redis, $default = 'default', $connection = null, $retryAfter = 60, $blockFor = null)
@@ -66,7 +66,7 @@ class RedisQueue extends Queue
     /**
      * Get the size of the queue.
      *
-     * @param  string  $queue
+     * @param  string $queue
      * @return int
      */
     public function size($queue = null)
@@ -81,9 +81,9 @@ class RedisQueue extends Queue
     /**
      * Push a new job onto the queue.
      *
-     * @param  object|string  $job
-     * @param  mixed   $data
-     * @param  string  $queue
+     * @param  object|string $job
+     * @param  mixed         $data
+     * @param  string        $queue
      * @return mixed
      */
     public function push($job, $data = '', $queue = null)
@@ -94,9 +94,9 @@ class RedisQueue extends Queue
     /**
      * Push a raw payload onto the queue.
      *
-     * @param  string  $payload
-     * @param  string  $queue
-     * @param  array   $options
+     * @param  string $payload
+     * @param  string $queue
+     * @param  array  $options
      * @return mixed
      */
     public function pushRaw($payload, $queue = null, array $options = [])
@@ -109,10 +109,10 @@ class RedisQueue extends Queue
     /**
      * Push a new job onto the queue after a delay.
      *
-     * @param  \DateTimeInterface|\DateInterval|int  $delay
-     * @param  object|string  $job
-     * @param  mixed   $data
-     * @param  string  $queue
+     * @param  \DateTimeInterface|\DateInterval|int $delay
+     * @param  object|string                        $job
+     * @param  mixed                                $data
+     * @param  string                               $queue
      * @return mixed
      */
     public function later($delay, $job, $data = '', $queue = null)
@@ -123,9 +123,9 @@ class RedisQueue extends Queue
     /**
      * Push a raw job onto the queue after a delay.
      *
-     * @param  \DateTimeInterface|\DateInterval|int  $delay
-     * @param  string  $payload
-     * @param  string  $queue
+     * @param  \DateTimeInterface|\DateInterval|int $delay
+     * @param  string                               $payload
+     * @param  string                               $queue
      * @return mixed
      */
     protected function laterRaw($delay, $payload, $queue = null)
@@ -140,22 +140,24 @@ class RedisQueue extends Queue
     /**
      * Create a payload string from the given job and data.
      *
-     * @param  string  $job
-     * @param  mixed   $data
+     * @param  string $job
+     * @param  mixed  $data
      * @return string
      */
     protected function createPayloadArray($job, $data = '')
     {
-        return array_merge(parent::createPayloadArray($job, $data), [
+        return array_merge(
+            parent::createPayloadArray($job, $data), [
             'id' => $this->getRandomId(),
             'attempts' => 0,
-        ]);
+            ]
+        );
     }
 
     /**
      * Pop the next job off of the queue.
      *
-     * @param  string  $queue
+     * @param  string $queue
      * @return \Illuminate\Contracts\Queue\Job|null
      */
     public function pop($queue = null)
@@ -179,7 +181,7 @@ class RedisQueue extends Queue
     /**
      * Migrate any delayed or expired jobs onto the primary queue.
      *
-     * @param  string  $queue
+     * @param  string $queue
      * @return void
      */
     protected function migrate($queue)
@@ -194,8 +196,8 @@ class RedisQueue extends Queue
     /**
      * Migrate the delayed jobs that are ready to the regular queue.
      *
-     * @param  string  $from
-     * @param  string  $to
+     * @param  string $from
+     * @param  string $to
      * @return array
      */
     public function migrateExpiredJobs($from, $to)
@@ -208,7 +210,7 @@ class RedisQueue extends Queue
     /**
      * Retrieve the next job from the queue.
      *
-     * @param  string  $queue
+     * @param  string $queue
      * @return array
      */
     protected function retrieveNextJob($queue)
@@ -226,7 +228,7 @@ class RedisQueue extends Queue
     /**
      * Retrieve the next job by blocking-pop.
      *
-     * @param  string  $queue
+     * @param  string $queue
      * @return array
      */
     protected function blockingPop($queue)
@@ -240,9 +242,11 @@ class RedisQueue extends Queue
 
             $reserved = json_encode($payload);
 
-            $this->getConnection()->zadd($queue.':reserved', [
+            $this->getConnection()->zadd(
+                $queue.':reserved', [
                 $reserved => $this->availableAt($this->retryAfter),
-            ]);
+                ]
+            );
 
             return [$rawBody[1], $reserved];
         }
@@ -253,8 +257,8 @@ class RedisQueue extends Queue
     /**
      * Delete a reserved job from the queue.
      *
-     * @param  string  $queue
-     * @param  \Illuminate\Queue\Jobs\RedisJob  $job
+     * @param  string                          $queue
+     * @param  \Illuminate\Queue\Jobs\RedisJob $job
      * @return void
      */
     public function deleteReserved($queue, $job)
@@ -265,9 +269,9 @@ class RedisQueue extends Queue
     /**
      * Delete a reserved job from the reserved queue and release it.
      *
-     * @param  string  $queue
-     * @param  \Illuminate\Queue\Jobs\RedisJob  $job
-     * @param  int  $delay
+     * @param  string                          $queue
+     * @param  \Illuminate\Queue\Jobs\RedisJob $job
+     * @param  int                             $delay
      * @return void
      */
     public function deleteAndRelease($queue, $job, $delay)
@@ -293,7 +297,7 @@ class RedisQueue extends Queue
     /**
      * Get the queue or return the default.
      *
-     * @param  string|null  $queue
+     * @param  string|null $queue
      * @return string
      */
     public function getQueue($queue)

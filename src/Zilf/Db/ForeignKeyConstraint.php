@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -11,7 +11,7 @@ namespace Zilf\Db;
  * ForeignKeyConstraint represents the metadata of a table `FOREIGN KEY` constraint.
  *
  * @author Sergey Makinen <sergey@makinen.ru>
- * @since 2.0.13
+ * @since  2.0.13
  */
 class ForeignKeyConstraint extends Constraint
 {

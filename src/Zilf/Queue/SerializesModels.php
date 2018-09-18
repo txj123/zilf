@@ -19,14 +19,22 @@ trait SerializesModels
         $properties = (new ReflectionClass($this))->getProperties();
 
         foreach ($properties as $property) {
-            $property->setValue($this, $this->getSerializedPropertyValue(
-                $this->getPropertyValue($property)
-            ));
+            $property->setValue(
+                $this, $this->getSerializedPropertyValue(
+                    $this->getPropertyValue($property)
+                )
+            );
         }
 
-        return array_values(array_filter(array_map(function ($p) {
-            return $p->isStatic() ? null : $p->getName();
-        }, $properties)));
+        return array_values(
+            array_filter(
+                array_map(
+                    function ($p) {
+                        return $p->isStatic() ? null : $p->getName();
+                    }, $properties
+                )
+            )
+        );
     }
 
     /**
@@ -41,16 +49,18 @@ trait SerializesModels
                 continue;
             }
 
-            $property->setValue($this, $this->getRestoredPropertyValue(
-                $this->getPropertyValue($property)
-            ));
+            $property->setValue(
+                $this, $this->getRestoredPropertyValue(
+                    $this->getPropertyValue($property)
+                )
+            );
         }
     }
 
     /**
      * Get the property value for the given property.
      *
-     * @param  \ReflectionProperty  $property
+     * @param  \ReflectionProperty $property
      * @return mixed
      */
     protected function getPropertyValue(ReflectionProperty $property)

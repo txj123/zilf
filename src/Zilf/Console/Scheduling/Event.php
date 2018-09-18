@@ -145,8 +145,8 @@ class Event
     /**
      * Create a new event instance.
      *
-     * @param  \Illuminate\Console\Scheduling\Mutex  $mutex
-     * @param  string  $command
+     * @param  \Illuminate\Console\Scheduling\Mutex $mutex
+     * @param  string                               $command
      * @return void
      */
     public function __construct(EventMutex $mutex, $command)
@@ -169,13 +169,14 @@ class Event
     /**
      * Run the given event.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
     public function run(Container $container)
     {
-        if ($this->withoutOverlapping &&
-            ! $this->mutex->create($this)) {
+        if ($this->withoutOverlapping 
+            && ! $this->mutex->create($this)
+        ) {
             return;
         }
 
@@ -197,7 +198,7 @@ class Event
     /**
      * Run the command in the foreground.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
     protected function runCommandInForeground(Container $container)
@@ -214,7 +215,7 @@ class Event
     /**
      * Run the command in the background.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
     protected function runCommandInBackground(Container $container)
@@ -229,7 +230,7 @@ class Event
     /**
      * Call all of the "before" callbacks for the event.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
     public function callBeforeCallbacks(Container $container)
@@ -242,7 +243,7 @@ class Event
     /**
      * Call all of the "after" callbacks for the event.
      *
-     * @param  \Illuminate\Contracts\Container\Container  $container
+     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
     public function callAfterCallbacks(Container $container)
@@ -265,7 +266,7 @@ class Event
     /**
      * Determine if the given event should run based on the Cron expression.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Foundation\Application $app
      * @return bool
      */
     public function isDue($app)
@@ -307,7 +308,7 @@ class Event
     /**
      * Determine if the event runs in the given environment.
      *
-     * @param  string  $environment
+     * @param  string $environment
      * @return bool
      */
     public function runsInEnvironment($environment)
@@ -318,7 +319,7 @@ class Event
     /**
      * Determine if the filters pass for the event.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Foundation\Application $app
      * @return bool
      */
     public function filtersPass($app)
@@ -341,8 +342,8 @@ class Event
     /**
      * Send the output of the command to a given location.
      *
-     * @param  string  $location
-     * @param  bool  $append
+     * @param  string $location
+     * @param  bool   $append
      * @return $this
      */
     public function sendOutputTo($location, $append = false)
@@ -357,7 +358,7 @@ class Event
     /**
      * Append the output of the command to a given location.
      *
-     * @param  string  $location
+     * @param  string $location
      * @return $this
      */
     public function appendOutputTo($location)
@@ -368,8 +369,8 @@ class Event
     /**
      * E-mail the results of the scheduled operation.
      *
-     * @param  array|mixed  $addresses
-     * @param  bool  $onlyIfOutputExists
+     * @param  array|mixed $addresses
+     * @param  bool        $onlyIfOutputExists
      * @return $this
      *
      * @throws \LogicException
@@ -380,15 +381,17 @@ class Event
 
         $addresses = Arr::wrap($addresses);
 
-        return $this->then(function (Mailer $mailer) use ($addresses, $onlyIfOutputExists) {
-            $this->emailOutput($mailer, $addresses, $onlyIfOutputExists);
-        });
+        return $this->then(
+            function (Mailer $mailer) use ($addresses, $onlyIfOutputExists) {
+                $this->emailOutput($mailer, $addresses, $onlyIfOutputExists);
+            }
+        );
     }
 
     /**
      * E-mail the results of the scheduled operation if it produces output.
      *
-     * @param  array|mixed  $addresses
+     * @param  array|mixed $addresses
      * @return $this
      *
      * @throws \LogicException
@@ -413,9 +416,9 @@ class Event
     /**
      * E-mail the output of the event to the recipients.
      *
-     * @param  \Illuminate\Contracts\Mail\Mailer  $mailer
-     * @param  array  $addresses
-     * @param  bool  $onlyIfOutputExists
+     * @param  \Illuminate\Contracts\Mail\Mailer $mailer
+     * @param  array                             $addresses
+     * @param  bool                              $onlyIfOutputExists
      * @return void
      */
     protected function emailOutput(Mailer $mailer, $addresses, $onlyIfOutputExists = false)
@@ -426,9 +429,11 @@ class Event
             return;
         }
 
-        $mailer->raw($text, function ($m) use ($addresses) {
-            $m->to($addresses)->subject($this->getEmailSubject());
-        });
+        $mailer->raw(
+            $text, function ($m) use ($addresses) {
+                $m->to($addresses)->subject($this->getEmailSubject());
+            }
+        );
     }
 
     /**
@@ -448,21 +453,23 @@ class Event
     /**
      * Register a callback to ping a given URL before the job runs.
      *
-     * @param  string  $url
+     * @param  string $url
      * @return $this
      */
     public function pingBefore($url)
     {
-        return $this->before(function () use ($url) {
-            (new HttpClient)->get($url);
-        });
+        return $this->before(
+            function () use ($url) {
+                (new HttpClient)->get($url);
+            }
+        );
     }
 
     /**
      * Register a callback to ping a given URL before the job runs if the given condition is true.
      *
-     * @param  bool  $value
-     * @param  string  $url
+     * @param  bool   $value
+     * @param  string $url
      * @return $this
      */
     public function pingBeforeIf($value, $url)
@@ -473,21 +480,23 @@ class Event
     /**
      * Register a callback to ping a given URL after the job runs.
      *
-     * @param  string  $url
+     * @param  string $url
      * @return $this
      */
     public function thenPing($url)
     {
-        return $this->then(function () use ($url) {
-            (new HttpClient)->get($url);
-        });
+        return $this->then(
+            function () use ($url) {
+                (new HttpClient)->get($url);
+            }
+        );
     }
 
     /**
      * Register a callback to ping a given URL after the job runs if the given condition is true.
      *
-     * @param  bool  $value
-     * @param  string  $url
+     * @param  bool   $value
+     * @param  string $url
      * @return $this
      */
     public function thenPingIf($value, $url)
@@ -510,7 +519,7 @@ class Event
     /**
      * Set which user the command should run as.
      *
-     * @param  string  $user
+     * @param  string $user
      * @return $this
      */
     public function user($user)
@@ -523,7 +532,7 @@ class Event
     /**
      * Limit the environments the command should run in.
      *
-     * @param  array|mixed  $environments
+     * @param  array|mixed $environments
      * @return $this
      */
     public function environments($environments)
@@ -548,7 +557,7 @@ class Event
     /**
      * Do not allow the event to overlap each other.
      *
-     * @param  int  $expiresAt
+     * @param  int $expiresAt
      * @return $this
      */
     public function withoutOverlapping($expiresAt = 1440)
@@ -557,11 +566,15 @@ class Event
 
         $this->expiresAt = $expiresAt;
 
-        return $this->then(function () {
-            $this->mutex->forget($this);
-        })->skip(function () {
-            return $this->mutex->exists($this);
-        });
+        return $this->then(
+            function () {
+                $this->mutex->forget($this);
+            }
+        )->skip(
+            function () {
+                    return $this->mutex->exists($this);
+            }
+        );
     }
 
     /**
@@ -579,7 +592,7 @@ class Event
     /**
      * Register a callback to further filter the schedule.
      *
-     * @param  \Closure|bool  $callback
+     * @param  \Closure|bool $callback
      * @return $this
      */
     public function when($callback)
@@ -594,7 +607,7 @@ class Event
     /**
      * Register a callback to further filter the schedule.
      *
-     * @param  \Closure|bool  $callback
+     * @param  \Closure|bool $callback
      * @return $this
      */
     public function skip($callback)
@@ -609,7 +622,7 @@ class Event
     /**
      * Register a callback to be called before the operation.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return $this
      */
     public function before(Closure $callback)
@@ -622,7 +635,7 @@ class Event
     /**
      * Register a callback to be called after the operation.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return $this
      */
     public function after(Closure $callback)
@@ -633,7 +646,7 @@ class Event
     /**
      * Register a callback to be called after the operation.
      *
-     * @param  \Closure  $callback
+     * @param  \Closure $callback
      * @return $this
      */
     public function then(Closure $callback)
@@ -646,7 +659,7 @@ class Event
     /**
      * Set the human-friendly description of the event.
      *
-     * @param  string  $description
+     * @param  string $description
      * @return $this
      */
     public function name($description)
@@ -657,7 +670,7 @@ class Event
     /**
      * Set the human-friendly description of the event.
      *
-     * @param  string  $description
+     * @param  string $description
      * @return $this
      */
     public function description($description)
@@ -684,16 +697,18 @@ class Event
     /**
      * Determine the next due date for an event.
      *
-     * @param  \DateTime|string  $currentTime
-     * @param  int  $nth
-     * @param  bool  $allowCurrentDate
+     * @param  \DateTime|string $currentTime
+     * @param  int              $nth
+     * @param  bool             $allowCurrentDate
      * @return \Illuminate\Support\Carbon
      */
     public function nextRunDate($currentTime = 'now', $nth = 0, $allowCurrentDate = false)
     {
-        return Carbon::instance(CronExpression::factory(
-            $this->getExpression()
-        )->getNextRunDate($currentTime, $nth, $allowCurrentDate));
+        return Carbon::instance(
+            CronExpression::factory(
+                $this->getExpression()
+            )->getNextRunDate($currentTime, $nth, $allowCurrentDate)
+        );
     }
 
     /**
@@ -709,7 +724,7 @@ class Event
     /**
      * Set the event mutex implementation to be used.
      *
-     * @param  \Illuminate\Console\Scheduling\EventMutex  $mutex
+     * @param  \Illuminate\Console\Scheduling\EventMutex $mutex
      * @return $this
      */
     public function preventOverlapsUsing(EventMutex $mutex)

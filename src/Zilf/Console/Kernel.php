@@ -72,7 +72,7 @@ class Kernel
     /**
      * Run the console application.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface $input
+     * @param  \Symfony\Component\Console\Input\InputInterface   $input
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
      * @return int
      */
@@ -103,7 +103,7 @@ class Kernel
      * Terminate the application.
      *
      * @param  \Symfony\Component\Console\Input\InputInterface $input
-     * @param  int $status
+     * @param  int                                             $status
      * @return void
      */
     public function terminate($input, $status)
@@ -124,7 +124,7 @@ class Kernel
     /**
      * Register a Closure based command with the application.
      *
-     * @param  string $signature
+     * @param  string   $signature
      * @param  \Closure $callback
      * @return \Illuminate\Foundation\Console\ClosureCommand
      */
@@ -132,9 +132,11 @@ class Kernel
     {
         $command = new ClosureCommand($signature, $callback);
 
-        Artisan::starting(function ($artisan) use ($command) {
-            $artisan->add($command);
-        });
+        Artisan::starting(
+            function ($artisan) use ($command) {
+                $artisan->add($command);
+            }
+        );
 
         return $command;
     }
@@ -149,9 +151,11 @@ class Kernel
     {
         $paths = array_unique(Arr::wrap($paths));
 
-        $paths = array_filter($paths, function ($path) {
-            return is_dir($path);
-        });
+        $paths = array_filter(
+            $paths, function ($path) {
+                return is_dir($path);
+            }
+        );
 
         if (empty($paths)) {
             return;
@@ -161,19 +165,22 @@ class Kernel
 
         foreach ((new Finder)->in($paths)->files() as $command) {
             $command = $namespace . str_replace(
-                    ['/', '.php'],
-                    ['\\', ''],
-                    Str::after($command->getPathname(), app_path() . DIRECTORY_SEPARATOR)
+                ['/', '.php'],
+                ['\\', ''],
+                Str::after($command->getPathname(), app_path() . DIRECTORY_SEPARATOR)
+            );
+
+            if (is_subclass_of($command, Command::class) 
+                && !(new ReflectionClass($command))->isAbstract()
+            ) {
+
+                Zilf::$container->register($command, $command);
+
+                Artisan::starting(
+                    function ($artisan) use ($command) {
+                        $artisan->resolve($command);
+                    }
                 );
-
-            if (is_subclass_of($command, Command::class) &&
-                !(new ReflectionClass($command))->isAbstract()) {
-
-                Zilf::$container->register($command,$command);
-
-                Artisan::starting(function ($artisan) use ($command) {
-                    $artisan->resolve($command);
-                });
             }
         }
     }
@@ -192,8 +199,8 @@ class Kernel
     /**
      * Run an Artisan console command by name.
      *
-     * @param  string $command
-     * @param  array $parameters
+     * @param  string                                            $command
+     * @param  array                                             $parameters
      * @param  \Symfony\Component\Console\Output\OutputInterface $outputBuffer
      * @return int
      */
@@ -285,7 +292,7 @@ class Kernel
      * Report the exception to the exception handler.
      *
      * @param  \Symfony\Component\Console\Output\OutputInterface $output
-     * @param  \Exception $e
+     * @param  \Exception                                        $e
      * @return void
      */
     protected function renderException($output, Exception $e)

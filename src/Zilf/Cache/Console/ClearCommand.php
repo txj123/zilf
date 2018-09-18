@@ -41,8 +41,8 @@ class ClearCommand extends Command
     /**
      * Create a new cache clear command instance.
      *
-     * @param  \Zilf\Cache\CacheManager  $cache
-     * @param  \Zilf\Filesystem\Filesystem  $files
+     * @param  \Zilf\Cache\CacheManager    $cache
+     * @param  \Zilf\Filesystem\Filesystem $files
      * @return void
      */
     public function __construct($cache,$files)

@@ -23,7 +23,8 @@ class DbServiceProvider
     {
         $params = Zilf::$container->getShare('config')->get('databases');
         foreach ($params as $key => $row) {
-            Zilf::$container->register('db.' . $key, function () use ($row) {
+            Zilf::$container->register(
+                'db.' . $key, function () use ($row) {
                     $connect = new Connection($row);
                     $connect->open();
                     return $connect;
