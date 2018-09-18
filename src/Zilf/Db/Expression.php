@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -26,7 +26,7 @@ namespace Zilf\Db;
  * An expression can also be bound with parameters specified via [[params]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class Expression extends \Zilf\Db\base\BaseObject implements ExpressionInterface
 {
@@ -44,10 +44,9 @@ class Expression extends \Zilf\Db\base\BaseObject implements ExpressionInterface
 
     /**
      * Constructor.
-     *
      * @param string $expression the DB expression
-     * @param array  $params     parameters
-     * @param array  $config     name-value pairs that will be used to initialize the object properties
+     * @param array $params parameters
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($expression, $params = [], $config = [])
     {
@@ -58,7 +57,6 @@ class Expression extends \Zilf\Db\base\BaseObject implements ExpressionInterface
 
     /**
      * String magic method.
-     *
      * @return string the DB expression.
      */
     public function __toString()

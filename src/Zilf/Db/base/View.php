@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -25,7 +25,7 @@ use Zilf\widgets\FragmentCache;
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class View extends Component implements DynamicContentAwareInterface
 {
@@ -87,7 +87,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $blocks;
     /**
-     * @var        array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
+     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
      * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
      * @internal
      * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
@@ -95,7 +95,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $cacheStack = [];
     /**
-     * @var        array a list of placeholders for embedding dynamic contents. This property
+     * @var array a list of placeholders for embedding dynamic contents. This property
      * is used internally to implement the content caching feature. Do not modify it directly.
      * @internal
      * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
@@ -141,15 +141,15 @@ class View extends Component implements DynamicContentAwareInterface
      *   If `$context` is not given, it will be looked for under the directory containing the view currently
      *   being rendered (i.e., this happens when rendering a view within another view).
      *
-     * @param  string $view    the view name.
-     * @param  array  $params  the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param  object $context the context to be assigned to the view and can later be accessed via [[context]]
-     *                         in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
-     *                         the view file corresponding to a relative view name.
+     * @param string $view the view name.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
+     * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
+     * the view file corresponding to a relative view name.
      * @return string the rendering result
      * @throws ViewNotFoundException if the view file does not exist.
      * @throws InvalidCallException if the view cannot be resolved.
-     * @see    renderFile()
+     * @see renderFile()
      */
     public function render($view, $params = [], $context = null)
     {
@@ -159,12 +159,11 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * Finds the view file based on the given view name.
-     *
-     * @param  string $view    the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
-     *                         on how to specify this parameter.
-     * @param  object $context the context to be assigned to the view and can later be accessed via [[context]]
-     *                         in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
-     *                         the view file corresponding to a relative view name.
+     * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
+     * on how to specify this parameter.
+     * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
+     * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
+     * the view file corresponding to a relative view name.
      * @return string the view file path. Note that the file may not exist.
      * @throws InvalidCallException if a relative view name is given while there is no active context to
      * determine the corresponding view file.
@@ -215,10 +214,10 @@ class View extends Component implements DynamicContentAwareInterface
      * Otherwise, it will simply include the view file as a normal PHP file, capture its output and
      * return it as a string.
      *
-     * @param  string $viewFile the view file. This can be either an absolute file path or an alias of it.
-     * @param  array  $params   the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param  object $context  the context that the view should use for rendering the view. If null,
-     *                          existing [[context]] will be used.
+     * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param object $context the context that the view should use for rendering the view. If null,
+     * existing [[context]] will be used.
      * @return string the rendering result
      * @throws ViewNotFoundException if the view file does not exist
      */
@@ -277,7 +276,7 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * @return string|bool the requested view currently being rendered. False if no view file is being rendered.
-     * @since  2.0.16
+     * @since 2.0.16
      */
     protected function getRequestedViewFile()
     {
@@ -288,19 +287,16 @@ class View extends Component implements DynamicContentAwareInterface
      * This method is invoked right before [[renderFile()]] renders a view file.
      * The default implementation will trigger the [[EVENT_BEFORE_RENDER]] event.
      * If you override this method, make sure you call the parent implementation first.
-     *
-     * @param  string $viewFile the view file to be rendered.
-     * @param  array  $params   the parameter array passed to the [[render()]] method.
+     * @param string $viewFile the view file to be rendered.
+     * @param array $params the parameter array passed to the [[render()]] method.
      * @return bool whether to continue rendering the view file.
      */
     public function beforeRender($viewFile, $params)
     {
-        $event = new ViewEvent(
-            [
+        $event = new ViewEvent([
             'viewFile' => $viewFile,
             'params' => $params,
-            ]
-        );
+        ]);
         $this->trigger(self::EVENT_BEFORE_RENDER, $event);
 
         return $event->isValid;
@@ -310,22 +306,19 @@ class View extends Component implements DynamicContentAwareInterface
      * This method is invoked right after [[renderFile()]] renders a view file.
      * The default implementation will trigger the [[EVENT_AFTER_RENDER]] event.
      * If you override this method, make sure you call the parent implementation first.
-     *
      * @param string $viewFile the view file being rendered.
-     * @param array  $params   the parameter array passed to the [[render()]] method.
-     * @param string $output   the rendering result of the view file. Updates to this parameter
-     *                         will be passed back and returned by [[renderFile()]].
+     * @param array $params the parameter array passed to the [[render()]] method.
+     * @param string $output the rendering result of the view file. Updates to this parameter
+     * will be passed back and returned by [[renderFile()]].
      */
     public function afterRender($viewFile, $params, &$output)
     {
         if ($this->hasEventHandlers(self::EVENT_AFTER_RENDER)) {
-            $event = new ViewEvent(
-                [
+            $event = new ViewEvent([
                 'viewFile' => $viewFile,
                 'params' => $params,
                 'output' => $output,
-                ]
-            );
+            ]);
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
             $output = $event->output;
         }
@@ -340,8 +333,8 @@ class View extends Component implements DynamicContentAwareInterface
      *
      * This method should mainly be called by view renderer or [[renderFile()]].
      *
-     * @param  string $_file_   the view file.
-     * @param  array  $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
+     * @param string $_file_ the view file.
+     * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
      * @throws \Exception
      * @throws \Throwable
@@ -353,7 +346,7 @@ class View extends Component implements DynamicContentAwareInterface
         ob_implicit_flush(false);
         extract($_params_, EXTR_OVERWRITE);
         try {
-            include $_file_;
+            require $_file_;
             return ob_get_clean();
         } catch (\Exception $e) {
             while (ob_get_level() > $_obInitialLevel_) {
@@ -377,8 +370,7 @@ class View extends Component implements DynamicContentAwareInterface
      * This method is mainly used together with content caching (fragment caching and page caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
      * The dynamic content must be returned by some PHP statements.
-     *
-     * @param  string $statements the PHP statements for generating the dynamic content.
+     * @param string $statements the PHP statements for generating the dynamic content.
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
      */
@@ -430,8 +422,7 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Evaluates the given PHP statements.
      * This method is mainly used internally to implement dynamic content feature.
-     *
-     * @param  string $statements the PHP statements to be evaluated.
+     * @param string $statements the PHP statements to be evaluated.
      * @return mixed the return value of the PHP statements.
      */
     public function evaluateDynamicContent($statements)
@@ -441,9 +432,8 @@ class View extends Component implements DynamicContentAwareInterface
 
     /**
      * Returns a list of currently active dynamic content class instances.
-     *
      * @return DynamicContentAwareInterface[] class instances supporting dynamic contents.
-     * @since  2.0.14
+     * @since 2.0.14
      */
     public function getDynamicContents()
     {
@@ -453,7 +443,6 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Adds a class instance supporting dynamic contents to the end of a list of currently active
      * dynamic content class instances.
-     *
      * @param DynamicContentAwareInterface $instance class instance supporting dynamic contents.
      * @since 2.0.14
      */
@@ -465,7 +454,6 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * Removes a last class instance supporting dynamic contents from a list of currently active
      * dynamic content class instances.
-     *
      * @since 2.0.14
      */
     public function popDynamicContent()
@@ -477,22 +465,18 @@ class View extends Component implements DynamicContentAwareInterface
      * Begins recording a block.
      *
      * This method is a shortcut to beginning [[Block]].
-     *
-     * @param  string $id            the block ID.
-     * @param  bool   $renderInPlace whether to render the block content in place.
-     *                               Defaults to false, meaning the captured block
-     *                               will not be displayed.
+     * @param string $id the block ID.
+     * @param bool $renderInPlace whether to render the block content in place.
+     * Defaults to false, meaning the captured block will not be displayed.
      * @return Block the Block widget instance
      */
     public function beginBlock($id, $renderInPlace = false)
     {
-        return Block::begin(
-            [
+        return Block::begin([
             'id' => $id,
             'renderInPlace' => $renderInPlace,
             'view' => $this,
-            ]
-        );
+        ]);
     }
 
     /**
@@ -515,21 +499,19 @@ class View extends Component implements DynamicContentAwareInterface
      * <?php $this->endContent(); ?>
      * ```
      *
-     * @param  string $viewFile the view file that will be used to decorate the content enclosed by this widget.
-     *                          This can be specified as either the view file path or [path alias](guide:concept-aliases).
-     * @param  array  $params   the variables (name => value) to be extracted and made available in the decorative view.
+     * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
+     * This can be specified as either the view file path or [path alias](guide:concept-aliases).
+     * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
      * @return ContentDecorator the ContentDecorator widget instance
-     * @see    ContentDecorator
+     * @see ContentDecorator
      */
     public function beginContent($viewFile, $params = [])
     {
-        return ContentDecorator::begin(
-            [
+        return ContentDecorator::begin([
             'viewFile' => $viewFile,
             'params' => $params,
             'view' => $this,
-            ]
-        );
+        ]);
     }
 
     /**
@@ -555,8 +537,8 @@ class View extends Component implements DynamicContentAwareInterface
      * }
      * ```
      *
-     * @param  string $id         a unique ID identifying the fragment to be cached.
-     * @param  array  $properties initial property values for [[FragmentCache]]
+     * @param string $id a unique ID identifying the fragment to be cached.
+     * @param array $properties initial property values for [[FragmentCache]]
      * @return bool whether you should generate the content for caching.
      * False if the cached version is available.
      */

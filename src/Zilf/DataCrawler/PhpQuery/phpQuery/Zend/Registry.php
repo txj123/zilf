@@ -185,7 +185,7 @@ class Zend_Registry extends ArrayObject
     }
 
     /**
-     * @param   string $index
+     * @param string $index
      * @returns mixed
      *
      * Workaround for http://bugs.php.net/bug.php?id=40442 (ZF-960).

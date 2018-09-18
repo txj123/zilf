@@ -70,7 +70,7 @@ class IpUtilsTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @requires          extension sockets
+     * @requires extension sockets
      */
     public function testAnIpv6WithOptionDisabledIpv6()
     {

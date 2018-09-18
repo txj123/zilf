@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\sqlite;
@@ -11,10 +11,10 @@ namespace Zilf\Db\sqlite;
  * SqlTokenizer splits SQLite query into individual SQL tokens.
  * It's used to obtain a `CHECK` constraint information from a `CREATE TABLE` SQL code.
  *
- * @see    http://www.sqlite.org/draft/tokenreq.html
- * @see    https://sqlite.org/lang.html
+ * @see http://www.sqlite.org/draft/tokenreq.html
+ * @see https://sqlite.org/lang.html
  * @author Sergey Makinen <sergey@makinen.ru>
- * @since  2.0.13
+ * @since 2.0.13
  */
 class SqlTokenizer extends \Zilf\Db\SqlTokenizer
 {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\oci;
@@ -28,7 +28,7 @@ use Zilf\Helpers\ArrayHelper;
  * sequence object. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 {
@@ -83,7 +83,6 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     *
      * @see https://docs.oracle.com/cd/B28359_01/server.111/b28337/tdpsg_user_accounts.htm
      */
     protected function findSchemaNames()
@@ -197,24 +196,20 @@ ORDER BY "uicol"."COLUMN_POSITION" ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
-        $indexes = $this->db->createCommand(
-            $sql, [
+        $indexes = $this->db->createCommand($sql, [
             ':schemaName' => $resolvedName->schemaName,
             ':tableName' => $resolvedName->name,
-            ]
-        )->queryAll();
+        ])->queryAll();
         $indexes = $this->normalizePdoRowKeyCase($indexes, true);
         $indexes = ArrayHelper::index($indexes, null, 'name');
         $result = [];
         foreach ($indexes as $name => $index) {
-            $result[] = new IndexConstraint(
-                [
+            $result[] = new IndexConstraint([
                 'isPrimary' => (bool) $index[0]['index_is_primary'],
                 'isUnique' => (bool) $index[0]['index_is_unique'],
                 'name' => $name,
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
-                ]
-            );
+            ]);
         }
 
         return $result;
@@ -238,7 +233,6 @@ SQL;
 
     /**
      * {@inheritdoc}
-     *
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -282,7 +276,7 @@ SQL;
      * Resolves the table name and schema name (if any).
      *
      * @param TableSchema $table the table metadata object
-     * @param string      $name  the table name
+     * @param string $name the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -300,8 +294,7 @@ SQL;
 
     /**
      * Collects the table column metadata.
-     *
-     * @param  TableSchema $table the table schema
+     * @param TableSchema $table the table schema
      * @return bool whether the table exists
      */
     protected function findColumns($table)
@@ -331,12 +324,10 @@ ORDER BY A.COLUMN_ID
 SQL;
 
         try {
-            $columns = $this->db->createCommand(
-                $sql, [
+            $columns = $this->db->createCommand($sql, [
                 ':tableName' => $table->name,
                 ':schemaName' => $table->schemaName,
-                ]
-            )->queryAll();
+            ])->queryAll();
         } catch (\Exception $e) {
             return false;
         }
@@ -359,9 +350,9 @@ SQL;
     /**
      * Sequence name of table.
      *
-     * @param    string $tableName
+     * @param string $tableName
      * @internal param \Zilf\Db\TableSchema $table->name the table schema
-     * @return   string|null whether the sequence exists
+     * @return string|null whether the sequence exists
      */
     protected function getTableSequenceName($tableName)
     {
@@ -381,23 +372,21 @@ SQL;
 
     /**
      * @Overrides method in class 'Schema'
-     * @see       http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
+     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
      *
      * Returns the ID of the last inserted row or sequence value.
-     * @param     string $sequenceName name of the sequence object (required by some DBMS)
-     * @return    string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @throws    InvalidCallException if the DB connection is not active
+     * @param string $sequenceName name of the sequence object (required by some DBMS)
+     * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
+     * @throws InvalidCallException if the DB connection is not active
      */
     public function getLastInsertID($sequenceName = '')
     {
         if ($this->db->isActive) {
             // get the last insert id from the master connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
-            return $this->db->useMaster(
-                function (Connection $db) use ($sequenceName) {
-                    return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
-                }
-            );
+            return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
+                return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
+            });
         } else {
             throw new InvalidCallException('DB Connection is not active.');
         }
@@ -406,7 +395,7 @@ SQL;
     /**
      * Creates ColumnSchema instance.
      *
-     * @param  array $column
+     * @param array $column
      * @return ColumnSchema
      */
     protected function createColumn($column)
@@ -448,7 +437,6 @@ SQL;
 
     /**
      * Finds constraints and fills them into TableSchema object passed.
-     *
      * @param TableSchema $table
      */
     protected function findConstraints($table)
@@ -473,12 +461,10 @@ WHERE
     AND C.TABLE_NAME = :tableName
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
-        $command = $this->db->createCommand(
-            $sql, [
+        $command = $this->db->createCommand($sql, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
-            ]
-        );
+        ]);
         $constraints = [];
         foreach ($command->queryAll() as $row) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
@@ -527,9 +513,9 @@ SQL;
      * ]
      * ```
      *
-     * @param  TableSchema $table the table metadata
+     * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
-     * @since  2.0.4
+     * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {
@@ -546,12 +532,10 @@ WHERE
 ORDER BY DIC.TABLE_NAME, DIC.INDEX_NAME, DIC.COLUMN_POSITION
 SQL;
         $result = [];
-        $command = $this->db->createCommand(
-            $query, [
+        $command = $this->db->createCommand($query, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
-            ]
-        );
+        ]);
         foreach ($command->queryAll() as $row) {
             $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
         }
@@ -561,18 +545,14 @@ SQL;
 
     /**
      * Extracts the data types for the given column.
-     *
      * @param ColumnSchema $column
-     * @param string       $dbType    DB type
-     * @param string       $precision total number of digits.
-     *                                This parameter is
-     *                                available since version
-     *                                2.0.4.
-     * @param string       $scale     number of digits on the right of the decimal separator.
-     *                                This parameter is available since version 2.0.4.
-     * @param string       $length    length for character types.
-     *                                This parameter is available
-     *                                since version 2.0.4.
+     * @param string $dbType DB type
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
     protected function extractColumnType($column, $dbType, $precision, $scale, $length)
     {
@@ -601,18 +581,14 @@ SQL;
 
     /**
      * Extracts size, precision and scale information from column's DB type.
-     *
      * @param ColumnSchema $column
-     * @param string       $dbType    the column's DB type
-     * @param string       $precision total number of digits.
-     *                                This parameter is
-     *                                available since version
-     *                                2.0.4.
-     * @param string       $scale     number of digits on the right of the decimal separator.
-     *                                This parameter is available since version 2.0.4.
-     * @param string       $length    length for character types.
-     *                                This parameter is available
-     *                                since version 2.0.4.
+     * @param string $dbType the column's DB type
+     * @param string $precision total number of digits.
+     * This parameter is available since version 2.0.4.
+     * @param string $scale number of digits on the right of the decimal separator.
+     * This parameter is available since version 2.0.4.
+     * @param string $length length for character types.
+     * This parameter is available since version 2.0.4.
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
@@ -672,13 +648,12 @@ SQL;
 
     /**
      * Loads multiple types of constraints and returns the specified ones.
-     *
-     * @param  string $tableName  table name.
-     * @param  string $returnType return type:
-     *                            - primaryKey
-     *                            - foreignKeys
-     *                            - uniques
-     *                            - checks
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - primaryKey
+     * - foreignKeys
+     * - uniques
+     * - checks
      * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
@@ -706,12 +681,10 @@ ORDER BY "uccol"."POSITION" ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
-        $constraints = $this->db->createCommand(
-            $sql, [
+        $constraints = $this->db->createCommand($sql, [
             ':schemaName' => $resolvedName->schemaName,
             ':tableName' => $resolvedName->name,
-            ]
-        )->queryAll();
+        ])->queryAll();
         $constraints = $this->normalizePdoRowKeyCase($constraints, true);
         $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
         $result = [
@@ -723,44 +696,36 @@ SQL;
         foreach ($constraints as $type => $names) {
             foreach ($names as $name => $constraint) {
                 switch ($type) {
-                case 'P':
-                    $result['primaryKey'] = new Constraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            ]
-                    );
-                    break;
-                case 'R':
-                    $result['foreignKeys'][] = new ForeignKeyConstraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
-                        'foreignTableName' => $constraint[0]['foreign_table_name'],
-                        'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
-                        'onDelete' => $constraint[0]['on_delete'],
-                        'onUpdate' => null,
-                            ]
-                    );
-                    break;
-                case 'U':
-                    $result['uniques'][] = new Constraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            ]
-                    );
-                    break;
-                case 'C':
-                    $result['checks'][] = new CheckConstraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        'expression' => $constraint[0]['check_expr'],
-                            ]
-                    );
-                    break;
+                    case 'P':
+                        $result['primaryKey'] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'R':
+                        $result['foreignKeys'][] = new ForeignKeyConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                            'foreignTableName' => $constraint[0]['foreign_table_name'],
+                            'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
+                            'onDelete' => $constraint[0]['on_delete'],
+                            'onUpdate' => null,
+                        ]);
+                        break;
+                    case 'U':
+                        $result['uniques'][] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'C':
+                        $result['checks'][] = new CheckConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'expression' => $constraint[0]['check_expr'],
+                        ]);
+                        break;
                 }
             }
         }

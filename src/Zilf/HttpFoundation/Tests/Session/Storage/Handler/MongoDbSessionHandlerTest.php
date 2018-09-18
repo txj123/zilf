@@ -15,7 +15,7 @@ use Zilf\HttpFoundation\Session\Storage\Handler\MongoDbSessionHandler;
 
 /**
  * @author Markus Bachmann <markus.bachmann@bachi.biz>
- * @group  time-sensitive
+ * @group time-sensitive
  */
 class MongoDbSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {

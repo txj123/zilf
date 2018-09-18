@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -75,7 +75,7 @@ use Zilf\Helpers\StringHelper;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 class ActiveRecord extends BaseActiveRecord
 {
@@ -109,8 +109,8 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->loadDefaultValues();
      * ```
      *
-     * @param  bool $skipIfSet whether existing value should be preserved.
-     *                         This will only set defaults for attributes that are `null`.
+     * @param bool $skipIfSet whether existing value should be preserved.
+     * This will only set defaults for attributes that are `null`.
      * @return $this the model instance itself.
      */
     public function loadDefaultValues($skipIfSet = true)
@@ -128,7 +128,6 @@ class ActiveRecord extends BaseActiveRecord
      * Returns the database connection used by this AR class.
      * By default, the "db" application component is used as the database connection.
      * You may override this method if you want to use a different database connection.
-     *
      * @return Connection the database connection used by this AR class.
      */
     public static function getDb()
@@ -150,8 +149,8 @@ class ActiveRecord extends BaseActiveRecord
      * $customers = Customer::findBySql('SELECT * FROM customer')->all();
      * ```
      *
-     * @param  string $sql    the SQL statement to be executed
-     * @param  array  $params parameters to be bound to the SQL statement during execution.
+     * @param string $sql the SQL statement to be executed
+     * @param array $params parameters to be bound to the SQL statement during execution.
      * @return ActiveQuery the newly created [[ActiveQuery]] instance
      */
     public static function findBySql($sql, $params = [])
@@ -165,10 +164,9 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Finds ActiveRecord instance(s) by the given condition.
      * This method is internally called by [[findOne()]] and [[findAll()]].
-     *
-     * @param    mixed $condition please refer to [[findOne()]] for the explanation of this parameter
-     * @return   ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
-     * @throws   InvalidConfigException if there is no primary key defined.
+     * @param mixed $condition please refer to [[findOne()]] for the explanation of this parameter
+     * @return ActiveQueryInterface the newly created [[ActiveQueryInterface|ActiveQuery]] instance.
+     * @throws InvalidConfigException if there is no primary key defined.
      * @internal
      */
     protected static function findByCondition($condition)
@@ -200,10 +198,10 @@ class ActiveRecord extends BaseActiveRecord
      *
      * This method will ensure that an array condition only filters on existing table columns.
      *
-     * @param    array $condition condition to filter.
-     * @return   array filtered condition.
-     * @throws   InvalidArgumentException in case array contains unsafe values.
-     * @since    2.0.15
+     * @param array $condition condition to filter.
+     * @return array filtered condition.
+     * @throws InvalidArgumentException in case array contains unsafe values.
+     * @since 2.0.15
      * @internal
      */
     protected static function filterCondition(array $condition)
@@ -212,13 +210,9 @@ class ActiveRecord extends BaseActiveRecord
         // valid column names are table column names or column names prefixed with table name
         $columnNames = static::getTableSchema()->getColumnNames();
         $tableName = static::tableName();
-        $columnNames = array_merge(
-            $columnNames, array_map(
-                function ($columnName) use ($tableName) {
-                    return "$tableName.$columnName";
-                }, $columnNames
-            )
-        );
+        $columnNames = array_merge($columnNames, array_map(function($columnName) use ($tableName) {
+            return "$tableName.$columnName";
+        }, $columnNames));
         foreach ($condition as $key => $value) {
             if (is_string($key) && !in_array($key, $columnNames, true)) {
                 throw new InvalidArgumentException('Key "' . $key . '" is not a column name and can not be used as a filter');
@@ -273,10 +267,10 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
      *
-     * @param  array        $attributes attribute values (name-value pairs) to be saved into the table
-     * @param  string|array $condition  the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                  Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params     the parameters (name => value) to be bound to the query.
+     * @param array $attributes attribute values (name-value pairs) to be saved into the table
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows updated
      */
     public static function updateAll($attributes, $condition = '', $params = [])
@@ -298,13 +292,12 @@ class ActiveRecord extends BaseActiveRecord
      *
      * Note that this method will not trigger any events.
      *
-     * @param  array        $counters  the counters to be updated (attribute name => increment value).
-     *                                 Use negative values if you want to decrement the counters.
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
-     *                                 Do not name the parameters as `:bp0`, `:bp1`, etc.,
-     *                                 because they are used internally by this method.
+     * @param array $counters the counters to be updated (attribute name => increment value).
+     * Use negative values if you want to decrement the counters.
+     * @param string|array $condition the conditions that will be put in the WHERE part of the UPDATE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
+     * Do not name the parameters as `:bp0`, `:bp1`, etc., because they are used internally by this method.
      * @return int the number of rows updated
      */
     public static function updateAllCounters($counters, $condition = '', $params = [])
@@ -344,9 +337,9 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
      *
-     * @param  string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
-     *                                 Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param  array        $params    the parameters (name => value) to be bound to the query.
+     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * Please refer to [[Query::where()]] on how to specify this parameter.
+     * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows deleted
      */
     public static function deleteAll($condition = null, $params = [])
@@ -359,7 +352,6 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
-     *
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
@@ -373,7 +365,6 @@ class ActiveRecord extends BaseActiveRecord
      * with prefix [[Connection::tablePrefix]]. For example if [[Connection::tablePrefix]] is `tbl_`,
      * `Customer` becomes `tbl_customer`, and `OrderItem` becomes `tbl_order_item`. You may override this method
      * if the table is not named after this convention.
-     *
      * @return string the table name
      */
     public static function tableName()
@@ -383,7 +374,6 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns the schema information of the DB table associated with this AR class.
-     *
      * @return TableSchema the schema information of the DB table associated with this AR class.
      * @throws InvalidConfigException if the table for the AR class does not exist.
      */
@@ -421,7 +411,6 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * Returns the list of all attribute names of the model.
      * The default implementation will return all column names of the table associated with this AR class.
-     *
      * @return array list of attribute names.
      */
     public function attributes()
@@ -507,12 +496,11 @@ class ActiveRecord extends BaseActiveRecord
      * $customer->insert();
      * ```
      *
-     * @param  bool  $runValidation whether to perform validation (calling [[validate()]])
-     *                              before saving the record. Defaults to `true`. If the
-     *                              validation fails, the record will not be saved to the
-     *                              database and this method will return `false`.
-     * @param  array $attributes    list of attributes that need to be saved. Defaults to `null`,
-     *                              meaning all attributes that are loaded from DB will be saved.
+     * @param bool $runValidation whether to perform validation (calling [[validate()]])
+     * before saving the record. Defaults to `true`. If the validation fails, the record
+     * will not be saved to the database and this method will return `false`.
+     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
      * @throws \Exception|\Throwable in case insert failed.
      */
@@ -548,9 +536,8 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Inserts an ActiveRecord into DB without considering transaction.
-     *
-     * @param  array $attributes list of attributes that need to be saved. Defaults to `null`,
-     *                           meaning all attributes that are loaded from DB will be saved.
+     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the record is inserted successfully.
      */
     protected function insertInternal($attributes = null)
@@ -616,12 +603,11 @@ class ActiveRecord extends BaseActiveRecord
      * }
      * ```
      *
-     * @param  bool  $runValidation  whether to perform validation (calling [[validate()]])
-     *                               before saving the record. Defaults to `true`. If the
-     *                               validation fails, the record will not be saved to the
-     *                               database and this method will return `false`.
-     * @param  array $attributeNames list of attributes that need to be saved. Defaults to `null`,
-     *                               meaning all attributes that are loaded from DB will be saved.
+     * @param bool $runValidation whether to perform validation (calling [[validate()]])
+     * before saving the record. Defaults to `true`. If the validation fails, the record
+     * will not be saved to the database and this method will return `false`.
+     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
+     * meaning all attributes that are loaded from DB will be saved.
      * @return int|false the number of rows affected, or false if validation fails
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
@@ -704,7 +690,6 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Deletes an ActiveRecord without considering transaction.
-     *
      * @return int|false the number of rows deleted, or `false` if the deletion is unsuccessful for some reason.
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException
@@ -736,8 +721,7 @@ class ActiveRecord extends BaseActiveRecord
      * Returns a value indicating whether the given active record is the same as the current one.
      * The comparison is made by comparing the table names and the primary key values of the two active records.
      * If one of the records [[isNewRecord|is new]] they are also considered not equal.
-     *
-     * @param  ActiveRecord $record record to compare to
+     * @param ActiveRecord $record record to compare to
      * @return bool whether the two active records refer to the same row in the same database table.
      */
     public function equals($record)
@@ -751,8 +735,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns a value indicating whether the specified operation is transactional in the current [[$scenario]].
-     *
-     * @param  int $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
+     * @param int $operation the operation to check. Possible values are [[OP_INSERT]], [[OP_UPDATE]] and [[OP_DELETE]].
      * @return bool whether the specified operation is transactional in the current [[scenario]].
      */
     public function isTransactional($operation)

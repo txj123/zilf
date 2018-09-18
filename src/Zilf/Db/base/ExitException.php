@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -13,7 +13,7 @@ namespace Zilf\Db\base;
  * Do not catch ExitException. Zilf will handle this exception to terminate the application gracefully.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class ExitException extends \Exception
 {
@@ -25,10 +25,9 @@ class ExitException extends \Exception
 
     /**
      * Constructor.
-     *
-     * @param int        $status   the exit status code
-     * @param string     $message  error message
-     * @param int        $code     error code
+     * @param int $status the exit status code
+     * @param string $message error message
+     * @param int $code error code
      * @param \Exception $previous The previous exception used for the exception chaining.
      */
     public function __construct($status = 0, $message = null, $code = 0, \Exception $previous = null)

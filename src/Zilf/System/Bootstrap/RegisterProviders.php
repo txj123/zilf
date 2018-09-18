@@ -24,7 +24,7 @@ class RegisterProviders
     /**
      * Create a new provider instance.
      *
-     * @param  string $provider
+     * @param  string  $provider
      * @return \Zilf\Support\ServiceProvider
      */
     public function createProvider($provider)

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -69,7 +69,7 @@ use Zilf\Helpers\FileHelper;
  * are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class Theme extends Component
 {
@@ -95,7 +95,7 @@ class Theme extends Component
 
     /**
      * @param string $url the base URL or [path alias](guide:concept-aliases) for this theme. All resources of this theme are considered
-     *                    to be under this base URL.
+     * to be under this base URL.
      */
     public function setBaseUrl($url)
     {
@@ -106,7 +106,7 @@ class Theme extends Component
 
     /**
      * @return string the root path of this theme. All resources of this theme are located under this directory.
-     * @see    pathMap
+     * @see pathMap
      */
     public function getBasePath()
     {
@@ -115,8 +115,8 @@ class Theme extends Component
 
     /**
      * @param string $path the root path or [path alias](guide:concept-aliases) of this theme. All resources of this theme are located
-     *                     under this directory.
-     * @see   pathMap
+     * under this directory.
+     * @see pathMap
      */
     public function setBasePath($path)
     {
@@ -126,8 +126,7 @@ class Theme extends Component
     /**
      * Converts a file to a themed file if possible.
      * If there is no corresponding themed file, the original file will be returned.
-     *
-     * @param  string $path the file to be themed
+     * @param string $path the file to be themed
      * @return string the themed file, or the original file if the themed version is not available.
      * @throws InvalidConfigException if [[basePath]] is not set
      */
@@ -160,8 +159,7 @@ class Theme extends Component
 
     /**
      * Converts a relative URL into an absolute URL using [[baseUrl]].
-     *
-     * @param  string $url the relative URL to be converted.
+     * @param string $url the relative URL to be converted.
      * @return string the absolute URL
      * @throws InvalidConfigException if [[baseUrl]] is not set
      */
@@ -176,8 +174,7 @@ class Theme extends Component
 
     /**
      * Converts a relative file path into an absolute one using [[basePath]].
-     *
-     * @param  string $path the relative file path to be converted.
+     * @param string $path the relative file path to be converted.
      * @return string the absolute file path
      * @throws InvalidConfigException if [[basePath]] is not set
      */

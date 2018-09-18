@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -44,7 +44,7 @@ use Zilf\System\Zilf;
  * files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 abstract class Application extends Module
 {
@@ -188,9 +188,8 @@ abstract class Application extends Module
 
     /**
      * Constructor.
-     *
-     * @param  array $config name-value pairs that will be used to initialize the object properties.
-     *                       Note that the configuration must contain both [[id]] and [[basePath]].
+     * @param array $config name-value pairs that will be used to initialize the object properties.
+     * Note that the configuration must contain both [[id]] and [[basePath]].
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
     public function __construct($config = [])
@@ -212,8 +211,7 @@ abstract class Application extends Module
      * This method is called at the beginning of the application constructor.
      * It initializes several important application properties.
      * If you override this method, please make sure you call the parent implementation.
-     *
-     * @param  array $config the application configuration
+     * @param array $config the application configuration
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
     public function preInit(&$config)
@@ -335,7 +333,6 @@ abstract class Application extends Module
 
     /**
      * Registers the errorHandler component as a PHP error handler.
-     *
      * @param array $config application config
      */
     protected function registerErrorHandler(&$config)
@@ -354,7 +351,6 @@ abstract class Application extends Module
     /**
      * Returns an ID that uniquely identifies this module among all modules within the current application.
      * Since this is an application instance, it will always return an empty string.
-     *
      * @return string the unique ID of the module.
      */
     public function getUniqueId()
@@ -365,10 +361,9 @@ abstract class Application extends Module
     /**
      * Sets the root directory of the application and the @app alias.
      * This method can only be invoked at the beginning of the constructor.
-     *
-     * @param    string $path the root directory of the application.
+     * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws   InvalidArgumentException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -379,7 +374,6 @@ abstract class Application extends Module
     /**
      * Runs the application.
      * This is the main entrance of an application.
-     *
      * @return int the exit status (0 means normal, non-zero values mean abnormal)
      */
     public function run()
@@ -412,7 +406,7 @@ abstract class Application extends Module
      * This method should return an instance of [[Response]] or its child class
      * which represents the handling result of the request.
      *
-     * @param  Request $request the request to be handled
+     * @param Request $request the request to be handled
      * @return Response the resulting response
      */
     abstract public function handleRequest($request);
@@ -421,7 +415,6 @@ abstract class Application extends Module
 
     /**
      * Returns the directory that stores runtime files.
-     *
      * @return string the directory that stores runtime files.
      * Defaults to the "runtime" subdirectory under [[basePath]].
      */
@@ -436,7 +429,6 @@ abstract class Application extends Module
 
     /**
      * Sets the directory that stores runtime files.
-     *
      * @param string $path the directory that stores runtime files.
      */
     public function setRuntimePath($path)
@@ -449,7 +441,6 @@ abstract class Application extends Module
 
     /**
      * Returns the directory that stores vendor files.
-     *
      * @return string the directory that stores vendor files.
      * Defaults to "vendor" directory under [[basePath]].
      */
@@ -464,7 +455,6 @@ abstract class Application extends Module
 
     /**
      * Sets the directory that stores vendor files.
-     *
      * @param string $path the directory that stores vendor files.
      */
     public function setVendorPath($path)
@@ -480,9 +470,8 @@ abstract class Application extends Module
      * This is a simple wrapper of PHP function date_default_timezone_get().
      * If time zone is not configured in php.ini or application config,
      * it will be set to UTC by default.
-     *
      * @return string the time zone used by this application.
-     * @see    http://php.net/manual/en/function.date-default-timezone-get.php
+     * @see http://php.net/manual/en/function.date-default-timezone-get.php
      */
     public function getTimeZone()
     {
@@ -493,9 +482,8 @@ abstract class Application extends Module
      * Sets the time zone used by this application.
      * This is a simple wrapper of PHP function date_default_timezone_set().
      * Refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available timezones.
-     *
      * @param string $value the time zone used by this application.
-     * @see   http://php.net/manual/en/function.date-default-timezone-set.php
+     * @see http://php.net/manual/en/function.date-default-timezone-set.php
      */
     public function setTimeZone($value)
     {
@@ -504,7 +492,6 @@ abstract class Application extends Module
 
     /**
      * Returns the database connection component.
-     *
      * @return \Zilf\Db\Connection the database connection.
      */
     public function getDb()
@@ -514,7 +501,6 @@ abstract class Application extends Module
 
     /**
      * Returns the log dispatcher component.
-     *
      * @return \Zilf\log\Dispatcher the log dispatcher application component.
      */
     public function getLog()
@@ -524,7 +510,6 @@ abstract class Application extends Module
 
     /**
      * Returns the error handler component.
-     *
      * @return \Zilf\web\ErrorHandler|\Zilf\console\ErrorHandler the error handler application component.
      */
     public function getErrorHandler()
@@ -534,7 +519,6 @@ abstract class Application extends Module
 
     /**
      * Returns the cache component.
-     *
      * @return \Zilf\caching\CacheInterface the cache application component. Null if the component is not enabled.
      */
     public function getCache()
@@ -544,7 +528,6 @@ abstract class Application extends Module
 
     /**
      * Returns the formatter component.
-     *
      * @return \Zilf\i18n\Formatter the formatter application component.
      */
     public function getFormatter()
@@ -554,7 +537,6 @@ abstract class Application extends Module
 
     /**
      * Returns the request component.
-     *
      * @return \Zilf\web\Request|\Zilf\console\Request the request component.
      */
     public function getRequest()
@@ -564,7 +546,6 @@ abstract class Application extends Module
 
     /**
      * Returns the response component.
-     *
      * @return \Zilf\web\Response|\Zilf\console\Response the response component.
      */
     public function getResponse()
@@ -574,7 +555,6 @@ abstract class Application extends Module
 
     /**
      * Returns the view object.
-     *
      * @return View|\Zilf\web\View the view application component that is used to render various view files.
      */
     public function getView()
@@ -584,7 +564,6 @@ abstract class Application extends Module
 
     /**
      * Returns the URL manager for this application.
-     *
      * @return \Zilf\web\UrlManager the URL manager for this application.
      */
     public function getUrlManager()
@@ -594,7 +573,6 @@ abstract class Application extends Module
 
     /**
      * Returns the internationalization (i18n) component.
-     *
      * @return \Zilf\i18n\I18N the internationalization application component.
      */
     public function getI18n()
@@ -604,7 +582,6 @@ abstract class Application extends Module
 
     /**
      * Returns the mailer component.
-     *
      * @return \Zilf\mail\MailerInterface the mailer application component.
      */
     public function getMailer()
@@ -614,7 +591,6 @@ abstract class Application extends Module
 
     /**
      * Returns the auth manager for this application.
-     *
      * @return \Zilf\rbac\ManagerInterface the auth manager application component.
      * Null is returned if auth manager is not configured.
      */
@@ -625,7 +601,6 @@ abstract class Application extends Module
 
     /**
      * Returns the asset manager.
-     *
      * @return \Zilf\web\AssetManager the asset manager application component.
      */
     public function getAssetManager()
@@ -635,7 +610,6 @@ abstract class Application extends Module
 
     /**
      * Returns the security component.
-     *
      * @return \Zilf\Db\base\Security the security application component.
      */
     public function getSecurity()
@@ -645,7 +619,6 @@ abstract class Application extends Module
 
     /**
      * Returns the configuration of core application components.
-     *
      * @see set()
      */
     public function coreComponents()
@@ -666,9 +639,8 @@ abstract class Application extends Module
      * Terminates the application.
      * This method replaces the `exit()` function by ensuring the application life cycle is completed
      * before terminating the application.
-     *
-     * @param  int      $status   the exit status (value 0 means normal exit while other values mean abnormal exit).
-     * @param  Response $response the response to be sent. If not set, the default application [[response]] component will be used.
+     * @param int $status the exit status (value 0 means normal exit while other values mean abnormal exit).
+     * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
      * @throws ExitException if the application is in testing mode
      */
     public function end($status = 0, $response = null)

@@ -23,8 +23,8 @@ class Encrypter
     /**
      * Create a new encrypter instance.
      *
-     * @param  string $key
-     * @param  string $cipher
+     * @param  string  $key
+     * @param  string  $cipher
      * @return void
      *
      * @throws \RuntimeException
@@ -44,8 +44,8 @@ class Encrypter
     /**
      * Determine if the given key and cipher combination is valid.
      *
-     * @param  string $key
-     * @param  string $cipher
+     * @param  string  $key
+     * @param  string  $cipher
      * @return bool
      */
     public static function supported($key, $cipher)
@@ -59,7 +59,7 @@ class Encrypter
     /**
      * Create a new encryption key for the given cipher.
      *
-     * @param  string $cipher
+     * @param  string  $cipher
      * @return string
      */
     public static function generateKey($cipher)
@@ -70,7 +70,7 @@ class Encrypter
     /**
      * Encrypt the given value.
      *
-     * @param  mixed $value
+     * @param  mixed  $value
      * @param  bool  $serialize
      * @return string
      *
@@ -109,7 +109,7 @@ class Encrypter
     /**
      * Encrypt a string without serialization.
      *
-     * @param  string $value
+     * @param  string  $value
      * @return string
      */
     public function encryptString($value)
@@ -120,7 +120,7 @@ class Encrypter
     /**
      * Decrypt the given value.
      *
-     * @param  mixed $payload
+     * @param  mixed  $payload
      * @param  bool  $unserialize
      * @return string
      *
@@ -149,7 +149,7 @@ class Encrypter
     /**
      * Decrypt the given string without unserialization.
      *
-     * @param  string $payload
+     * @param  string  $payload
      * @return string
      */
     public function decryptString($payload)
@@ -160,7 +160,7 @@ class Encrypter
     /**
      * Create a MAC for the given value.
      *
-     * @param  string $iv
+     * @param  string  $iv
      * @param  mixed  $value
      * @return string
      */
@@ -172,7 +172,7 @@ class Encrypter
     /**
      * Get the JSON array from the given payload.
      *
-     * @param  string $payload
+     * @param  string  $payload
      * @return array
      *
      * @throws \Illuminate\Contracts\Encryption\DecryptException
@@ -198,7 +198,7 @@ class Encrypter
     /**
      * Verify that the encryption payload is valid.
      *
-     * @param  mixed $payload
+     * @param  mixed  $payload
      * @return bool
      */
     protected function validPayload($payload)
@@ -210,7 +210,7 @@ class Encrypter
     /**
      * Determine if the MAC for the given payload is valid.
      *
-     * @param  array $payload
+     * @param  array  $payload
      * @return bool
      */
     protected function validMac(array $payload)
@@ -226,7 +226,7 @@ class Encrypter
      * Calculate the hash of the given payload.
      *
      * @param  array  $payload
-     * @param  string $bytes
+     * @param  string  $bytes
      * @return string
      */
     protected function calculateMac($payload, $bytes)

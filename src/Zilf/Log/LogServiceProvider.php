@@ -14,10 +14,8 @@ class LogServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Zilf::$container->register(
-            'log', function () {
-                return new LogManager();
-            }
-        );
+        Zilf::$container->register('log', function () {
+            return new LogManager();
+        });
     }
 }

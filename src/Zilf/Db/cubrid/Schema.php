@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\cubrid;
@@ -22,7 +22,7 @@ use Zilf\Helpers\ArrayHelper;
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 {
@@ -164,12 +164,10 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
         }
 
         ArrayHelper::multisort($primaryKey, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
-        return new Constraint(
-            [
+        return new Constraint([
             'name' => $primaryKey[0]['KEY_NAME'],
             'columnNames' => ArrayHelper::getColumn($primaryKey, 'ATTR_NAME'),
-            ]
-        );
+        ]);
     }
 
     /**
@@ -189,16 +187,14 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
         ArrayHelper::multisort($foreignKeys, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
         $result = [];
         foreach ($foreignKeys as $name => $foreignKey) {
-            $result[] = new ForeignKeyConstraint(
-                [
+            $result[] = new ForeignKeyConstraint([
                 'name' => $name,
                 'columnNames' => ArrayHelper::getColumn($foreignKey, 'FKCOLUMN_NAME'),
                 'foreignTableName' => $foreignKey[0]['PKTABLE_NAME'],
                 'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'PKCOLUMN_NAME'),
                 'onDelete' => isset($actionTypes[$foreignKey[0]['DELETE_RULE']]) ? $actionTypes[$foreignKey[0]['DELETE_RULE']] : null,
                 'onUpdate' => isset($actionTypes[$foreignKey[0]['UPDATE_RULE']]) ? $actionTypes[$foreignKey[0]['UPDATE_RULE']] : null,
-                ]
-            );
+            ]);
         }
 
         return $result;
@@ -222,7 +218,6 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     *
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
@@ -232,7 +227,6 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     *
      * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
@@ -250,7 +244,6 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Creates a query builder for the CUBRID database.
-     *
      * @return QueryBuilder query builder instance
      */
     public function createQueryBuilder()
@@ -260,8 +253,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     *
-     * @param  array $info column information
+     * @param array $info column information
      * @return \Zilf\Db\ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -315,10 +307,10 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
             return $column;
         }
 
-        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' 
-            || $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' 
-            || $column->type === 'date' && $info['Default'] === 'SYS_DATE' 
-            || $column->type === 'time' && $info['Default'] === 'SYS_TIME'
+        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
+            $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
+            $column->type === 'date' && $info['Default'] === 'SYS_DATE' ||
+            $column->type === 'time' && $info['Default'] === 'SYS_TIME'
         ) {
             $column->defaultValue = new Expression($info['Default']);
         } elseif (isset($type) && $type === 'bit') {
@@ -332,10 +324,9 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Determines the PDO type for the given PHP data value.
-     *
-     * @param  mixed $data the data whose PDO type is to be determined
+     * @param mixed $data the data whose PDO type is to be determined
      * @return int the PDO type
-     * @see    http://www.php.net/manual/en/pdo.constants.php
+     * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
     {
@@ -354,25 +345,24 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     *
      * @see http://www.cubrid.org/manual/91/en/sql/transaction.html#database-concurrency
      */
     public function setTransactionIsolationLevel($level)
     {
         // translate SQL92 levels to CUBRID levels:
         switch ($level) {
-        case Transaction::SERIALIZABLE:
-            $level = '6'; // SERIALIZABLE
-            break;
-        case Transaction::REPEATABLE_READ:
-            $level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
-            break;
-        case Transaction::READ_COMMITTED:
-            $level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
-            break;
-        case Transaction::READ_UNCOMMITTED:
-            $level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
-            break;
+            case Transaction::SERIALIZABLE:
+                $level = '6'; // SERIALIZABLE
+                break;
+            case Transaction::REPEATABLE_READ:
+                $level = '5'; // REPEATABLE READ CLASS with REPEATABLE READ INSTANCES
+                break;
+            case Transaction::READ_COMMITTED:
+                $level = '4'; // REPEATABLE READ CLASS with READ COMMITTED INSTANCES
+                break;
+            case Transaction::READ_UNCOMMITTED:
+                $level = '3'; // REPEATABLE READ CLASS with READ UNCOMMITTED INSTANCES
+                break;
         }
         parent::setTransactionIsolationLevel($level);
     }
@@ -387,11 +377,10 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Loads multiple types of constraints and returns the specified ones.
-     *
-     * @param  string $tableName  table name.
-     * @param  string $returnType return type:
-     *                            - indexes
-     *                            - uniques
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - indexes
+     * - uniques
      * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
@@ -406,21 +395,17 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
         foreach ($constraints as $type => $names) {
             foreach ($names as $name => $constraint) {
                 $isUnique = in_array((int) $type, [0, 2], true);
-                $result['indexes'][] = new IndexConstraint(
-                    [
+                $result['indexes'][] = new IndexConstraint([
                     'isPrimary' => (bool) $constraint[0]['PRIMARY_KEY'],
                     'isUnique' => $isUnique,
                     'name' => $name,
                     'columnNames' => ArrayHelper::getColumn($constraint, 'ATTR_NAME'),
-                    ]
-                );
+                ]);
                 if ($isUnique) {
-                    $result['uniques'][] = new Constraint(
-                        [
+                    $result['uniques'][] = new Constraint([
                         'name' => $name,
                         'columnNames' => ArrayHelper::getColumn($constraint, 'ATTR_NAME'),
-                        ]
-                    );
+                    ]);
                 }
             }
         }

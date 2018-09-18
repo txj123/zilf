@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -13,7 +13,7 @@ namespace Zilf\Db\base;
  * By setting the [[isValid]] property, one may control whether to continue running the widget.
  *
  * @author Petra Barus <petra.barus@gmail.com>
- * @since  2.0.11
+ * @since 2.0.11
  */
 class WidgetEvent extends Event
 {

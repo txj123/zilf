@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\oci\conditions;
@@ -19,8 +19,8 @@ class InConditionBuilder extends \Zilf\Db\conditions\InConditionBuilder
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param  ExpressionInterface|InCondition $expression the expression to be built.
-     * @param  array                           $params     the binding parameters.
+     * @param ExpressionInterface|InCondition $expression the expression to be built.
+     * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
     public function build(ExpressionInterface $expression, array &$params = [])
@@ -37,8 +37,8 @@ class InConditionBuilder extends \Zilf\Db\conditions\InConditionBuilder
      * Oracle DBMS does not support more than 1000 parameters in `IN` condition.
      * This method splits long `IN` condition into series of smaller ones.
      *
-     * @param  ExpressionInterface|InCondition $condition the expression to be built.
-     * @param  array                           $params    the binding parameters.
+     * @param ExpressionInterface|InCondition $condition the expression to be built.
+     * @param array $params the binding parameters.
      * @return null|string null when split is not required. Otherwise - built SQL condition.
      */
     protected function splitCondition(InCondition $condition, &$params)

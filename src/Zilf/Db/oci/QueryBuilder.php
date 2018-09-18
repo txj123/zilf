@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\oci;
@@ -20,7 +20,7 @@ use Zilf\Db\ExpressionInterface;
  * QueryBuilder is the query builder for Oracle databases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
@@ -57,12 +57,10 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(
-            parent::defaultExpressionBuilders(), [
+        return array_merge(parent::defaultExpressionBuilders(), [
             'Zilf\Db\conditions\InCondition' => 'Zilf\Db\oci\conditions\InConditionBuilder',
             'Zilf\Db\conditions\LikeCondition' => 'Zilf\Db\oci\conditions\LikeConditionBuilder',
-            ]
-        );
+        ]);
     }
 
     /**
@@ -99,8 +97,8 @@ EOD;
     /**
      * Builds a SQL statement for renaming a DB table.
      *
-     * @param  string $table   the table to be renamed. The name will be properly quoted by the method.
-     * @param  string $newName the new table name. The name will be properly quoted by the method.
+     * @param string $table the table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName the new table name. The name will be properly quoted by the method.
      * @return string the SQL statement for renaming a DB table.
      */
     public function renameTable($table, $newName)
@@ -111,12 +109,11 @@ EOD;
     /**
      * Builds a SQL statement for changing the definition of a column.
      *
-     * @param  string $table  the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param  string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param  string $type   the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
-     *                        into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     *                        For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become
-     *                        'varchar(255) not null'.
+     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
+     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
+     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
      * @return string the SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
@@ -129,8 +126,8 @@ EOD;
     /**
      * Builds a SQL statement for dropping an index.
      *
-     * @param  string $name  the name of the index to be dropped. The name will be properly quoted by the method.
-     * @param  string $table the table whose index is to be dropped. The name will be properly quoted by the method.
+     * @param string $name the name of the index to be dropped. The name will be properly quoted by the method.
+     * @param string $table the table whose index is to be dropped. The name will be properly quoted by the method.
      * @return string the SQL statement for dropping an index.
      */
     public function dropIndex($name, $table)
@@ -158,21 +155,17 @@ EOD;
                 throw new InvalidArgumentException("Can't reset sequence for composite primary key in table: $table");
             }
             // use master connection to get the biggest PK value
-            $value = $this->db->useMaster(
-                function (Connection $db) use ($tableSchema) {
-                    return $db->createCommand(
-                        'SELECT MAX("' . $tableSchema->primaryKey[0] . '") FROM "'. $tableSchema->name . '"'
-                    )->queryScalar();
-                }
-            ) + 1;
+            $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
+                return $db->createCommand(
+                    'SELECT MAX("' . $tableSchema->primaryKey[0] . '") FROM "'. $tableSchema->name . '"'
+                )->queryScalar();
+            }) + 1;
         }
 
         //Oracle needs at least two queries to reset sequence (see adding transactions and/or use alter method to avoid grants' issue?)
         $this->db->createCommand('DROP SEQUENCE "' . $tableSchema->sequenceName . '"')->execute();
-        $this->db->createCommand(
-            'CREATE SEQUENCE "' . $tableSchema->sequenceName . '" START WITH ' . $value
-            . ' INCREMENT BY 1 NOMAXVALUE NOCACHE'
-        )->execute();
+        $this->db->createCommand('CREATE SEQUENCE "' . $tableSchema->sequenceName . '" START WITH ' . $value
+            . ' INCREMENT BY 1 NOMAXVALUE NOCACHE')->execute();
     }
 
     /**
@@ -216,14 +209,11 @@ EOD;
 
     /**
      * {@inheritdoc}
-     *
      * @see https://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_9016.htm#SQLRF01606
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /**
- * @var Constraint[] $constraints 
-*/
+        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
@@ -298,9 +288,9 @@ EOD;
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param  string           $table   the table that new rows will be inserted into.
-     * @param  array            $columns the column names
-     * @param  array|\Generator $rows    the rows to be batch inserted into the table
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows, &$params = [])
@@ -355,7 +345,6 @@ EOD;
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -365,7 +354,6 @@ EOD;
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -375,7 +363,6 @@ EOD;
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)

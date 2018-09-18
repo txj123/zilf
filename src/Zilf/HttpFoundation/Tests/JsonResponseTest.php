@@ -216,7 +216,7 @@ class JsonResponseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        \Exception
+     * @expectedException \Exception
      * @expectedExceptionMessage This error is expected
      */
     public function testSetContentJsonSerializeError()

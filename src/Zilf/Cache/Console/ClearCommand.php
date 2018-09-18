@@ -34,23 +34,23 @@ class ClearCommand extends Command
     /**
      * The filesystem instance.
      *
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var \Zilf\Filesystem\Filesystem
      */
     protected $files;
 
     /**
      * Create a new cache clear command instance.
      *
-     * @param  \Illuminate\Cache\CacheManager    $cache
-     * @param  \Illuminate\Filesystem\Filesystem $files
+     * @param  \Zilf\Cache\CacheManager  $cache
+     * @param  \Zilf\Filesystem\Filesystem  $files
      * @return void
      */
-    public function __construct()
+    public function __construct($cache,$files)
     {
         parent::__construct();
 
-        /*$this->cache = $cache;
-        $this->files = $files;*/
+        $this->cache = $cache;
+        $this->files = $files;
     }
 
     /**
@@ -60,7 +60,8 @@ class ClearCommand extends Command
      */
     public function handle()
     {
-        $this->laravel['events']->fire(
+        echo get_called_class();
+        /*$this->laravel['events']->fire(
             'cache:clearing', [$this->argument('store'), $this->tags()]
         );
 
@@ -72,7 +73,7 @@ class ClearCommand extends Command
             'cache:cleared', [$this->argument('store'), $this->tags()]
         );
 
-        $this->info('Cache cleared successfully.');
+        $this->info('Cache cleared successfully.');*/
     }
 
     /**

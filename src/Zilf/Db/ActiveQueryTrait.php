@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -12,7 +12,7 @@ namespace Zilf\Db;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 trait ActiveQueryTrait
 {
@@ -33,8 +33,7 @@ trait ActiveQueryTrait
 
     /**
      * Sets the [[asArray]] property.
-     *
-     * @param  bool $value whether to return the query results in terms of arrays instead of Active Records.
+     * @param bool $value whether to return the query results in terms of arrays instead of Active Records.
      * @return $this the query object itself
      */
     public function asArray($value = true)
@@ -106,10 +105,9 @@ trait ActiveQueryTrait
 
     /**
      * Converts found rows into model instances.
-     *
-     * @param  array $rows
+     * @param array $rows
      * @return array|ActiveRecord[]
-     * @since  2.0.11
+     * @since 2.0.11
      */
     protected function createModels($rows)
     {
@@ -131,9 +129,8 @@ trait ActiveQueryTrait
 
     /**
      * Finds records corresponding to one or multiple relations and populates them into the primary models.
-     *
-     * @param array                $with   a list of relations that this query should be performed with. Please
-     *                                     refer to [[with()]] for details about specifying this parameter.
+     * @param array $with a list of relations that this query should be performed with. Please
+     * refer to [[with()]] for details about specifying this parameter.
      * @param array|ActiveRecord[] $models the primary models (can be either AR instances or arrays)
      */
     public function findWith($with, &$models)
@@ -156,8 +153,8 @@ trait ActiveQueryTrait
     }
 
     /**
-     * @param  ActiveRecord $model
-     * @param  array        $with
+     * @param ActiveRecord $model
+     * @param array $with
      * @return ActiveQueryInterface[]
      */
     private function normalizeRelations($model, $with)

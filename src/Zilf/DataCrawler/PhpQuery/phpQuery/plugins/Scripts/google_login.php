@@ -38,13 +38,13 @@ $self->document->xhr = phpQuery::$plugins->browserGet(
     $ndfasui8923
 );
 //$self->document->xhr = phpQuery::$plugins->browserGet('https://www.google.com/accounts/Login', create_function('$browser', "
-//    \$browser
-//        ->WebBrowser()
-//        ->find('#Email')
-//            ->val('{$config['google_login'][0]}')->end()
-//        ->find('#Passwd')
-//            ->val('".str_replace("'", "\\'", $config['google_login'][1])."')
-//            ->parents('form')
-//                ->submit();"
+//	\$browser
+//		->WebBrowser()
+//		->find('#Email')
+//			->val('{$config['google_login'][0]}')->end()
+//		->find('#Passwd')
+//			->val('".str_replace("'", "\\'", $config['google_login'][1])."')
+//			->parents('form')
+//				->submit();"
 //));
 ?>

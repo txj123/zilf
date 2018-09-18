@@ -17,14 +17,14 @@ use Zilf\System\Zilf;
 class DB
 {
     /**
-     * @param  string $databaseName
+     * @param string $databaseName
      * @return Connection
      */
     public static function connection($databaseName='')
     {
         $database = $databaseName ? $databaseName : Zilf::$app->database;
 
-        if(!empty($databaseName)) {
+        if(!empty($databaseName)){
             Zilf::$app->setDb($database);
         }
 
@@ -32,8 +32,8 @@ class DB
     }
 
     /**
-     * @param  null  $sql
-     * @param  array $params
+     * @param null  $sql
+     * @param array $params
      * @return Command the DB command
      */
     public static function createCommand($sql = null, $params = [])
@@ -51,8 +51,7 @@ class DB
         return new Query();
     }
 
-    public static function db()
-    {
+    public static function db(){
 
     }
 }

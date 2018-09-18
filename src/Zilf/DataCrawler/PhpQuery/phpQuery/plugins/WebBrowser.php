@@ -99,11 +99,11 @@ class phpQueryPlugin_WebBrowser
 {
     /**
      *
-     * @param  $url
-     * @param  $callback
-     * @param  $param1
-     * @param  $param2
-     * @param  $param3
+     * @param $url
+     * @param $callback
+     * @param $param1
+     * @param $param2
+     * @param $param3
      * @return Zend_Http_Client
      */
     public static function browserGet($url, $callback,
@@ -129,9 +129,9 @@ class phpQueryPlugin_WebBrowser
                 array(self::browserReceive($xhr)->WebBrowser()),
                 $paramStructure
             );
-            //            phpQuery::callbackRun($callback, array(
-            //                self::browserReceive($xhr)//->WebBrowser($callback)
-            //            ));
+            //			phpQuery::callbackRun($callback, array(
+            //				self::browserReceive($xhr)//->WebBrowser($callback)
+            //			));
             return $xhr;
         } else {
             throw new Exception("[WebBrowser] GET request failed; url: $url");
@@ -140,12 +140,12 @@ class phpQueryPlugin_WebBrowser
     }
     /**
      *
-     * @param  $url
-     * @param  $data
-     * @param  $callback
-     * @param  $param1
-     * @param  $param2
-     * @param  $param3
+     * @param $url
+     * @param $data
+     * @param $callback
+     * @param $param1
+     * @param $param2
+     * @param $param3
      * @return Zend_Http_Client
      */
     public static function browserPost($url, $data, $callback,
@@ -171,9 +171,9 @@ class phpQueryPlugin_WebBrowser
                 array(self::browserReceive($xhr)->WebBrowser()),
                 $paramStructure
             );
-            //            phpQuery::callbackRun($callback, array(
-            //                self::browserReceive($xhr)//->WebBrowser($callback)
-            //            ));
+            //			phpQuery::callbackRun($callback, array(
+            //				self::browserReceive($xhr)//->WebBrowser($callback)
+            //			));
             return $xhr;
         } else {
             return false;
@@ -181,11 +181,11 @@ class phpQueryPlugin_WebBrowser
     }
     /**
      *
-     * @param  $ajaxSettings
-     * @param  $callback
-     * @param  $param1
-     * @param  $param2
-     * @param  $param3
+     * @param $ajaxSettings
+     * @param $callback
+     * @param $param1
+     * @param $param2
+     * @param $param3
      * @return Zend_Http_Client
      */
     public static function browser($ajaxSettings, $callback,
@@ -206,9 +206,9 @@ class phpQueryPlugin_WebBrowser
                 array(self::browserReceive($xhr)->WebBrowser()),
                 $paramStructure
             );
-            //            phpQuery::callbackRun($callback, array(
-            //                self::browserReceive($xhr)//->WebBrowser($callback)
-            //            ));
+            //			phpQuery::callbackRun($callback, array(
+            //				self::browserReceive($xhr)//->WebBrowser($callback)
+            //			));
             return $xhr;
         } else {
             return false;
@@ -248,8 +248,8 @@ class phpQueryPlugin_WebBrowser
         $refresh = $pq->find('meta[http-equiv=refresh]')
             ->add('meta[http-equiv=Refresh]');
         if ($refresh->size()) {
-            //            print htmlspecialchars(var_export($xhr->getCookieJar()->getAllCookies(), true));
-            //            print htmlspecialchars(var_export($xhr->getLastResponse()->getHeader('Set-Cookie'), true));
+            //			print htmlspecialchars(var_export($xhr->getCookieJar()->getAllCookies(), true));
+            //			print htmlspecialchars(var_export($xhr->getLastResponse()->getHeader('Set-Cookie'), true));
             phpQuery::debug("Meta redirect... '{$refresh->attr('content')}'\n");
             // there is a refresh, so get the new url
             $content = $refresh->attr('content');
@@ -257,7 +257,7 @@ class phpQueryPlugin_WebBrowser
             $urlRefresh = trim($urlRefresh, '\'"');
             // XXX not secure ?!
             phpQuery::ajaxAllowURL($urlRefresh);
-            //            $urlRefresh = urldecode($urlRefresh);
+            //			$urlRefresh = urldecode($urlRefresh);
             // make ajax call, passing last $xhr object to preserve important stuff
             $xhr = phpQuery::ajax(
                 array(
@@ -278,8 +278,8 @@ class phpQueryPlugin_WebBrowser
     }
     /**
      * 
-     * @param  $e
-     * @param  $callback
+     * @param $e
+     * @param $callback
      * @return unknown_type
      */
     public static function hadleClick($e, $callback = null) 
@@ -330,12 +330,12 @@ class phpQueryPlugin_WebBrowser
         $submit = pq($e->relatedTarget)->is(':submit')
         ? $e->relatedTarget
         // will this work ?
-        //            : $node->find(':submit:first')->get(0);
+        //			: $node->find(':submit:first')->get(0);
         : $node->find('*:submit:first')->get(0);
         $data = array();
         foreach($node->serializeArray($submit) as $r) {
             // XXXt.c maybe $node->not(':submit')->add($sumit) would be better ?
-            //        foreach($node->serializeArray($submit) as $r)
+            //		foreach($node->serializeArray($submit) as $r)
             $data[ $r['name'] ] = $r['value'];
         }
         $options = array(
@@ -345,7 +345,7 @@ class phpQueryPlugin_WebBrowser
         'url' => resolve_url($e->data[0], $node->attr('action')),
         'data' => $data,
         'referer' => $node->document->location,
-        //            'success' => $e->data[1],
+        //			'success' => $e->data[1],
         );
         if ($node->attr('enctype')) {
             $options['contentType'] = $node->attr('enctype');
@@ -365,9 +365,9 @@ class phpQueryPlugin_WebBrowser
 }
 /**
  *
- * @param  unknown_type $parsed
+ * @param unknown_type $parsed
  * @return unknown
- * @link   http://www.php.net/manual/en/function.parse-url.php
+ * @link http://www.php.net/manual/en/function.parse-url.php
  * @author stevenlewis at hotmail dot com
  */
 function glue_url($parsed)

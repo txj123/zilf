@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -12,14 +12,13 @@ namespace Zilf\Db\base;
  * which support a [[View]] dynamic content feature.
  *
  * @author Sergey Makinen <sergey@makinen.ru>
- * @since  2.0.14
+ * @since 2.0.14
  */
 interface DynamicContentAwareInterface
 {
     /**
      * Returns a list of placeholders for dynamic content. This method
      * is used internally to implement the content caching feature.
-     *
      * @return array a list of placeholders.
      */
     public function getDynamicPlaceholders();
@@ -27,7 +26,6 @@ interface DynamicContentAwareInterface
     /**
      * Sets a list of placeholders for dynamic content. This method
      * is used internally to implement the content caching feature.
-     *
      * @param array $placeholders a list of placeholders.
      */
     public function setDynamicPlaceholders($placeholders);
@@ -35,8 +33,7 @@ interface DynamicContentAwareInterface
     /**
      * Adds a placeholder for dynamic content.
      * This method is used internally to implement the content caching feature.
-     *
-     * @param string $name       the placeholder name.
+     * @param string $name the placeholder name.
      * @param string $statements the PHP statements for generating the dynamic content.
      */
     public function addDynamicPlaceholder($name, $statements);

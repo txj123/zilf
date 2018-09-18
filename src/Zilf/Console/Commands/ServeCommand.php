@@ -48,8 +48,7 @@ class ServeCommand extends Command
      */
     protected function serverCommand()
     {
-        return sprintf(
-            '%s -S %s:%s %s',
+        return sprintf('%s -S %s:%s %s',
             ProcessUtils::escapeArgument((new PhpExecutableFinder)->find(false)),
             $this->host(),
             $this->port(),

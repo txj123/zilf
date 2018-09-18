@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\mssql;
@@ -22,7 +22,7 @@ use Zilf\Helpers\ArrayHelper;
  * Schema is the class for retrieving metadata from MS SQL Server databases (version 2008 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 {
@@ -92,8 +92,7 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * Resolves the table name and schema name (if any).
-     *
-     * @param  string $name the table name
+     * @param string $name the table name
      * @return TableSchema resolved table, schema, etc. names.
      */
     protected function resolveTableName($name)
@@ -129,7 +128,6 @@ class Schema extends \Zilf\Db\Schema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     *
      * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
@@ -217,23 +215,19 @@ ORDER BY [ic].[key_ordinal] ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
-        $indexes = $this->db->createCommand(
-            $sql, [
+        $indexes = $this->db->createCommand($sql, [
             ':fullName' => $resolvedName->fullName,
-            ]
-        )->queryAll();
+        ])->queryAll();
         $indexes = $this->normalizePdoRowKeyCase($indexes, true);
         $indexes = ArrayHelper::index($indexes, null, 'name');
         $result = [];
         foreach ($indexes as $name => $index) {
-            $result[] = new IndexConstraint(
-                [
+            $result[] = new IndexConstraint([
                 'isPrimary' => (bool) $index[0]['index_is_primary'],
                 'isUnique' => (bool) $index[0]['index_is_unique'],
                 'name' => $name,
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
-                ]
-            );
+            ]);
         }
 
         return $result;
@@ -289,7 +283,6 @@ SQL;
 
     /**
      * Creates a query builder for the MSSQL database.
-     *
      * @return QueryBuilder query builder interface.
      */
     public function createQueryBuilder()
@@ -299,9 +292,8 @@ SQL;
 
     /**
      * Resolves the table name and schema name (if any).
-     *
      * @param TableSchema $table the table metadata object
-     * @param string      $name  the table name
+     * @param string $name the table name
      */
     protected function resolveTableNames($table, $name)
     {
@@ -333,8 +325,7 @@ SQL;
 
     /**
      * Loads the column information into a [[ColumnSchema]] object.
-     *
-     * @param  array $info column information
+     * @param array $info column information
      * @return ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
@@ -388,8 +379,7 @@ SQL;
 
     /**
      * Collects the metadata of table columns.
-     *
-     * @param  TableSchema $table the table metadata
+     * @param TableSchema $table the table metadata
      * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
@@ -453,11 +443,10 @@ SQL;
 
     /**
      * Collects the constraint details for the given table and constraint type.
-     *
-     * @param  TableSchema $table
-     * @param  string      $type  either PRIMARY KEY or UNIQUE
+     * @param TableSchema $table
+     * @param string $type either PRIMARY KEY or UNIQUE
      * @return array each entry contains index_name and field_name
-     * @since  2.0.4
+     * @since 2.0.4
      */
     protected function findTableConstraints($table, $type)
     {
@@ -486,19 +475,16 @@ WHERE
 SQL;
 
         return $this->db
-            ->createCommand(
-                $sql, [
+            ->createCommand($sql, [
                 ':tableName' => $table->name,
                 ':schemaName' => $table->schemaName,
                 ':type' => $type,
-                ]
-            )
+            ])
             ->queryAll();
     }
 
     /**
      * Collects the primary key column details for the given table.
-     *
      * @param TableSchema $table the table metadata
      */
     protected function findPrimaryKeys($table)
@@ -512,7 +498,6 @@ SQL;
 
     /**
      * Collects the foreign key column details for the given table.
-     *
      * @param TableSchema $table the table metadata
      */
     protected function findForeignKeys($table)
@@ -547,11 +532,9 @@ WHERE
 	[fk].[parent_object_id] = OBJECT_ID(:object)
 SQL;
 
-        $rows = $this->db->createCommand(
-            $sql, [
+        $rows = $this->db->createCommand($sql, [
             ':object' => $object,
-            ]
-        )->queryAll();
+        ])->queryAll();
 
         $table->foreignKeys = [];
         foreach ($rows as $row) {
@@ -590,9 +573,9 @@ SQL;
      * ]
      * ```
      *
-     * @param  TableSchema $table the table metadata
+     * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
-     * @since  2.0.4
+     * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {
@@ -606,14 +589,13 @@ SQL;
 
     /**
      * Loads multiple types of constraints and returns the specified ones.
-     *
-     * @param  string $tableName  table name.
-     * @param  string $returnType return type:
-     *                            - primaryKey
-     *                            - foreignKeys
-     *                            - uniques
-     *                            - checks
-     *                            - defaults
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - primaryKey
+     * - foreignKeys
+     * - uniques
+     * - checks
+     * - defaults
      * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
@@ -659,11 +641,9 @@ ORDER BY [kic].[key_ordinal] ASC, [fc].[constraint_column_id] ASC
 SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
-        $constraints = $this->db->createCommand(
-            $sql, [
+        $constraints = $this->db->createCommand($sql, [
             ':fullName' => $resolvedName->fullName,
-            ]
-        )->queryAll();
+        ])->queryAll();
         $constraints = $this->normalizePdoRowKeyCase($constraints, true);
         $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
         $result = [
@@ -676,53 +656,43 @@ SQL;
         foreach ($constraints as $type => $names) {
             foreach ($names as $name => $constraint) {
                 switch ($type) {
-                case 'PK':
-                    $result['primaryKey'] = new Constraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            ]
-                    );
-                    break;
-                case 'F':
-                    $result['foreignKeys'][] = new ForeignKeyConstraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
-                        'foreignTableName' => $constraint[0]['foreign_table_name'],
-                        'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
-                        'onDelete' => str_replace('_', '', $constraint[0]['on_delete']),
-                        'onUpdate' => str_replace('_', '', $constraint[0]['on_update']),
-                            ]
-                    );
-                    break;
-                case 'UQ':
-                    $result['uniques'][] = new Constraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            ]
-                    );
-                    break;
-                case 'C':
-                    $result['checks'][] = new CheckConstraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        'expression' => $constraint[0]['check_expr'],
-                            ]
-                    );
-                    break;
-                case 'D':
-                    $result['defaults'][] = new DefaultValueConstraint(
-                        [
-                        'name' => $name,
-                        'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        'value' => $constraint[0]['default_expr'],
-                            ]
-                    );
-                    break;
+                    case 'PK':
+                        $result['primaryKey'] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'F':
+                        $result['foreignKeys'][] = new ForeignKeyConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                            'foreignTableName' => $constraint[0]['foreign_table_name'],
+                            'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
+                            'onDelete' => str_replace('_', '', $constraint[0]['on_delete']),
+                            'onUpdate' => str_replace('_', '', $constraint[0]['on_update']),
+                        ]);
+                        break;
+                    case 'UQ':
+                        $result['uniques'][] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'C':
+                        $result['checks'][] = new CheckConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'expression' => $constraint[0]['check_expr'],
+                        ]);
+                        break;
+                    case 'D':
+                        $result['defaults'][] = new DefaultValueConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'value' => $constraint[0]['default_expr'],
+                        ]);
+                        break;
                 }
             }
         }

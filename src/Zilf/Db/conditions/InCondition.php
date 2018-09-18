@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -14,7 +14,7 @@ use Zilf\Db\ExpressionInterface;
  * Class InCondition represents `IN` condition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since  2.0.14
+ * @since 2.0.14
  */
 class InCondition implements ConditionInterface
 {
@@ -40,7 +40,7 @@ class InCondition implements ConditionInterface
      *
      * @param string|string[] the column name. If it is an array, a composite `IN` condition
      * will be generated.
-     * @param string                                                         $operator the operator to use (e.g. `IN` or `NOT IN`)
+     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
      * @param array an array of values that [[column]] value should be among. If it is an empty array the generated
      * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
@@ -76,7 +76,6 @@ class InCondition implements ConditionInterface
     }
     /**
      * {@inheritdoc}
-     *
      * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)

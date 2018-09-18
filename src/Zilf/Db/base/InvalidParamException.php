@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -10,8 +10,8 @@ namespace Zilf\Db\base;
 /**
  * InvalidParamException represents an exception caused by invalid parameters passed to a method.
  *
- * @author     Qiang Xue <qiang.xue@gmail.com>
- * @since      2.0
+ * @author Qiang Xue <qiang.xue@gmail.com>
+ * @since 2.0
  * @deprecated since 2.0.14. Use [[InvalidArgumentException]] instead.
  */
 class InvalidParamException extends \BadMethodCallException

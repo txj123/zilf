@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -16,7 +16,7 @@ use Zilf\Db\base\NotSupportedException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 trait QueryTrait
 {
@@ -52,8 +52,8 @@ trait QueryTrait
      */
     public $indexBy;
     /**
-     * @var   bool whether to emulate the actual query execution, returning empty or false results.
-     * @see   emulateExecution()
+     * @var bool whether to emulate the actual query execution, returning empty or false results.
+     * @see emulateExecution()
      * @since 2.0.11
      */
     public $emulateExecution = false;
@@ -61,17 +61,16 @@ trait QueryTrait
 
     /**
      * Sets the [[indexBy]] property.
-     *
      * @param string|callable $column the name of the column by which the query results should be indexed by.
-     *                                This can also be a callable (e.g. anonymous function) that returns the index value based on the given
-     *                                row data. The signature of the callable should be:
+     * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
+     * row data. The signature of the callable should be:
      *
-     *                                ```php
-     *                                function ($row)
-     *                                {
-     *                                // return the index value corresponding to $row
-     *                                }
-     *                                ```
+     * ```php
+     * function ($row)
+     * {
+     *     // return the index value corresponding to $row
+     * }
+     * ```
      *
      * @return $this the query object itself
      */
@@ -86,10 +85,10 @@ trait QueryTrait
      *
      * See [[QueryInterface::where()]] for detailed documentation.
      *
-     * @param  array $condition the conditions that should be put in the WHERE part.
+     * @param array $condition the conditions that should be put in the WHERE part.
      * @return $this the query object itself
-     * @see    andWhere()
-     * @see    orWhere()
+     * @see andWhere()
+     * @see orWhere()
      */
     public function where($condition)
     {
@@ -100,12 +99,11 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'AND' operator.
-     *
-     * @param  array $condition the new WHERE condition. Please refer to [[where()]]
-     *                          on how to specify this parameter.
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
      * @return $this the query object itself
-     * @see    where()
-     * @see    orWhere()
+     * @see where()
+     * @see orWhere()
      */
     public function andWhere($condition)
     {
@@ -121,12 +119,11 @@ trait QueryTrait
     /**
      * Adds an additional WHERE condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
-     *
-     * @param  array $condition the new WHERE condition. Please refer to [[where()]]
-     *                          on how to specify this parameter.
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
      * @return $this the query object itself
-     * @see    where()
-     * @see    andWhere()
+     * @see where()
+     * @see andWhere()
      */
     public function orWhere($condition)
     {
@@ -159,12 +156,12 @@ trait QueryTrait
      *
      * Note that unlike [[where()]], you cannot pass binding parameters to this method.
      *
-     * @param  array $condition the conditions that should be put in the WHERE part.
-     *                          See [[where()]] on how to specify this parameter.
+     * @param array $condition the conditions that should be put in the WHERE part.
+     * See [[where()]] on how to specify this parameter.
      * @return $this the query object itself
-     * @see    where()
-     * @see    andFilterWhere()
-     * @see    orFilterWhere()
+     * @see where()
+     * @see andFilterWhere()
+     * @see orFilterWhere()
      */
     public function filterWhere(array $condition)
     {
@@ -184,11 +181,11 @@ trait QueryTrait
      * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
      * for building query conditions based on filter values entered by users.
      *
-     * @param  array $condition the new WHERE condition. Please refer to [[where()]]
-     *                          on how to specify this parameter.
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
      * @return $this the query object itself
-     * @see    filterWhere()
-     * @see    orFilterWhere()
+     * @see filterWhere()
+     * @see orFilterWhere()
      */
     public function andFilterWhere(array $condition)
     {
@@ -208,11 +205,11 @@ trait QueryTrait
      * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
      * for building query conditions based on filter values entered by users.
      *
-     * @param  array $condition the new WHERE condition. Please refer to [[where()]]
-     *                          on how to specify this parameter.
+     * @param array $condition the new WHERE condition. Please refer to [[where()]]
+     * on how to specify this parameter.
      * @return $this the query object itself
-     * @see    filterWhere()
-     * @see    andFilterWhere()
+     * @see filterWhere()
+     * @see andFilterWhere()
      */
     public function orFilterWhere(array $condition)
     {
@@ -227,7 +224,7 @@ trait QueryTrait
     /**
      * Removes [[isEmpty()|empty operands]] from the given query condition.
      *
-     * @param  array $condition the original condition
+     * @param array $condition the original condition
      * @return array the condition with [[isEmpty()|empty operands]] removed.
      * @throws NotSupportedException if the condition operator is not supported
      */
@@ -253,34 +250,34 @@ trait QueryTrait
         $operator = array_shift($condition);
 
         switch (strtoupper($operator)) {
-        case 'NOT':
-        case 'AND':
-        case 'OR':
-            foreach ($condition as $i => $operand) {
-                $subCondition = $this->filterCondition($operand);
-                if ($this->isEmpty($subCondition)) {
-                    unset($condition[$i]);
-                } else {
-                    $condition[$i] = $subCondition;
+            case 'NOT':
+            case 'AND':
+            case 'OR':
+                foreach ($condition as $i => $operand) {
+                    $subCondition = $this->filterCondition($operand);
+                    if ($this->isEmpty($subCondition)) {
+                        unset($condition[$i]);
+                    } else {
+                        $condition[$i] = $subCondition;
+                    }
                 }
-            }
 
-            if (empty($condition)) {
-                return [];
-            }
-            break;
-        case 'BETWEEN':
-        case 'NOT BETWEEN':
-            if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
-                if ($this->isEmpty($condition[1]) || $this->isEmpty($condition[2])) {
+                if (empty($condition)) {
                     return [];
                 }
-            }
-            break;
-        default:
-            if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
-                return [];
-            }
+                break;
+            case 'BETWEEN':
+            case 'NOT BETWEEN':
+                if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
+                    if ($this->isEmpty($condition[1]) || $this->isEmpty($condition[2])) {
+                        return [];
+                    }
+                }
+                break;
+            default:
+                if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
+                    return [];
+                }
         }
 
         array_unshift($condition, $operator);
@@ -298,7 +295,7 @@ trait QueryTrait
      * - a string containing only whitespace characters,
      * - or an empty array.
      *
-     * @param  mixed $value
+     * @param mixed $value
      * @return bool if the value is empty
      */
     protected function isEmpty($value)
@@ -308,21 +305,20 @@ trait QueryTrait
 
     /**
      * Sets the ORDER BY part of the query.
+     * @param string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
      *
-     * @param  string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
-     *                                                   Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
-     *                                                   (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
      *
-     *                                                   The method will automatically quote the column names unless a column contains some parenthesis
-     *                                                   (which means the column contains a DB expression).
+     * Note that if your order-by is an expression containing commas, you should always use an array
+     * to represent the order-by information. Otherwise, the method will not be able to correctly determine
+     * the order-by columns.
      *
-     *                                                   Note that if your order-by is an expression containing commas, you should always use an array
-     *                                                   to represent the order-by information. Otherwise, the method will not be able to correctly determine
-     *                                                   the order-by columns.
-     *
-     *                                                   Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
+     * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
      * @return $this the query object itself
-     * @see    addOrderBy()
+     * @see addOrderBy()
      */
     public function orderBy($columns)
     {
@@ -332,21 +328,20 @@ trait QueryTrait
 
     /**
      * Adds additional ORDER BY columns to the query.
+     * @param string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
      *
-     * @param  string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
-     *                                                   Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
-     *                                                   (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     * The method will automatically quote the column names unless a column contains some parenthesis
+     * (which means the column contains a DB expression).
      *
-     *                                                   The method will automatically quote the column names unless a column contains some parenthesis
-     *                                                   (which means the column contains a DB expression).
+     * Note that if your order-by is an expression containing commas, you should always use an array
+     * to represent the order-by information. Otherwise, the method will not be able to correctly determine
+     * the order-by columns.
      *
-     *                                                   Note that if your order-by is an expression containing commas, you should always use an array
-     *                                                   to represent the order-by information. Otherwise, the method will not be able to correctly determine
-     *                                                   the order-by columns.
-     *
-     *                                                   Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
+     * Since version 2.0.7, an [[ExpressionInterface]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
      * @return $this the query object itself
-     * @see    orderBy()
+     * @see orderBy()
      */
     public function addOrderBy($columns)
     {
@@ -363,7 +358,7 @@ trait QueryTrait
     /**
      * Normalizes format of ORDER BY data.
      *
-     * @param  array|string|ExpressionInterface $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
+     * @param array|string|ExpressionInterface $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array
      */
     protected function normalizeOrderBy($columns)
@@ -389,8 +384,7 @@ trait QueryTrait
 
     /**
      * Sets the LIMIT part of the query.
-     *
-     * @param  int|ExpressionInterface|null $limit the limit. Use null or negative value to disable limit.
+     * @param int|ExpressionInterface|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit)
@@ -401,8 +395,7 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     *
-     * @param  int|ExpressionInterface|null $offset the offset. Use null or negative value to disable offset.
+     * @param int|ExpressionInterface|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset)
@@ -417,10 +410,9 @@ trait QueryTrait
      * [[QueryInterface::all()]], [[QueryInterface::exists()]] and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
-     *
-     * @param  bool $value whether to prevent query execution.
+     * @param bool $value whether to prevent query execution.
      * @return $this the query object itself.
-     * @since  2.0.11
+     * @since 2.0.11
      */
     public function emulateExecution($value = true)
     {

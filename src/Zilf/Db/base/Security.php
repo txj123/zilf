@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -28,7 +28,7 @@ use Zilf\Helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @author Klimov Paul <klimov.paul@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class Security extends Component
 {
@@ -74,7 +74,7 @@ class Security extends Component
      */
     public $derivationIterations = 100000;
     /**
-     * @var        string strategy, which should be used to generate password hash.
+     * @var string strategy, which should be used to generate password hash.
      * Available strategies:
      * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm.
      *   This option is recommended, but it requires PHP version >= 5.5.0
@@ -84,9 +84,9 @@ class Security extends Component
      */
     public $passwordHashStrategy;
     /**
-     * @var   int Default cost used for password hashing.
+     * @var int Default cost used for password hashing.
      * Allowed value is between 4 and 31.
-     * @see   generatePasswordHash()
+     * @see generatePasswordHash()
      * @since 2.0.6
      */
     public $passwordHashCost = 13;
@@ -102,12 +102,11 @@ class Security extends Component
      * to hash input or output data.
      * > Note: Avoid encrypting with passwords wherever possible. Nothing can protect against
      * poor-quality or compromised passwords.
-     *
-     * @param  string $data     the data to encrypt
-     * @param  string $password the password to use for encryption
+     * @param string $data the data to encrypt
+     * @param string $password the password to use for encryption
      * @return string the encrypted data
-     * @see    decryptByPassword()
-     * @see    encryptByKey()
+     * @see decryptByPassword()
+     * @see encryptByKey()
      */
     public function encryptByPassword($data, $password)
     {
@@ -121,13 +120,12 @@ class Security extends Component
      * random -- use [[generateRandomKey()]] to generate keys.
      * The encrypted data includes a keyed message authentication code (MAC) so there is no need
      * to hash input or output data.
-     *
-     * @param  string $data     the data to encrypt
-     * @param  string $inputKey the input to use for encryption and authentication
-     * @param  string $info     optional context and application specific information, see [[hkdf()]]
+     * @param string $data the data to encrypt
+     * @param string $inputKey the input to use for encryption and authentication
+     * @param string $info optional context and application specific information, see [[hkdf()]]
      * @return string the encrypted data
-     * @see    decryptByKey()
-     * @see    encryptByPassword()
+     * @see decryptByKey()
+     * @see encryptByPassword()
      */
     public function encryptByKey($data, $inputKey, $info = null)
     {
@@ -136,11 +134,10 @@ class Security extends Component
 
     /**
      * Verifies and decrypts data encrypted with [[encryptByPassword()]].
-     *
-     * @param  string $data     the encrypted data to decrypt
-     * @param  string $password the password to use for decryption
+     * @param string $data the encrypted data to decrypt
+     * @param string $password the password to use for decryption
      * @return bool|string the decrypted data or false on authentication failure
-     * @see    encryptByPassword()
+     * @see encryptByPassword()
      */
     public function decryptByPassword($data, $password)
     {
@@ -149,12 +146,11 @@ class Security extends Component
 
     /**
      * Verifies and decrypts data encrypted with [[encryptByKey()]].
-     *
-     * @param  string $data     the encrypted data to decrypt
-     * @param  string $inputKey the input to use for encryption and authentication
-     * @param  string $info     optional context and application specific information, see [[hkdf()]]
+     * @param string $data the encrypted data to decrypt
+     * @param string $inputKey the input to use for encryption and authentication
+     * @param string $info optional context and application specific information, see [[hkdf()]]
      * @return bool|string the decrypted data or false on authentication failure
-     * @see    encryptByKey()
+     * @see encryptByKey()
      */
     public function decryptByKey($data, $inputKey, $info = null)
     {
@@ -164,18 +160,16 @@ class Security extends Component
     /**
      * Encrypts data.
      *
-     * @param string      $data          data to be encrypted
-     * @param bool        $passwordBased set true to use password-based key derivation
-     * @param string      $secret        the encryption password or key
-     * @param string|null $info          context/application specific information, e.g. a user ID
-     *                                   See [RFC 5869 Section
-     *                                   3.2](https://tools.ietf.org/html/rfc5869#section-3.2)
-     *                                   for more details.
+     * @param string $data data to be encrypted
+     * @param bool $passwordBased set true to use password-based key derivation
+     * @param string $secret the encryption password or key
+     * @param string|null $info context/application specific information, e.g. a user ID
+     * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      *
      * @return string the encrypted data
      * @throws InvalidConfigException on OpenSSL not loaded
      * @throws Exception on OpenSSL error
-     * @see    decrypt()
+     * @see decrypt()
      */
     protected function encrypt($data, $passwordBased, $secret, $info)
     {
@@ -217,15 +211,15 @@ class Security extends Component
     /**
      * Decrypts data.
      *
-     * @param string      $data          encrypted data to be decrypted.
-     * @param bool        $passwordBased set true to use password-based key derivation
-     * @param string      $secret        the decryption password or key
-     * @param string|null $info          context/application specific information, @see encrypt()
+     * @param string $data encrypted data to be decrypted.
+     * @param bool $passwordBased set true to use password-based key derivation
+     * @param string $secret the decryption password or key
+     * @param string|null $info context/application specific information, @see encrypt()
      *
      * @return bool|string the decrypted data or false on authentication failure
      * @throws InvalidConfigException on OpenSSL not loaded
      * @throws Exception on OpenSSL error
-     * @see    encrypt()
+     * @see encrypt()
      */
     protected function decrypt($data, $passwordBased, $secret, $info)
     {
@@ -266,15 +260,14 @@ class Security extends Component
      * Derives a key from the given input key using the standard HKDF algorithm.
      * Implements HKDF specified in [RFC 5869](https://tools.ietf.org/html/rfc5869).
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
-     *
-     * @param  string $algo     a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
-     * @param  string $inputKey the source key
-     * @param  string $salt     the random salt
-     * @param  string $info     optional info to bind the derived key material to application-
-     *                          and context-specific information, e.g. a user ID or API
-     *                          version, see [RFC 5869](https://tools.ietf.org/html/rfc5869)
-     * @param  int    $length   length of the output key in bytes. If 0, the output key is
-     *                          the length of the hash algorithm output.
+     * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
+     * @param string $inputKey the source key
+     * @param string $salt the random salt
+     * @param string $info optional info to bind the derived key material to application-
+     * and context-specific information, e.g. a user ID or API version, see
+     * [RFC 5869](https://tools.ietf.org/html/rfc5869)
+     * @param int $length length of the output key in bytes. If 0, the output key is
+     * the length of the hash algorithm output.
      * @throws InvalidArgumentException when HMAC generation fails.
      * @return string the derived key
      */
@@ -325,14 +318,13 @@ class Security extends Component
      * Derives a key from the given password using the standard PBKDF2 algorithm.
      * Implements HKDF2 specified in [RFC 2898](http://tools.ietf.org/html/rfc2898#section-5.2)
      * Recommend use one of the SHA-2 hash algorithms: sha224, sha256, sha384 or sha512.
-     *
-     * @param  string $algo       a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
-     * @param  string $password   the source password
-     * @param  string $salt       the random salt
-     * @param  int    $iterations the number of iterations of the hash algorithm. Set as high as
-     *                            possible to hinder dictionary password attacks.
-     * @param  int    $length     length of the output key in bytes. If 0, the output key is
-     *                            the length of the hash algorithm output.
+     * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
+     * @param string $password the source password
+     * @param string $salt the random salt
+     * @param int $iterations the number of iterations of the hash algorithm. Set as high as
+     * possible to hinder dictionary password attacks.
+     * @param int $length length of the output key in bytes. If 0, the output key is
+     * the length of the hash algorithm output.
      * @return string the derived key
      * @throws InvalidArgumentException when hash generation fails due to invalid params given.
      */
@@ -389,18 +381,17 @@ class Security extends Component
      * Prefixes data with a keyed hash value so that it can later be detected if it is tampered.
      * There is no need to hash inputs or outputs of [[encryptByKey()]] or [[encryptByPassword()]]
      * as those methods perform the task.
-     *
-     * @param  string $data    the data to be protected
-     * @param  string $key     the secret key to be used for generating hash. Should be a secure
-     *                         cryptographic key.
-     * @param  bool   $rawHash whether the generated hash value is in raw binary format. If false, lowercase
-     *                         hex digits will be generated.
+     * @param string $data the data to be protected
+     * @param string $key the secret key to be used for generating hash. Should be a secure
+     * cryptographic key.
+     * @param bool $rawHash whether the generated hash value is in raw binary format. If false, lowercase
+     * hex digits will be generated.
      * @return string the data prefixed with the keyed hash
      * @throws InvalidConfigException when HMAC generation fails.
-     * @see    validateData()
-     * @see    generateRandomKey()
-     * @see    hkdf()
-     * @see    pbkdf2()
+     * @see validateData()
+     * @see generateRandomKey()
+     * @see hkdf()
+     * @see pbkdf2()
      */
     public function hashData($data, $key, $rawHash = false)
     {
@@ -414,19 +405,18 @@ class Security extends Component
 
     /**
      * Validates if the given data is tampered.
-     *
-     * @param  string $data    the data to be validated. The data must be previously
-     *                         generated by [[hashData()]].
-     * @param  string $key     the secret key that was previously used to generate the hash for the data in [[hashData()]].
-     *                         function to see the supported hashing algorithms on your system. This must be the same as
-     *                         the value passed to [[hashData()]] when generating the hash for the data.
-     * @param  bool   $rawHash this should take the same value as when you generate the data using [[hashData()]].
-     *                         It indicates whether the hash value in the data is in binary format. If false, it
-     *                         means the hash value consists of lowercase hex digits only. hex digits will be
-     *                         generated.
+     * @param string $data the data to be validated. The data must be previously
+     * generated by [[hashData()]].
+     * @param string $key the secret key that was previously used to generate the hash for the data in [[hashData()]].
+     * function to see the supported hashing algorithms on your system. This must be the same
+     * as the value passed to [[hashData()]] when generating the hash for the data.
+     * @param bool $rawHash this should take the same value as when you generate the data using [[hashData()]].
+     * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
+     * of lowercase hex digits only.
+     * hex digits will be generated.
      * @return string|false the real data with the hash stripped off. False if the data is tampered.
      * @throws InvalidConfigException when HMAC generation fails.
-     * @see    hashData()
+     * @see hashData()
      */
     public function validateData($data, $key, $rawHash = false)
     {
@@ -455,10 +445,9 @@ class Security extends Component
     /**
      * Generates specified number of random bytes.
      * Note that output may not be ASCII.
-     *
      * @see generateRandomString() if you need a string.
      *
-     * @param  int $length the number of bytes to generate
+     * @param int $length the number of bytes to generate
      * @return string the generated random bytes
      * @throws InvalidArgumentException if wrong length is specified
      * @throws Exception on failure.
@@ -491,8 +480,10 @@ class Security extends Component
         // of using OpenSSL library. LibreSSL is OK everywhere but don't use OpenSSL on non-Windows.
         if (function_exists('openssl_random_pseudo_bytes')
             && ($this->_useLibreSSL
-            || (            DIRECTORY_SEPARATOR !== '/'
-            && substr_compare(PHP_OS, 'win', 0, 3, true) === 0))
+            || (
+                DIRECTORY_SEPARATOR !== '/'
+                && substr_compare(PHP_OS, 'win', 0, 3, true) === 0
+            ))
         ) {
             $key = openssl_random_pseudo_bytes($length, $cryptoStrong);
             if ($cryptoStrong === false) {
@@ -567,7 +558,7 @@ class Security extends Component
      * Generates a random string of specified length.
      * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
      *
-     * @param  int $length the length of the key in characters
+     * @param int $length the length of the key in characters
      * @return string the generated random key
      * @throws Exception on failure.
      */
@@ -605,21 +596,18 @@ class Security extends Component
      * }
      * ```
      *
-     * @param  string $password The password to be hashed.
-     * @param  int    $cost     Cost parameter used by the Blowfish hash algorithm.
-     *                          The higher the value of cost, the longer it takes
-     *                          to generate the hash and to verify a password
-     *                          against it. Higher cost therefore slows down a
-     *                          brute-force attack. For best protection against
-     *                          brute-force attacks, set it to the highest value
-     *                          that is tolerable on production servers. The time
-     *                          taken to compute the hash doubles for every
-     *                          increment by one of $cost.
+     * @param string $password The password to be hashed.
+     * @param int $cost Cost parameter used by the Blowfish hash algorithm.
+     * The higher the value of cost,
+     * the longer it takes to generate the hash and to verify a password against it. Higher cost
+     * therefore slows down a brute-force attack. For best protection against brute-force attacks,
+     * set it to the highest value that is tolerable on production servers. The time taken to
+     * compute the hash doubles for every increment by one of $cost.
      * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
      * the output is always 60 ASCII characters, when set to 'password_hash' the output length
      * might increase in future versions of PHP (http://php.net/manual/en/function.password-hash.php)
      * @throws Exception on bad password parameter or cost parameter.
-     * @see    validatePassword()
+     * @see validatePassword()
      */
     public function generatePasswordHash($password, $cost = null)
     {
@@ -644,12 +632,11 @@ class Security extends Component
 
     /**
      * Verifies a password against a hash.
-     *
-     * @param  string $password The password to verify.
-     * @param  string $hash     The hash to verify the password against.
+     * @param string $password The password to verify.
+     * @param string $hash The hash to verify the password against.
      * @return bool whether the password is correct.
      * @throws InvalidArgumentException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
-     * @see    generatePasswordHash()
+     * @see generatePasswordHash()
      */
     public function validatePassword($password, $hash)
     {
@@ -685,7 +672,7 @@ class Security extends Component
      * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
      * from the alphabet "./0-9A-Za-z".
      *
-     * @param  int $cost the cost parameter
+     * @param int $cost the cost parameter
      * @return string the random salt value.
      * @throws InvalidArgumentException if the cost parameter is out of the range of 4 to 31.
      */
@@ -708,10 +695,9 @@ class Security extends Component
 
     /**
      * Performs string comparison using timing attack resistant approach.
-     *
-     * @see    http://codereview.stackexchange.com/questions/13512
-     * @param  string $expected string to compare.
-     * @param  string $actual   user-supplied string.
+     * @see http://codereview.stackexchange.com/questions/13512
+     * @param string $expected string to compare.
+     * @param string $actual user-supplied string.
      * @return bool whether strings are equal.
      */
     public function compareString($expected, $actual)
@@ -744,10 +730,9 @@ class Security extends Component
      * Masks a token to make it uncompressible.
      * Applies a random mask to the token and prepends the mask used to the result making the string always unique.
      * Used to mitigate BREACH attack by randomizing how token is outputted on each request.
-     *
-     * @param  string $token An unmasked token.
+     * @param string $token An unmasked token.
      * @return string A masked token.
-     * @since  2.0.12
+     * @since 2.0.12
      */
     public function maskToken($token)
     {
@@ -758,10 +743,9 @@ class Security extends Component
 
     /**
      * Unmasks a token previously masked by `maskToken`.
-     *
-     * @param  string $maskedToken A masked token.
+     * @param string $maskedToken A masked token.
      * @return string An unmasked token, or an empty string in case of token format is invalid.
-     * @since  2.0.12
+     * @since 2.0.12
      */
     public function unmaskToken($maskedToken)
     {

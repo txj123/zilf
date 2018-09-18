@@ -1,7 +1,7 @@
 <?php
 /**
- * @license MIT License https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
- * @link    http://mobiledetect.net
+ * @license     MIT License https://github.com/serbanghita/Mobile-Detect/blob/master/LICENSE.txt
+ * @link        http://mobiledetect.net
  */
 class VendorsTest extends PHPUnit_Framework_TestCase
 {
@@ -44,7 +44,7 @@ class VendorsTest extends PHPUnit_Framework_TestCase
                         // Android, iOS, Chrome, Build, etc.
                         foreach ($assert as $assertKey => $assertValue) {
                             //if ($brand == 'Apple') {
-                            //    echo 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent . "\n";
+                            //	echo 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent . "\n";
                             //}
                             $this->assertTrue($this->detect->$condition($assertKey) == $assertValue, 'UA ('.$condition.'('.$assertKey.') === '.$assertValue.'): '.$userAgent);
                         }

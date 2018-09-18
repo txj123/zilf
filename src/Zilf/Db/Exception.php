@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -11,7 +11,7 @@ namespace Zilf\Db;
  * Exception represents an exception that is caused by some DB-related operations.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class Exception extends \Zilf\Db\base\Exception
 {
@@ -24,11 +24,10 @@ class Exception extends \Zilf\Db\base\Exception
 
     /**
      * Constructor.
-     *
-     * @param string     $message   PDO error message
-     * @param array      $errorInfo PDO error info
-     * @param int        $code      PDO error code
-     * @param \Exception $previous  The previous exception used for the exception chaining.
+     * @param string $message PDO error message
+     * @param array $errorInfo PDO error info
+     * @param int $code PDO error code
+     * @param \Exception $previous The previous exception used for the exception chaining.
      */
     public function __construct($message, $errorInfo = [], $code = 0, \Exception $previous = null)
     {

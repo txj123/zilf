@@ -219,7 +219,7 @@ class CurlResponse
     }
 
     /**
-     * @param  string $name
+     * @param string $name
      * @return mixed
      */
     function get_info($name='')

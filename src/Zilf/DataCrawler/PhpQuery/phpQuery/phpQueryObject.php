@@ -47,7 +47,7 @@ class phpQueryObject
     protected $previous = null;
     /**
      * @access private
-     * @TODO   deprecate
+     * @TODO deprecate
      */
     protected $root = array();
     /**
@@ -85,14 +85,14 @@ class phpQueryObject
      */
     public function __construct($documentID) 
     {
-        //        if ($documentID instanceof self)
-        //            var_dump($documentID->getDocumentID());
+        //		if ($documentID instanceof self)
+        //			var_dump($documentID->getDocumentID());
         $id = $documentID instanceof self
         ? $documentID->getDocumentID()
         : $documentID;
-        //        var_dump($id);
+        //		var_dump($id);
         if (! isset(phpQuery::$documents[$id])) {
-            //            var_dump(phpQuery::$documents);
+            //			var_dump(phpQuery::$documents);
             throw new Exception("Document with ID '{$id}' isn't loaded. Use phpQuery::newDocument(\$html) or phpQuery::newDocumentFile(\$file) first.");
         }
         $this->documentID = $id;
@@ -102,15 +102,15 @@ class phpQueryObject
         $this->charset =& $this->documentWrapper->charset;
         $this->documentFragment =& $this->documentWrapper->isDocumentFragment;
         // TODO check $this->DOM->documentElement;
-        //        $this->root = $this->document->documentElement;
+        //		$this->root = $this->document->documentElement;
         $this->root =& $this->documentWrapper->root;
-        //        $this->toRoot();
+        //		$this->toRoot();
         $this->elements = array($this->root);
     }
     /**
      *
      * @access private
-     * @param  $attr
+     * @param $attr
      * @return unknown_type
      */
     public function __get($attr) 
@@ -145,11 +145,11 @@ class phpQueryObject
     }
     /**
      * @access private
-     * @TODO   documentWrapper
+     * @TODO documentWrapper
      */
     protected function isRoot( $node) 
     {
-        //        return $node instanceof DOMDOCUMENT || $node->tagName == 'html';
+        //		return $node instanceof DOMDOCUMENT || $node->tagName == 'html';
         return $node instanceof DOMDOCUMENT
         || ($node instanceof DOMELEMENT && $node->tagName == 'html')
         || $this->root->isSameNode($node);
@@ -173,7 +173,7 @@ class phpQueryObject
     {
         $this->elements = array($this->root);
         return $this;
-        //        return $this->newInstance(array($this->root));
+        //		return $this->newInstance(array($this->root));
     }
     /**
      * Saves object's DocumentID to $var by reference.
@@ -266,7 +266,7 @@ class phpQueryObject
             ->andSelf()
             ->not('form');
         $return = array();
-        //        $source->dumpDie();
+        //		$source->dumpDie();
         foreach($source as $input) {
             $input = phpQuery::pq($input);
             if ($input->is('[disabled]')) {
@@ -304,10 +304,10 @@ class phpQueryObject
         print('<pre>');
         print_r($in);
         // file debug
-        //        file_put_contents(dirname(__FILE__).'/phpQuery.log', print_r($in, true)."\n", FILE_APPEND);
+        //		file_put_contents(dirname(__FILE__).'/phpQuery.log', print_r($in, true)."\n", FILE_APPEND);
         // quite handy debug trace
-        //        if ( is_array($in))
-        //            print_r(array_slice(debug_backtrace(), 3));
+        //		if ( is_array($in))
+        //			print_r(array_slice(debug_backtrace(), 3));
         print("</pre>\n");
     }
     /**
@@ -353,7 +353,7 @@ class phpQueryObject
         }
         $return =& $queries[0];
         $specialChars = array('>',' ');
-        //        $specialCharsMapping = array('/' => '>');
+        //		$specialCharsMapping = array('/' => '>');
         $specialCharsMapping = array();
         $strlen = mb_strlen($query);
         $classChars = array('.', '-');
@@ -392,9 +392,9 @@ class phpQueryObject
                 $return[] = $c;
                 $i++;
                 // MAPPED SPECIAL MULTICHARS
-                //            } else if ( $c.$query[$i+1] == '//') {
-                //                $return[] = ' ';
-                //                $i = $i+2;
+                //			} else if ( $c.$query[$i+1] == '//') {
+                //				$return[] = ' ';
+                //				$i = $i+2;
                 // MAPPED SPECIAL CHARS
             } else if (isset($specialCharsMapping[$c])) {
                 $return[] = $specialCharsMapping[$c];
@@ -674,7 +674,7 @@ class phpQueryObject
         if (! $this->elements) {
             $this->debug('Stack empty, skipping...');
         }
-        //        var_dump($this->elements[0]->nodeType);
+        //		var_dump($this->elements[0]->nodeType);
         // element, document
         foreach($this->stack(array(1, 9, 13)) as $k => $stackNode) {
             $detachAfter = false;
@@ -923,7 +923,7 @@ class phpQueryObject
         return $this->newInstance();
     }
     /**
-     * @todo   create API for classes with pseudoselectors
+     * @todo create API for classes with pseudoselectors
      * @access private
      */
     protected function pseudoClasses($class) 
@@ -1031,11 +1031,11 @@ class phpQueryObject
                 )
             );
             break;
-        //                $stack = array();
-        //                foreach($this->elements as $node)
-        //                    if ($node->is('input[type=submit]') || $node->is('button[type=submit]'))
-        //                        $stack[] = $el;
-        //                $this->elements = $stack;
+        //				$stack = array();
+        //				foreach($this->elements as $node)
+        //					if ($node->is('input[type=submit]') || $node->is('button[type=submit]'))
+        //						$stack[] = $el;
+        //				$this->elements = $stack;
         case 'input':
             $this->elements = $this->map(
                 array($this, 'is'),
@@ -1099,18 +1099,18 @@ class phpQueryObject
 							: null;'
                 )
             )->elements;
-            //                $this->elements = $this->map(
-            //                    create_function('$node', '$node = pq($node);
-            //                        return $node->is("h1")
-            //                            || $node->is("h2")
-            //                            || $node->is("h3")
-            //                            || $node->is("h4")
-            //                            || $node->is("h5")
-            //                            || $node->is("h6")
-            //                            || $node->is("h7")
-            //                            ? $node
-            //                            : null;')
-            //                )->elements;
+            //				$this->elements = $this->map(
+            //					create_function('$node', '$node = pq($node);
+            //						return $node->is("h1")
+            //							|| $node->is("h2")
+            //							|| $node->is("h3")
+            //							|| $node->is("h4")
+            //							|| $node->is("h5")
+            //							|| $node->is("h6")
+            //							|| $node->is("h7")
+            //							? $node
+            //							: null;')
+            //				)->elements;
             break;
         case 'only-child':
             $this->elements = $this->map(
@@ -1439,9 +1439,9 @@ class phpQueryObject
     }
     /**
      *
-     * @param  $value
+     * @param $value
      * @return unknown_type
-     * @TODO   implement in all methods using passed parameters
+     * @TODO implement in all methods using passed parameters
      */
     protected static function unQuote($value) 
     {
@@ -1486,7 +1486,7 @@ class phpQueryObject
     }
     /**
      * @access private
-     * @param  $html
+     * @param $html
      * @return unknown_type
      */
     public function __loadSuccess($html) 
@@ -1670,7 +1670,7 @@ class phpQueryObject
     }
     /**
      *
-     * @param  $node
+     * @param $node
      * @return unknown_type
      * @access private
      */
@@ -1763,8 +1763,8 @@ class phpQueryObject
         $stack = array();
         foreach($this->stack(1) as $el) {
             // FIXME (fixed) http://code.google.com/p/phpquery/issues/detail?id=56
-            //            if (! isset($el->childNodes))
-            //                continue;
+            //			if (! isset($el->childNodes))
+            //				continue;
             foreach($el->childNodes as $node) {
                 $stack[] = $node;
             }
@@ -1790,7 +1790,7 @@ class phpQueryObject
                 $childNodes[] = $chNode;
             }
             foreach($childNodes as $chNode ) {
-                //                $node->parentNode->appendChild($chNode);
+                //				$node->parentNode->appendChild($chNode);
                 $node->parentNode->insertBefore($chNode, $node);
             }
             $node->parentNode->removeChild($node);
@@ -1808,8 +1808,8 @@ class phpQueryObject
         $content = null;
         foreach($this->stack(1) as $node) {
             pq($node)
-                ->contents()->toReference($content)->end()
-                ->replaceWith($markup->clone()->append($content));
+            ->contents()->toReference($content)->end()
+            ->replaceWith($markup->clone()->append($content));
         }
         return $this;
     }
@@ -1859,10 +1859,10 @@ class phpQueryObject
      */
     public function end($level = 1) 
     {
-        //        $this->elements = array_pop( $this->history );
-        //        return $this;
-        //        $this->previous->DOM = $this->DOM;
-        //        $this->previous->XPath = $this->XPath;
+        //		$this->elements = array_pop( $this->history );
+        //		return $this;
+        //		$this->previous->DOM = $this->DOM;
+        //		$this->previous->XPath = $this->XPath;
         return $this->previous
         ? $this->previous
         : $this;
@@ -2119,7 +2119,7 @@ class phpQueryObject
     {
         $stack = array();
         foreach($this->stack(1) as $node) {
-            //            foreach($node->getElementsByTagName('*') as $newNode) {
+            //			foreach($node->getElementsByTagName('*') as $newNode) {
             foreach($node->childNodes as $newNode) {
                 if ($newNode->nodeType != 1) {
                     continue;
@@ -2306,9 +2306,9 @@ class phpQueryObject
                     $insertTo = $target->elements;
                     if ($this->documentFragment && $this->stackIsRoot()) {
                         // get all body children
-                        //                            $loop = $this->find('body > *')->elements;
+                        //							$loop = $this->find('body > *')->elements;
                         // TODO test it, test it hard...
-                        //                            $loop = $this->newInstance($this->root)->find('> *')->elements;
+                        //							$loop = $this->newInstance($this->root)->find('> *')->elements;
                         $loop = $this->root->childNodes;
                     } else {
                         $loop = $this->elements;
@@ -2321,7 +2321,7 @@ class phpQueryObject
                     $insertTo = $this->elements;
                     if ($target->documentFragment && $target->stackIsRoot() ) {
                         // get all body children
-                        //                            $loop = $target->find('body > *')->elements;
+                        //							$loop = $target->find('body > *')->elements;
                         $loop = $target->root->childNodes;
                     } else {
                         $loop = $target->elements;
@@ -2334,15 +2334,15 @@ class phpQueryObject
                 // DOMNODE
             } elseif ($target instanceof DOMNODE) {
                 // import node if needed
-                //                    if ( $target->ownerDocument != $this->DOM )
-                //                        $target = $this->DOM->importNode($target, true);
+                //					if ( $target->ownerDocument != $this->DOM )
+                //						$target = $this->DOM->importNode($target, true);
                 if ($to) {
                     $insertTo = array($target);
                     if ($this->documentFragment && $this->stackIsRoot()) {
                         // get all body children
                         $loop = $this->root->childNodes;
                     }
-                    //                            $loop = $this->find('body > *')->elements;
+                    //							$loop = $this->find('body > *')->elements;
                     else {
                         $loop = $this->elements;
                     }
@@ -2384,10 +2384,10 @@ class phpQueryObject
                 switch($type) {
                 case 'appendTo':
                 case 'append':
-                    //                        $toNode->insertBefore(
-                    //                            $fromNode,
-                    //                            $toNode->lastChild->nextSibling
-                    //                        );
+                    //						$toNode->insertBefore(
+                    //							$fromNode,
+                    //							$toNode->lastChild->nextSibling
+                    //						);
                     $toNode->appendChild($insert);
                     $eventTarget = $insert;
                     break;
@@ -2465,14 +2465,14 @@ class phpQueryObject
      */
     public function slice($start, $end = null) 
     {
-        //        $last = count($this->elements)-1;
-        //        $end = $end
-        //            ? min($end, $last)
-        //            : $last;
-        //        if ($start < 0)
-        //            $start = $last+$start;
-        //        if ($start > $last)
-        //            return array();
+        //		$last = count($this->elements)-1;
+        //		$end = $end
+        //			? min($end, $last)
+        //			: $last;
+        //		if ($start < 0)
+        //			$start = $last+$start;
+        //		if ($start > $last)
+        //			return array();
         if ($end > 0) {
             $end = $end-$start;
         }
@@ -2529,8 +2529,8 @@ class phpQueryObject
 
     /**
      * @access private
-     * @param  $method
-     * @param  $args
+     * @param $method
+     * @param $args
      * @return mixed|phpQueryObject|unknown_type
      * @throws Exception
      */
@@ -2609,7 +2609,7 @@ class phpQueryObject
     }
     /**
      * @return phpQueryObject|QueryTemplatesSource|QueryTemplatesParse|QueryTemplatesSourceQuery
-     * @todo   FIXME: returns source elements insted of next siblings
+     * @todo FIXME: returns source elements insted of next siblings
      */
     public function nextAll($selector = null) 
     {
@@ -2702,13 +2702,13 @@ class phpQueryObject
         } else {
             $orgStack = $this->stack();
             $matched = $this->filter($selector, true)->stack();
-            //            $matched = array();
-            //            // simulate OR in filter() instead of AND 5y
-            //            foreach($this->parseSelector($selector) as $s) {
-            //                $matched = array_merge($matched,
-            //                    $this->filter(array($s))->stack()
-            //                );
-            //            }
+            //			$matched = array();
+            //			// simulate OR in filter() instead of AND 5y
+            //			foreach($this->parseSelector($selector) as $s) {
+            //				$matched = array_merge($matched,
+            //					$this->filter(array($s))->stack()
+            //				);
+            //			}
             foreach($orgStack as $node) {
                 if (! $this->elementsContainsNode($node, $matched)) {
                     $stack[] = $node;
@@ -2947,15 +2947,15 @@ class phpQueryObject
             $value = '<'.'?php '.$code.' ?'.'>';
             // TODO tempolary solution
             // http://code.google.com/p/phpquery/issues/detail?id=17
-            //            if (function_exists('mb_detect_encoding') && mb_detect_encoding($value) == 'ASCII')
-            //                $value    = mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
+            //			if (function_exists('mb_detect_encoding') && mb_detect_encoding($value) == 'ASCII')
+            //				$value	= mb_convert_encoding($value, 'UTF-8', 'HTML-ENTITIES');
         }
         foreach($this->stack(1) as $node) {
             if (! is_null($code)) {
-                //                $attrNode = $this->DOM->createAttribute($attr);
+                //				$attrNode = $this->DOM->createAttribute($attr);
                 $node->setAttribute($attr, $value);
-                //                $attrNode->value = $value;
-                //                $node->appendChild($attrNode);
+                //				$attrNode->value = $value;
+                //				$node->appendChild($attrNode);
             } else if ($attr == '*') {
                 // jQuery diff
                 $return = array();
@@ -3039,14 +3039,14 @@ class phpQueryObject
                         $selected = is_null($option->attr('value'))
                         ? in_array($option->markup(), $_val)
                         : in_array($option->attr('value'), $_val);
-                        //                        $optionValue = $option->attr('value');
-                        //                        $optionText = $option->text();
-                        //                        $optionTextLenght = mb_strlen($optionText);
-                        //                        foreach($_val as $v)
-                        //                            if ($optionValue == $v)
-                        //                                $selected = true;
-                        //                            else if ($optionText == $v && $optionTextLenght == mb_strlen($v))
-                        //                                $selected = true;
+                        //						$optionValue = $option->attr('value');
+                        //						$optionText = $option->text();
+                        //						$optionTextLenght = mb_strlen($optionText);
+                        //						foreach($_val as $v)
+                        //							if ($optionValue == $v)
+                        //								$selected = true;
+                        //							else if ($optionText == $v && $optionTextLenght == mb_strlen($v))
+                        //								$selected = true;
                         if ($selected) {
                             $option->attr('selected', 'selected');
                         } else {
@@ -3227,18 +3227,18 @@ class phpQueryObject
      */
     public function map($callback, $param1 = null, $param2 = null, $param3 = null) 
     {
-        //        $stack = array();
-        ////        foreach($this->newInstance() as $node) {
-        //        foreach($this->newInstance() as $node) {
-        //            $result = call_user_func($callback, $node);
-        //            if ($result)
-        //                $stack[] = $result;
-        //        }
+        //		$stack = array();
+        ////		foreach($this->newInstance() as $node) {
+        //		foreach($this->newInstance() as $node) {
+        //			$result = call_user_func($callback, $node);
+        //			if ($result)
+        //				$stack[] = $result;
+        //		}
         $params = func_get_args();
         array_unshift($params, $this->elements);
         return $this->newInstance(
             call_user_func_array(array('phpQuery', 'map'), $params)
-            //            phpQuery::map($this->elements, $callback)
+            //			phpQuery::map($this->elements, $callback)
         );
     }
     /**
@@ -3281,14 +3281,14 @@ class phpQueryObject
     public function rewind()
     {
         $this->debug('iterating foreach');
-        //        phpQuery::selectDocument($this->getDocumentID());
+        //		phpQuery::selectDocument($this->getDocumentID());
         $this->elementsBackup = $this->elements;
         $this->elementsInterator = $this->elements;
         $this->valid = isset($this->elements[0])
         ? 1 : 0;
-        //         $this->elements = $this->valid
-        //             ? array($this->elements[0])
-        //             : array();
+        // 		$this->elements = $this->valid
+        // 			? array($this->elements[0])
+        // 			: array();
         $this->current = 0;
     }
     /**
@@ -3318,8 +3318,8 @@ class phpQueryObject
      */
     public function next($cssSelector = null)
     {
-        //        if ($cssSelector || $this->valid)
-        //            return $this->_next($cssSelector);
+        //		if ($cssSelector || $this->valid)
+        //			return $this->_next($cssSelector);
         $this->valid = isset($this->elementsInterator[ $this->current+1 ])
         ? true
         : false;
@@ -3359,7 +3359,7 @@ class phpQueryObject
      */
     public function offsetSet($offset, $value) 
     {
-        //        $this->find($offset)->replaceWith($value);
+        //		$this->find($offset)->replaceWith($value);
         $this->find($offset)->html($value);
     }
     /**
@@ -3385,8 +3385,8 @@ class phpQueryObject
         $loop = $oneNode
         ? array($oneNode)
         : $this->elements;
-        //        if ($namespace)
-        //            $namespace .= ':';
+        //		if ($namespace)
+        //			$namespace .= ':';
         foreach($loop as $node) {
             if ($node instanceof DOMDOCUMENT) {
                 $return[] = '';
@@ -3465,7 +3465,7 @@ class phpQueryObject
         print 'DUMP #'.(phpQuery::$dumpCount++).' ';
         $debug = phpQuery::$debug;
         phpQuery::$debug = false;
-        //        print __FILE__.':'.__LINE__."\n";
+        //		print __FILE__.':'.__LINE__."\n";
         var_dump($this->htmlOuter());
         return $this;
     }
@@ -3474,7 +3474,7 @@ class phpQueryObject
         print 'DUMP #'.(phpQuery::$dumpCount++).' ';
         $debug = phpQuery::$debug;
         phpQuery::$debug = false;
-        //        print __FILE__.':'.__LINE__."\n";
+        //		print __FILE__.':'.__LINE__."\n";
         var_dump('whois', $this->whois());
         phpQuery::$debug = $debug;
         return $this;
@@ -3484,7 +3484,7 @@ class phpQueryObject
         print 'DUMP #'.(phpQuery::$dumpCount++).' ';
         $debug = phpQuery::$debug;
         phpQuery::$debug = false;
-        //        print __FILE__.':'.__LINE__."\n";
+        //		print __FILE__.':'.__LINE__."\n";
         var_dump('length', $this->length());
         phpQuery::$debug = $debug;
         return $this;

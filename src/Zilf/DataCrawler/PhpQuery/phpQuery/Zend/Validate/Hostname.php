@@ -194,7 +194,7 @@ class Zend_Validate_Hostname extends Zend_Validate_Abstract
     }
 
     /**
-     * @param  Zend_Validate_Ip $ipValidator OPTIONAL
+     * @param Zend_Validate_Ip $ipValidator OPTIONAL
      * @return void;
      */
     public function setIpValidator(Zend_Validate_Ip $ipValidator = null)

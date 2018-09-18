@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -13,7 +13,7 @@ use Zilf\Db\base\InvalidArgumentException;
  * Class LikeCondition represents a `LIKE` condition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since  2.0.14
+ * @since 2.0.14
  */
 class LikeCondition extends SimpleCondition
 {
@@ -26,12 +26,11 @@ class LikeCondition extends SimpleCondition
 
 
     /**
-     * @param string          $column   the column name.
-     * @param string          $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
-     * @param string[]|string $value    single value or an array of values that $column should be compared with.
-     *                                  If it is an empty array the generated expression will  be a `false`
-     *                                  value if operator is `LIKE` or `OR LIKE` and empty if operator is `NOT
-     *                                  LIKE` or `OR NOT LIKE`.
+     * @param string $column the column name.
+     * @param string $operator the operator to use (e.g. `LIKE`, `NOT LIKE`, `OR LIKE` or `OR NOT LIKE`)
+     * @param string[]|string $value single value or an array of values that $column should be compared with.
+     * If it is an empty array the generated expression will  be a `false` value if operator is `LIKE` or `OR LIKE`
+     * and empty if operator is `NOT LIKE` or `OR NOT LIKE`.
      */
     public function __construct($column, $operator, $value)
     {
@@ -61,7 +60,6 @@ class LikeCondition extends SimpleCondition
 
     /**
      * {@inheritdoc}
-     *
      * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)

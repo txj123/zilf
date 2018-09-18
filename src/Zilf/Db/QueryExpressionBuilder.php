@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -12,7 +12,7 @@ namespace Zilf\Db;
  * using unified [[QueryBuilder]] expression building interface.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since  2.0.14
+ * @since 2.0.14
  */
 class QueryExpressionBuilder implements ExpressionBuilderInterface
 {
@@ -23,8 +23,8 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param  ExpressionInterface|Query $expression the expression to be built.
-     * @param  array                     $params     the binding parameters.
+     * @param ExpressionInterface|Query $expression the expression to be built.
+     * @param array $params the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
     public function build(ExpressionInterface $expression, array &$params = [])

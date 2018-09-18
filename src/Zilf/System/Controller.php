@@ -74,8 +74,8 @@ abstract class Controller
     }
 
     /**
-     * @param  $url
-     * @param  array $params
+     * @param $url
+     * @param array $params
      * @return string
      */
     public function url($url, $params = [])
@@ -132,8 +132,8 @@ abstract class Controller
     }
 
     /**
-     * @param  $viewFile
-     * @param  array    $parameters
+     * @param $viewFile
+     * @param array    $parameters
      * @return \Zilf\View\Contracts\View
      */
     public function view($viewFile, $parameters = [])
@@ -142,8 +142,8 @@ abstract class Controller
     }
 
     /**
-     * @param  $viewFile
-     * @param  array    $parameters
+     * @param $viewFile
+     * @param array    $parameters
      * @return \Zilf\View\Contracts\View
      */
     private function getContent($viewFile, $parameters = [])

@@ -44,7 +44,7 @@ class LoadConfiguration
         }
 
         foreach ($files as $key => $path) {
-            $repository->set($key, include $path);
+            $repository->set($key, require $path);
         }
     }
 
@@ -74,7 +74,7 @@ class LoadConfiguration
      * Get the configuration file nesting path.
      *
      * @param  \SplFileInfo $file
-     * @param  string       $configPath
+     * @param  string $configPath
      * @return string
      */
     protected function getNestedDirectory(SplFileInfo $file, $configPath)

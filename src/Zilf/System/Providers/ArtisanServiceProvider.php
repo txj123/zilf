@@ -13,7 +13,7 @@ use Illuminate\Cache\Console\CacheTableCommand;
 use Illuminate\Foundation\Console\PresetCommand;
 use Illuminate\Queue\Console\FailedTableCommand;
 use Illuminate\Foundation\Console\AppNameCommand;
-use Illuminate\Foundation\Console\JobMakeCommand;
+use Zilf\Console\Commands\JobMakeCommand;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 use Illuminate\Foundation\Console\MailMakeCommand;
 use Illuminate\Foundation\Console\OptimizeCommand;
@@ -50,17 +50,19 @@ use Illuminate\Foundation\Console\PackageDiscoverCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Foundation\Console\NotificationMakeCommand;
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
-use Illuminate\Queue\Console\WorkCommand as QueueWorkCommand;
+use Zilf\Queue\Console\WorkCommand as QueueWorkCommand;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Notifications\Console\NotificationTableCommand;
 use Zilf\Cache\Console\ClearCommand as CacheClearCommand;
-use Illuminate\Queue\Console\RetryCommand as QueueRetryCommand;
-use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
-use Illuminate\Queue\Console\ListenCommand as QueueListenCommand;
-use Illuminate\Queue\Console\RestartCommand as QueueRestartCommand;
-use Illuminate\Queue\Console\ListFailedCommand as ListFailedQueueCommand;
-use Illuminate\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
-use Illuminate\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
+use Zilf\Cache\Console\ForgetCommand as CacheForgetCommand;
+
+use Zilf\Queue\Console\RetryCommand as QueueRetryCommand;
+use Zilf\Queue\Console\ListenCommand as QueueListenCommand;
+use Zilf\Queue\Console\RestartCommand as QueueRestartCommand;
+use Zilf\Queue\Console\ListFailedCommand as ListFailedQueueCommand;
+use Zilf\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
+use Zilf\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
+
 use Illuminate\Database\Console\Migrations\FreshCommand as MigrateFreshCommand;
 use Illuminate\Database\Console\Migrations\ResetCommand as MigrateResetCommand;
 use Illuminate\Database\Console\Migrations\StatusCommand as MigrateStatusCommand;
@@ -84,8 +86,16 @@ class ArtisanServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
-        'CacheClear' =>  'Zilf\Cache\Console\ClearCommand',
-        'serve' =>  'Zilf\Console\Commands\ServeCommand',
+        'serve' =>  'command.serve',
+        'CacheClear' =>  'command.cache.clear',
+        'JobMake' => 'command.job.make',
+        'QueueFailed' => 'command.queue.failed',
+        'QueueFlush' => 'command.queue.flush',
+        'QueueForget' => 'command.queue.forget',
+        'QueueListen' => 'command.queue.listen',
+        'QueueRestart' => 'command.queue.restart',
+        'QueueRetry' => 'command.queue.retry',
+        'QueueWork' => 'command.queue.work',
         /*'CacheForget' => 'command.cache.forget',
         'ClearCompiled' => 'command.clear-compiled',
         'ClearResets' => 'command.auth.resets.clear',
@@ -128,6 +138,7 @@ class ArtisanServiceProvider extends ServiceProvider
      * @var array
      */
     protected $devCommands = [
+
         /*'AppName' => 'command.app.name',
         'AuthMake' => 'command.auth.make',
         'CacheTable' => 'command.cache.table',
@@ -137,7 +148,6 @@ class ArtisanServiceProvider extends ServiceProvider
         'EventMake' => 'command.event.make',
         'ExceptionMake' => 'command.exception.make',
         'FactoryMake' => 'command.factory.make',
-        'JobMake' => 'command.job.make',
         'ListenerMake' => 'command.listener.make',
         'MailMake' => 'command.mail.make',
         'MiddlewareMake' => 'command.middleware.make',
@@ -166,17 +176,15 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerCommands(
-            array_merge(
-                $this->commands, $this->devCommands
-            )
-        );
+        $this->registerCommands(array_merge(
+            $this->commands, $this->devCommands
+        ));
     }
 
     /**
      * Register the given commands.
      *
-     * @param  array $commands
+     * @param  array  $commands
      * @return void
      */
     protected function registerCommands(array $commands)
@@ -184,7 +192,7 @@ class ArtisanServiceProvider extends ServiceProvider
         foreach (array_keys($commands) as $command) {
             call_user_func_array([$this, "register{$command}Command"], []);
         }
-        
+
         $this->commands(array_values($commands));
     }
 
@@ -195,11 +203,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerAppNameCommand()
     {
-        Zilf::$container->register(
-            'command.app.name', function ($app) {
-                return new AppNameCommand($app['composer'], $app['files']);
-            }
-        );
+        Zilf::$container->register('command.app.name', function ($app) {
+            return new AppNameCommand($app['composer'], $app['files']);
+        });
     }
 
     /**
@@ -209,11 +215,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerAuthMakeCommand()
     {
-        Zilf::$container->register(
-            'command.auth.make', function ($app) {
-                return new AuthMakeCommand;
-            }
-        );
+        Zilf::$container->register('command.auth.make', function ($app) {
+            return new AuthMakeCommand;
+        });
     }
 
     /**
@@ -223,11 +227,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerCacheClearCommand()
     {
-        Zilf::$container->register(
-            'command.cache.clear', function ($app) {
-                return new CacheClearCommand($app['cache'], $app['files']);
-            }
-        );
+        Zilf::$container->register('command.cache.clear', function ($app) {
+            return new CacheClearCommand(Zilf::$container['cache'], Zilf::$container['files']);
+        });
     }
 
     /**
@@ -237,11 +239,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerCacheForgetCommand()
     {
-        Zilf::$container->register(
-            'command.cache.forget', function ($app) {
-                return new CacheForgetCommand($app['cache']);
-            }
-        );
+        Zilf::$container->register('command.cache.forget', function ($app) {
+            return new CacheForgetCommand($app['cache']);
+        });
     }
 
     /**
@@ -251,11 +251,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerCacheTableCommand()
     {
-        Zilf::$container->register(
-            'command.cache.table', function ($app) {
-                return new CacheTableCommand($app['files'], $app['composer']);
-            }
-        );
+        Zilf::$container->register('command.cache.table', function ($app) {
+            return new CacheTableCommand($app['files'], $app['composer']);
+        });
     }
 
     /**
@@ -265,11 +263,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerClearCompiledCommand()
     {
-        Zilf::$container->register(
-            'command.clear-compiled', function () {
-                return new ClearCompiledCommand;
-            }
-        );
+        Zilf::$container->register('command.clear-compiled', function () {
+            return new ClearCompiledCommand;
+        });
     }
 
     /**
@@ -279,11 +275,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerClearResetsCommand()
     {
-        Zilf::$container->register(
-            'command.auth.resets.clear', function () {
-                return new ClearResetsCommand;
-            }
-        );
+        Zilf::$container->register('command.auth.resets.clear', function () {
+            return new ClearResetsCommand;
+        });
     }
 
     /**
@@ -293,11 +287,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerConfigCacheCommand()
     {
-        Zilf::$container->register(
-            'command.config.cache', function ($app) {
-                return new ConfigCacheCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.config.cache', function ($app) {
+            return new ConfigCacheCommand($app['files']);
+        });
     }
 
     /**
@@ -307,11 +299,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerConfigClearCommand()
     {
-        Zilf::$container->register(
-            'command.config.clear', function ($app) {
-                return new ConfigClearCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.config.clear', function ($app) {
+            return new ConfigClearCommand($app['files']);
+        });
     }
 
     /**
@@ -321,11 +311,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerConsoleMakeCommand()
     {
-        Zilf::$container->register(
-            'command.console.make', function ($app) {
-                return new ConsoleMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.console.make', function ($app) {
+            return new ConsoleMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -335,11 +323,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerControllerMakeCommand()
     {
-        Zilf::$container->register(
-            'command.controller.make', function ($app) {
-                return new ControllerMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.controller.make', function ($app) {
+            return new ControllerMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -349,11 +335,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerEventGenerateCommand()
     {
-        Zilf::$container->register(
-            'command.event.generate', function () {
-                return new EventGenerateCommand;
-            }
-        );
+        Zilf::$container->register('command.event.generate', function () {
+            return new EventGenerateCommand;
+        });
     }
 
     /**
@@ -363,11 +347,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerEventMakeCommand()
     {
-        Zilf::$container->register(
-            'command.event.make', function ($app) {
-                return new EventMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.event.make', function ($app) {
+            return new EventMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -377,11 +359,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerExceptionMakeCommand()
     {
-        Zilf::$container->register(
-            'command.exception.make', function ($app) {
-                return new ExceptionMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.exception.make', function ($app) {
+            return new ExceptionMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -391,11 +371,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerFactoryMakeCommand()
     {
-        Zilf::$container->register(
-            'command.factory.make', function ($app) {
-                return new FactoryMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.factory.make', function ($app) {
+            return new FactoryMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -405,11 +383,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerDownCommand()
     {
-        Zilf::$container->register(
-            'command.down', function () {
-                return new DownCommand;
-            }
-        );
+        Zilf::$container->register('command.down', function () {
+            return new DownCommand;
+        });
     }
 
     /**
@@ -419,11 +395,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerEnvironmentCommand()
     {
-        Zilf::$container->register(
-            'command.environment', function () {
-                return new EnvironmentCommand;
-            }
-        );
+        Zilf::$container->register('command.environment', function () {
+            return new EnvironmentCommand;
+        });
     }
 
     /**
@@ -433,11 +407,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerJobMakeCommand()
     {
-        Zilf::$container->register(
-            'command.job.make', function ($app) {
-                return new JobMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.job.make', function () {
+            return new JobMakeCommand(Zilf::$container['files']);
+        });
     }
 
     /**
@@ -447,11 +419,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerKeyGenerateCommand()
     {
-        Zilf::$container->register(
-            'command.key.generate', function () {
-                return new KeyGenerateCommand;
-            }
-        );
+        Zilf::$container->register('command.key.generate', function () {
+            return new KeyGenerateCommand;
+        });
     }
 
     /**
@@ -461,11 +431,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerListenerMakeCommand()
     {
-        Zilf::$container->register(
-            'command.listener.make', function ($app) {
-                return new ListenerMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.listener.make', function ($app) {
+            return new ListenerMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -475,11 +443,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMailMakeCommand()
     {
-        Zilf::$container->register(
-            'command.mail.make', function ($app) {
-                return new MailMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.mail.make', function ($app) {
+            return new MailMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -489,11 +455,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMiddlewareMakeCommand()
     {
-        Zilf::$container->register(
-            'command.middleware.make', function ($app) {
-                return new MiddlewareMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.middleware.make', function ($app) {
+            return new MiddlewareMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -503,11 +467,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateCommand()
     {
-        Zilf::$container->register(
-            'command.migrate', function ($app) {
-                return new MigrateCommand($app['migrator']);
-            }
-        );
+        Zilf::$container->register('command.migrate', function ($app) {
+            return new MigrateCommand($app['migrator']);
+        });
     }
 
     /**
@@ -517,11 +479,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateFreshCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.fresh', function () {
-                return new MigrateFreshCommand;
-            }
-        );
+        Zilf::$container->register('command.migrate.fresh', function () {
+            return new MigrateFreshCommand;
+        });
     }
 
     /**
@@ -531,11 +491,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateInstallCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.install', function ($app) {
-                return new MigrateInstallCommand($app['migration.repository']);
-            }
-        );
+        Zilf::$container->register('command.migrate.install', function ($app) {
+            return new MigrateInstallCommand($app['migration.repository']);
+        });
     }
 
     /**
@@ -545,18 +503,16 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateMakeCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.make', function ($app) {
-                // Once we have the migration creator registered, we will create the command
-                // and inject the creator. The creator is responsible for the actual file
-                // creation of the migrations, and may be extended by these developers.
-                $creator = $app['migration.creator'];
+        Zilf::$container->register('command.migrate.make', function ($app) {
+            // Once we have the migration creator registered, we will create the command
+            // and inject the creator. The creator is responsible for the actual file
+            // creation of the migrations, and may be extended by these developers.
+            $creator = $app['migration.creator'];
 
-                $composer = $app['composer'];
+            $composer = $app['composer'];
 
-                return new MigrateMakeCommand($creator, $composer);
-            }
-        );
+            return new MigrateMakeCommand($creator, $composer);
+        });
     }
 
     /**
@@ -566,11 +522,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateRefreshCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.refresh', function () {
-                return new MigrateRefreshCommand;
-            }
-        );
+        Zilf::$container->register('command.migrate.refresh', function () {
+            return new MigrateRefreshCommand;
+        });
     }
 
     /**
@@ -580,11 +534,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateResetCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.reset', function ($app) {
-                return new MigrateResetCommand($app['migrator']);
-            }
-        );
+        Zilf::$container->register('command.migrate.reset', function ($app) {
+            return new MigrateResetCommand($app['migrator']);
+        });
     }
 
     /**
@@ -594,11 +546,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateRollbackCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.rollback', function ($app) {
-                return new MigrateRollbackCommand($app['migrator']);
-            }
-        );
+        Zilf::$container->register('command.migrate.rollback', function ($app) {
+            return new MigrateRollbackCommand($app['migrator']);
+        });
     }
 
     /**
@@ -608,11 +558,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerMigrateStatusCommand()
     {
-        Zilf::$container->register(
-            'command.migrate.status', function ($app) {
-                return new MigrateStatusCommand($app['migrator']);
-            }
-        );
+        Zilf::$container->register('command.migrate.status', function ($app) {
+            return new MigrateStatusCommand($app['migrator']);
+        });
     }
 
     /**
@@ -622,11 +570,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerModelMakeCommand()
     {
-        Zilf::$container->register(
-            'command.model.make', function ($app) {
-                return new ModelMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.model.make', function ($app) {
+            return new ModelMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -636,11 +582,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerNotificationMakeCommand()
     {
-        Zilf::$container->register(
-            'command.notification.make', function ($app) {
-                return new NotificationMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.notification.make', function ($app) {
+            return new NotificationMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -650,11 +594,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerOptimizeCommand()
     {
-        Zilf::$container->register(
-            'command.optimize', function ($app) {
-                return new OptimizeCommand($app['composer']);
-            }
-        );
+        Zilf::$container->register('command.optimize', function ($app) {
+            return new OptimizeCommand($app['composer']);
+        });
     }
 
     /**
@@ -664,11 +606,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerPackageDiscoverCommand()
     {
-        Zilf::$container->register(
-            'command.package.discover', function ($app) {
-                return new PackageDiscoverCommand;
-            }
-        );
+        Zilf::$container->register('command.package.discover', function ($app) {
+            return new PackageDiscoverCommand;
+        });
     }
 
     /**
@@ -678,11 +618,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerPresetCommand()
     {
-        Zilf::$container->register(
-            'command.preset', function () {
-                return new PresetCommand;
-            }
-        );
+        Zilf::$container->register('command.preset', function () {
+            return new PresetCommand;
+        });
     }
 
     /**
@@ -692,11 +630,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerProviderMakeCommand()
     {
-        Zilf::$container->register(
-            'command.provider.make', function ($app) {
-                return new ProviderMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.provider.make', function ($app) {
+            return new ProviderMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -706,11 +642,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueFailedCommand()
     {
-        Zilf::$container->register(
-            'command.queue.failed', function () {
-                return new ListFailedQueueCommand;
-            }
-        );
+        Zilf::$container->register('command.queue.failed', function () {
+            return new ListFailedQueueCommand;
+        });
     }
 
     /**
@@ -720,11 +654,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueForgetCommand()
     {
-        Zilf::$container->register(
-            'command.queue.forget', function () {
-                return new ForgetFailedQueueCommand;
-            }
-        );
+        Zilf::$container->register('command.queue.forget', function () {
+            return new ForgetFailedQueueCommand;
+        });
     }
 
     /**
@@ -734,11 +666,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueFlushCommand()
     {
-        Zilf::$container->register(
-            'command.queue.flush', function () {
-                return new FlushFailedQueueCommand;
-            }
-        );
+        Zilf::$container->register('command.queue.flush', function () {
+            return new FlushFailedQueueCommand;
+        });
     }
 
     /**
@@ -748,11 +678,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueListenCommand()
     {
-        Zilf::$container->register(
-            'command.queue.listen', function ($app) {
-                return new QueueListenCommand($app['queue.listener']);
-            }
-        );
+        Zilf::$container->register('command.queue.listen', function ($app) {
+            return new QueueListenCommand(Zilf::$container['queue.listener']);
+        });
     }
 
     /**
@@ -762,11 +690,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueRestartCommand()
     {
-        Zilf::$container->register(
-            'command.queue.restart', function () {
-                return new QueueRestartCommand;
-            }
-        );
+        Zilf::$container->register('command.queue.restart', function () {
+            return new QueueRestartCommand;
+        });
     }
 
     /**
@@ -776,11 +702,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueRetryCommand()
     {
-        Zilf::$container->register(
-            'command.queue.retry', function () {
-                return new QueueRetryCommand;
-            }
-        );
+        Zilf::$container->register('command.queue.retry', function () {
+            return new QueueRetryCommand;
+        });
     }
 
     /**
@@ -790,11 +714,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueWorkCommand()
     {
-        Zilf::$container->register(
-            'command.queue.work', function ($app) {
-                return new QueueWorkCommand($app['queue.worker']);
-            }
-        );
+        Zilf::$container->register('command.queue.work', function ($app) {
+            return new QueueWorkCommand(Zilf::$container['queue.worker']);
+        });
     }
 
     /**
@@ -804,11 +726,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueFailedTableCommand()
     {
-        Zilf::$container->register(
-            'command.queue.failed-table', function ($app) {
-                return new FailedTableCommand($app['files'], $app['composer']);
-            }
-        );
+        Zilf::$container->register('command.queue.failed-table', function ($app) {
+            return new FailedTableCommand($app['files'], $app['composer']);
+        });
     }
 
     /**
@@ -818,11 +738,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerQueueTableCommand()
     {
-        Zilf::$container->register(
-            'command.queue.table', function ($app) {
-                return new TableCommand($app['files'], $app['composer']);
-            }
-        );
+        Zilf::$container->register('command.queue.table', function ($app) {
+            return new TableCommand($app['files'], $app['composer']);
+        });
     }
 
     /**
@@ -832,11 +750,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerRequestMakeCommand()
     {
-        Zilf::$container->register(
-            'command.request.make', function ($app) {
-                return new RequestMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.request.make', function ($app) {
+            return new RequestMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -846,11 +762,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerResourceMakeCommand()
     {
-        Zilf::$container->register(
-            'command.resource.make', function ($app) {
-                return new ResourceMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.resource.make', function ($app) {
+            return new ResourceMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -860,11 +774,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerRuleMakeCommand()
     {
-        Zilf::$container->register(
-            'command.rule.make', function ($app) {
-                return new RuleMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.rule.make', function ($app) {
+            return new RuleMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -874,11 +786,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerSeederMakeCommand()
     {
-        Zilf::$container->register(
-            'command.seeder.make', function ($app) {
-                return new SeederMakeCommand($app['files'], $app['composer']);
-            }
-        );
+        Zilf::$container->register('command.seeder.make', function ($app) {
+            return new SeederMakeCommand($app['files'], $app['composer']);
+        });
     }
 
     /**
@@ -888,11 +798,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerSessionTableCommand()
     {
-        Zilf::$container->register(
-            'command.session.table', function ($app) {
-                return new SessionTableCommand($app['files'], $app['composer']);
-            }
-        );
+        Zilf::$container->register('command.session.table', function ($app) {
+            return new SessionTableCommand($app['files'], $app['composer']);
+        });
     }
 
     /**
@@ -902,11 +810,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerStorageLinkCommand()
     {
-        Zilf::$container->register(
-            'command.storage.link', function () {
-                return new StorageLinkCommand;
-            }
-        );
+        Zilf::$container->register('command.storage.link', function () {
+            return new StorageLinkCommand;
+        });
     }
 
     /**
@@ -916,11 +822,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerRouteCacheCommand()
     {
-        Zilf::$container->register(
-            'command.route.cache', function ($app) {
-                return new RouteCacheCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.route.cache', function ($app) {
+            return new RouteCacheCommand($app['files']);
+        });
     }
 
     /**
@@ -930,11 +834,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerRouteClearCommand()
     {
-        Zilf::$container->register(
-            'command.route.clear', function ($app) {
-                return new RouteClearCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.route.clear', function ($app) {
+            return new RouteClearCommand($app['files']);
+        });
     }
 
     /**
@@ -944,11 +846,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerRouteListCommand()
     {
-        Zilf::$container->register(
-            'command.route.list', function ($app) {
-                return new RouteListCommand($app['router']);
-            }
-        );
+        Zilf::$container->register('command.route.list', function ($app) {
+            return new RouteListCommand($app['router']);
+        });
     }
 
     /**
@@ -958,11 +858,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerSeedCommand()
     {
-        Zilf::$container->register(
-            'command.seed', function ($app) {
-                return new SeedCommand($app['db']);
-            }
-        );
+        Zilf::$container->register('command.seed', function ($app) {
+            return new SeedCommand($app['db']);
+        });
     }
 
     /**
@@ -972,7 +870,7 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerScheduleFinishCommand()
     {
-        Zilf::$container->register(ScheduleFinishCommand::class, ScheduleFinishCommand::class);
+        Zilf::$container->register(ScheduleFinishCommand::class,ScheduleFinishCommand::class);
     }
 
     /**
@@ -982,7 +880,7 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerScheduleRunCommand()
     {
-        Zilf::$container->register(ScheduleRunCommand::class, ScheduleRunCommand::class);
+        Zilf::$container->register(ScheduleRunCommand::class,ScheduleRunCommand::class);
     }
 
     /**
@@ -992,11 +890,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerServeCommand()
     {
-        Zilf::$container->register(
-            'command.serve', function () {
-                return new ServeCommand();
-            }
-        );
+        Zilf::$container->register('command.serve', function () {
+            return new ServeCommand();
+        });
     }
 
     /**
@@ -1006,11 +902,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerTestMakeCommand()
     {
-        Zilf::$container->register(
-            'command.test.make', function ($app) {
-                return new TestMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.test.make', function ($app) {
+            return new TestMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -1020,11 +914,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerUpCommand()
     {
-        Zilf::$container->register(
-            'command.up', function () {
-                return new UpCommand;
-            }
-        );
+        Zilf::$container->register('command.up', function () {
+            return new UpCommand;
+        });
     }
 
     /**
@@ -1034,11 +926,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerVendorPublishCommand()
     {
-        Zilf::$container->register(
-            'command.vendor.publish', function ($app) {
-                return new VendorPublishCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.vendor.publish', function ($app) {
+            return new VendorPublishCommand($app['files']);
+        });
     }
 
     /**
@@ -1048,11 +938,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerViewClearCommand()
     {
-        Zilf::$container->register(
-            'command.view.clear', function ($app) {
-                return new ViewClearCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.view.clear', function ($app) {
+            return new ViewClearCommand($app['files']);
+        });
     }
 
     /**
@@ -1062,11 +950,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerPolicyMakeCommand()
     {
-        Zilf::$container->register(
-            'command.policy.make', function ($app) {
-                return new PolicyMakeCommand($app['files']);
-            }
-        );
+        Zilf::$container->register('command.policy.make', function ($app) {
+            return new PolicyMakeCommand($app['files']);
+        });
     }
 
     /**
@@ -1076,11 +962,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerNotificationTableCommand()
     {
-        Zilf::$container->register(
-            'command.notification.table', function ($app) {
-                return new NotificationTableCommand($app['files'], $app['composer']);
-            }
-        );
+        Zilf::$container->register('command.notification.table', function ($app) {
+            return new NotificationTableCommand($app['files'], $app['composer']);
+        });
     }
 
     /**

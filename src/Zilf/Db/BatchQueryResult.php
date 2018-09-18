@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -26,7 +26,7 @@ use Zilf\Db\base\BaseObject;
  * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since  2.0
+ * @since 2.0
  */
 class BatchQueryResult extends BaseObject implements \Iterator
 {
@@ -130,7 +130,6 @@ class BatchQueryResult extends BaseObject implements \Iterator
 
     /**
      * Fetches the next batch of data.
-     *
      * @return array the data fetched
      */
     protected function fetchData()
@@ -151,7 +150,6 @@ class BatchQueryResult extends BaseObject implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     *
      * @return int the index of the current row.
      */
     public function key()
@@ -162,7 +160,6 @@ class BatchQueryResult extends BaseObject implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
-     *
      * @return mixed the current dataset.
      */
     public function current()
@@ -173,7 +170,6 @@ class BatchQueryResult extends BaseObject implements \Iterator
     /**
      * Returns whether there is a valid dataset at the current position.
      * This method is required by the interface [[\Iterator]].
-     *
      * @return bool whether there is a valid dataset at the current position.
      */
     public function valid()

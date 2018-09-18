@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\base;
@@ -22,7 +22,7 @@ use Zilf\web\HttpException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 abstract class ErrorHandler extends Component
 {
@@ -129,9 +129,8 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles exception thrown during exception processing in [[handleException()]].
-     *
-     * @param \Exception|\Throwable $exception         Exception that was thrown during main exception processing.
-     * @param \Exception            $previousException Main exception processed in [[handleException()]].
+     * @param \Exception|\Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Exception $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
     protected function handleFallbackExceptionMessage($exception, $previousException)
@@ -163,16 +162,16 @@ abstract class ErrorHandler extends Component
      * This method is used as a HHVM error handler. It will store exception that will
      * be used in fatal error handler
      *
-     * @param  int    $code      the level of the error raised.
-     * @param  string $message   the error message.
-     * @param  string $file      the filename that the error was raised in.
-     * @param  int    $line      the line number the error was raised at.
-     * @param  mixed  $context
-     * @param  mixed  $backtrace trace of error
+     * @param int $code the level of the error raised.
+     * @param string $message the error message.
+     * @param string $file the filename that the error was raised in.
+     * @param int $line the line number the error was raised at.
+     * @param mixed $context
+     * @param mixed $backtrace trace of error
      * @return bool whether the normal error handler continues.
      *
      * @throws ErrorException
-     * @since  2.0.6
+     * @since 2.0.6
      */
     public function handleHhvmError($code, $message, $file, $line, $context, $backtrace)
     {
@@ -195,10 +194,10 @@ abstract class ErrorHandler extends Component
      *
      * This method is used as a PHP error handler. It will simply raise an [[ErrorException]].
      *
-     * @param  int    $code    the level of the error raised.
-     * @param  string $message the error message.
-     * @param  string $file    the filename that the error was raised in.
-     * @param  int    $line    the line number the error was raised at.
+     * @param int $code the level of the error raised.
+     * @param string $message the error message.
+     * @param string $file the filename that the error was raised in.
+     * @param int $line the line number the error was raised at.
      * @return bool whether the normal error handler continues.
      *
      * @throws ErrorException
@@ -209,7 +208,7 @@ abstract class ErrorHandler extends Component
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
             if (!class_exists('Zilf\\base\\ErrorException', false)) {
-                include_once __DIR__ . '/ErrorException.php';
+                require_once __DIR__ . '/ErrorException.php';
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
@@ -242,7 +241,7 @@ abstract class ErrorHandler extends Component
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
         if (!class_exists('Zilf\\base\\ErrorException', false)) {
-            include_once __DIR__ . '/ErrorException.php';
+            require_once __DIR__ . '/ErrorException.php';
         }
 
         $error = error_get_last();
@@ -273,14 +272,12 @@ abstract class ErrorHandler extends Component
 
     /**
      * Renders the exception.
-     *
      * @param \Exception $exception the exception to be rendered.
      */
     abstract protected function renderException($exception);
 
     /**
      * Logs the given exception.
-     *
      * @param \Exception $exception the exception to be logged
      * @since 2.0.3 this method is now public.
      */
@@ -313,7 +310,6 @@ abstract class ErrorHandler extends Component
      *
      * This method can be used to convert exceptions inside of methods like `__toString()`
      * to PHP errors because exceptions cannot be thrown inside of them.
-     *
      * @param \Exception $exception the exception to convert to a PHP error.
      */
     public static function convertExceptionToError($exception)
@@ -323,8 +319,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a simple string.
-     *
-     * @param  \Exception|\Error $exception the exception being converted
+     * @param \Exception|\Error $exception the exception being converted
      * @return string the string representation of the exception.
      */
     public static function convertExceptionToString($exception)
@@ -342,8 +337,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a string that has verbose information about the exception and its trace.
-     *
-     * @param  \Exception|\Error $exception the exception being converted
+     * @param \Exception|\Error $exception the exception being converted
      * @return string the string representation of the exception.
      *
      * @since 2.0.14

@@ -596,8 +596,8 @@ class Str
     /**
      * Return the remainder of a string after a given value.
      *
-     * @param  string $subject
-     * @param  string $search
+     * @param  string  $subject
+     * @param  string  $search
      * @return string
      */
     public static function after($subject, $search)

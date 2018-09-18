@@ -47,7 +47,7 @@ class CaijiUrl
     }
 
     /**
-     * @param  $urls
+     * @param $urls
      * @return array
      * 获取替换之后的url数组
      */
@@ -65,8 +65,8 @@ class CaijiUrl
     }
 
     /**
-     * @param  $url
-     * @param  $param
+     * @param $url
+     * @param $param
      * @return array
      * 替换参数
      */
@@ -84,7 +84,7 @@ class CaijiUrl
 
 
     /**
-     * @param  $param
+     * @param $param
      * @return array
      * 获取参数的数组 {a-c}  返回 array(a,b,c)
      */

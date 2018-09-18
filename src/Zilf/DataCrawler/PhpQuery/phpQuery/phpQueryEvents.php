@@ -113,10 +113,10 @@ abstract class phpQueryEvents
     {
         phpQuery::debug("Binding '$type' event");
         $documentID = phpQuery::getDocumentID($document);
-        //        if (is_null($callback) && is_callable($data)) {
-        //            $callback = $data;
-        //            $data = null;
-        //        }
+        //		if (is_null($callback) && is_callable($data)) {
+        //			$callback = $data;
+        //			$data = null;
+        //		}
         $eventNode = self::getNode($documentID, $node);
         if (! $eventNode) {
             $eventNode = self::setNode($documentID, $node);

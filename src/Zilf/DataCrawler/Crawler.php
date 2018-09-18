@@ -78,8 +78,8 @@ class Crawler
 
 
     /**
-     * @param  $r_obj
-     * @param  string $col
+     * @param $r_obj
+     * @param string $col
      * @return \phpQueryObject|\QueryTemplatesParse|\QueryTemplatesSource|\QueryTemplatesSourceQuery
      * 根据obj信息，获取pq的对象
      */
@@ -104,8 +104,8 @@ class Crawler
     }
 
     /**
-     * @param  $list_obj
-     * @param  $r_value
+     * @param $list_obj
+     * @param $r_value
      * @return array
      * 获取采集的内容
      */
@@ -286,8 +286,8 @@ class Crawler
 
 
     /**
-     * @param  $charset
-     * @param  $content
+     * @param $charset
+     * @param $content
      * @return string
      * 解决phpquery无法获取到编码的问题
      * 如果编码格式获取不到，就会出现乱码，该方法能彻底解决，但是必须要提前获取编码信息

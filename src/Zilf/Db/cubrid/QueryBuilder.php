@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\cubrid;
@@ -17,7 +17,7 @@ use Zilf\Db\Expression;
  * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
- * @since  2.0
+ * @since 2.0
  */
 class QueryBuilder extends \Zilf\Db\QueryBuilder
 {
@@ -54,23 +54,18 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(
-            parent::defaultExpressionBuilders(), [
+        return array_merge(parent::defaultExpressionBuilders(), [
             'Zilf\Db\conditions\LikeCondition' => 'Zilf\Db\cubrid\conditions\LikeConditionBuilder',
-            ]
-        );
+        ]);
     }
 
     /**
      * {@inheritdoc}
-     *
      * @see https://www.cubrid.org/manual/en/9.3.0/sql/query/merge.html
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /**
- * @var Constraint[] $constraints 
-*/
+        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
@@ -124,10 +119,9 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
-     *
-     * @param  string $tableName the name of the table whose primary key sequence will be reset
-     * @param  mixed  $value     the value for the primary key of the next new row inserted. If this is not set,
-     *                           the next new row's primary key will have a value 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
@@ -174,7 +168,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function selectExists($rawSql)
@@ -184,14 +177,11 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @see http://www.cubrid.org/manual/93/en/sql/schema/table.html#drop-index-clause
      */
     public function dropIndex($name, $table)
     {
-        /**
- * @var Schema $schema 
-*/
+        /** @var Schema $schema */
         $schema = $this->db->getSchema();
         foreach ($schema->getTableUniques($table) as $unique) {
             if ($unique->name === $name) {
@@ -204,7 +194,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @throws NotSupportedException this is not supported by CUBRID.
      */
     public function addCheck($name, $table, $expression)
@@ -214,7 +203,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @throws NotSupportedException this is not supported by CUBRID.
      */
     public function dropCheck($name, $table)
@@ -224,7 +212,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
@@ -241,7 +228,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
@@ -251,7 +237,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function dropCommentFromColumn($table, $column)
@@ -261,7 +246,6 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     *
      * @since 2.0.8
      */
     public function dropCommentFromTable($table)
@@ -273,11 +257,11 @@ class QueryBuilder extends \Zilf\Db\QueryBuilder
     /**
      * Gets column definition.
      *
-     * @param  string $table  table name
-     * @param  string $column column name
+     * @param string $table table name
+     * @param string $column column name
      * @return null|string the column definition
      * @throws Exception in case when table does not contain column
-     * @since  2.0.8
+     * @since 2.0.8
      */
     private function getColumnDefinition($table, $column)
     {

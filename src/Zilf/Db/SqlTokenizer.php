@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -26,7 +26,7 @@ use Zilf\Db\base\InvalidArgumentException;
  * Tokens are instances of [[SqlToken]].
  *
  * @author Sergey Makinen <sergey@makinen.ru>
- * @since  2.0.13
+ * @since 2.0.13
  */
 abstract class SqlTokenizer extends Component
 {
@@ -68,9 +68,8 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Constructor.
-     *
-     * @param string $sql    SQL code to be tokenized.
-     * @param array  $config name-value pairs that will be used to initialize the object properties
+     * @param string $sql SQL code to be tokenized.
+     * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($sql, $config = [])
     {
@@ -80,7 +79,6 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Tokenizes and returns a code type token.
-     *
      * @return SqlToken code type token.
      */
     public function tokenize()
@@ -89,12 +87,10 @@ abstract class SqlTokenizer extends Component
         $this->offset = 0;
         $this->_substrings = [];
         $this->_buffer = '';
-        $this->_token = new SqlToken(
-            [
+        $this->_token = new SqlToken([
             'type' => SqlToken::TYPE_CODE,
             'content' => $this->sql,
-            ]
-        );
+        ]);
         $this->_tokenStack = new \SplStack();
         $this->_tokenStack->push($this->_token);
         $this->_token[] = new SqlToken(['type' => SqlToken::TYPE_STATEMENT]);
@@ -126,8 +122,7 @@ abstract class SqlTokenizer extends Component
     /**
      * Returns whether there's a whitespace at the current offset.
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
-     *
-     * @param  int $length length of the matched string.
+     * @param int $length length of the matched string.
      * @return bool whether there's a whitespace at the current offset.
      */
     abstract protected function isWhitespace(&$length);
@@ -135,8 +130,7 @@ abstract class SqlTokenizer extends Component
     /**
      * Returns whether there's a commentary at the current offset.
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
-     *
-     * @param  int $length length of the matched string.
+     * @param int $length length of the matched string.
      * @return bool whether there's a commentary at the current offset.
      */
     abstract protected function isComment(&$length);
@@ -145,9 +139,8 @@ abstract class SqlTokenizer extends Component
      * Returns whether there's an operator at the current offset.
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
      * It may also set `$content` to a string that will be used as a token content.
-     *
-     * @param  int    $length  length of the matched string.
-     * @param  string $content optional content instead of the matched string.
+     * @param int $length length of the matched string.
+     * @param string $content optional content instead of the matched string.
      * @return bool whether there's an operator at the current offset.
      */
     abstract protected function isOperator(&$length, &$content);
@@ -156,9 +149,8 @@ abstract class SqlTokenizer extends Component
      * Returns whether there's an identifier at the current offset.
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
      * It may also set `$content` to a string that will be used as a token content.
-     *
-     * @param  int    $length  length of the matched string.
-     * @param  string $content optional content instead of the matched string.
+     * @param int $length length of the matched string.
+     * @param string $content optional content instead of the matched string.
      * @return bool whether there's an identifier at the current offset.
      */
     abstract protected function isIdentifier(&$length, &$content);
@@ -167,9 +159,8 @@ abstract class SqlTokenizer extends Component
      * Returns whether there's a string literal at the current offset.
      * If this methos returns `true`, it has to set the `$length` parameter to the length of the matched string.
      * It may also set `$content` to a string that will be used as a token content.
-     *
-     * @param  int    $length  length of the matched string.
-     * @param  string $content optional content instead of the matched string.
+     * @param int $length length of the matched string.
+     * @param string $content optional content instead of the matched string.
      * @return bool whether there's a string literal at the current offset.
      */
     abstract protected function isStringLiteral(&$length, &$content);
@@ -177,23 +168,19 @@ abstract class SqlTokenizer extends Component
     /**
      * Returns whether the given string is a keyword.
      * The method may set `$content` to a string that will be used as a token content.
-     *
-     * @param  string $string  string to be matched.
-     * @param  string $content optional content instead of the matched string.
+     * @param string $string string to be matched.
+     * @param string $content optional content instead of the matched string.
      * @return bool whether the given string is a keyword.
      */
     abstract protected function isKeyword($string, &$content);
 
     /**
      * Returns whether the longest common prefix equals to the SQL code of the same length at the current offset.
-     *
-     * @param  string[]    $with          strings to be tested.
-     *                                    The method **will**
-     *                                    modify this parameter
-     *                                    to speed up lookups.
-     * @param  bool        $caseSensitive whether to perform a case sensitive comparison.
-     * @param  int|null    $length        length of the matched string.
-     * @param  string|null $content       matched string.
+     * @param string[] $with strings to be tested.
+     * The method **will** modify this parameter to speed up lookups.
+     * @param bool $caseSensitive whether to perform a case sensitive comparison.
+     * @param int|null $length length of the matched string.
+     * @param string|null $content matched string.
      * @return bool whether a match is found.
      */
     protected function startsWithAnyLongest(array &$with, $caseSensitive, &$length = null, &$content = null)
@@ -203,11 +190,9 @@ abstract class SqlTokenizer extends Component
         }
 
         if (!is_array(reset($with))) {
-            usort(
-                $with, function ($string1, $string2) {
-                    return mb_strlen($string2, 'UTF-8') - mb_strlen($string1, 'UTF-8');
-                }
-            );
+            usort($with, function ($string1, $string2) {
+                return mb_strlen($string2, 'UTF-8') - mb_strlen($string1, 'UTF-8');
+            });
             $map = [];
             foreach ($with as $string) {
                 $map[mb_strlen($string, 'UTF-8')][$caseSensitive ? $string : mb_strtoupper($string, 'UTF-8')] = true;
@@ -227,10 +212,9 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Returns a string of the given length starting with the specified offset.
-     *
-     * @param  int      $length        string length to be returned.
-     * @param  bool     $caseSensitive if it's `false`, the string will be uppercased.
-     * @param  int|null $offset        SQL code offset, defaults to current if `null` is passed.
+     * @param int $length string length to be returned.
+     * @param bool $caseSensitive if it's `false`, the string will be uppercased.
+     * @param int|null $offset SQL code offset, defaults to current if `null` is passed.
      * @return string result string, it may be empty if there's nothing to return.
      */
     protected function substring($length, $caseSensitive = true, $offset = null)
@@ -255,9 +239,8 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Returns an index after the given string in the SQL code starting with the specified offset.
-     *
-     * @param  string   $string string to be found.
-     * @param  int|null $offset SQL code offset, defaults to current if `null` is passed.
+     * @param string $string string to be found.
+     * @param int|null $offset SQL code offset, defaults to current if `null` is passed.
      * @return int index after the given string or end of string index.
      */
     protected function indexAfter($string, $offset = null)
@@ -281,8 +264,7 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Determines whether there is a delimited string at the current offset and adds it to the token children.
-     *
-     * @param  int $length
+     * @param int $length
      * @return bool
      */
     private function tokenizeDelimitedString(&$length)
@@ -294,21 +276,18 @@ abstract class SqlTokenizer extends Component
         }
 
         $this->addTokenFromBuffer();
-        $this->_currentToken[] = new SqlToken(
-            [
+        $this->_currentToken[] = new SqlToken([
             'type' => $isIdentifier ? SqlToken::TYPE_IDENTIFIER : SqlToken::TYPE_STRING_LITERAL,
             'content' => is_string($content) ? $content : $this->substring($length),
             'startOffset' => $this->offset,
             'endOffset' => $this->offset + $length,
-            ]
-        );
+        ]);
         return true;
     }
 
     /**
      * Determines whether there is an operator at the current offset and adds it to the token children.
-     *
-     * @param  int $length
+     * @param int $length
      * @return bool
      */
     private function tokenizeOperator(&$length)
@@ -319,60 +298,52 @@ abstract class SqlTokenizer extends Component
 
         $this->addTokenFromBuffer();
         switch ($this->substring($length)) {
-        case '(':
-            $this->_currentToken[] = new SqlToken(
-                [
-                'type' => SqlToken::TYPE_OPERATOR,
-                'content' => is_string($content) ? $content : $this->substring($length),
-                'startOffset' => $this->offset,
-                'endOffset' => $this->offset + $length,
-                    ]
-            );
-            $this->_currentToken[] = new SqlToken(['type' => SqlToken::TYPE_PARENTHESIS]);
-            $this->_tokenStack->push($this->_currentToken[-1]);
-            $this->_currentToken = $this->_tokenStack->top();
-            break;
-        case ')':
-            $this->_tokenStack->pop();
-            $this->_currentToken = $this->_tokenStack->top();
-            $this->_currentToken[] = new SqlToken(
-                [
-                'type' => SqlToken::TYPE_OPERATOR,
-                'content' => ')',
-                'startOffset' => $this->offset,
-                'endOffset' => $this->offset + $length,
-                    ]
-            );
-            break;
-        case ';':
-            if (!$this->_currentToken->getHasChildren()) {
+            case '(':
+                $this->_currentToken[] = new SqlToken([
+                    'type' => SqlToken::TYPE_OPERATOR,
+                    'content' => is_string($content) ? $content : $this->substring($length),
+                    'startOffset' => $this->offset,
+                    'endOffset' => $this->offset + $length,
+                ]);
+                $this->_currentToken[] = new SqlToken(['type' => SqlToken::TYPE_PARENTHESIS]);
+                $this->_tokenStack->push($this->_currentToken[-1]);
+                $this->_currentToken = $this->_tokenStack->top();
                 break;
-            }
+            case ')':
+                $this->_tokenStack->pop();
+                $this->_currentToken = $this->_tokenStack->top();
+                $this->_currentToken[] = new SqlToken([
+                    'type' => SqlToken::TYPE_OPERATOR,
+                    'content' => ')',
+                    'startOffset' => $this->offset,
+                    'endOffset' => $this->offset + $length,
+                ]);
+                break;
+            case ';':
+                if (!$this->_currentToken->getHasChildren()) {
+                    break;
+                }
 
-            $this->_currentToken[] = new SqlToken(
-                [
-                'type' => SqlToken::TYPE_OPERATOR,
-                'content' => is_string($content) ? $content : $this->substring($length),
-                'startOffset' => $this->offset,
-                'endOffset' => $this->offset + $length,
-                    ]
-            );
-            $this->_tokenStack->pop();
-            $this->_currentToken = $this->_tokenStack->top();
-            $this->_currentToken[] = new SqlToken(['type' => SqlToken::TYPE_STATEMENT]);
-            $this->_tokenStack->push($this->_currentToken[-1]);
-            $this->_currentToken = $this->_tokenStack->top();
-            break;
-        default:
-            $this->_currentToken[] = new SqlToken(
-                [
-                'type' => SqlToken::TYPE_OPERATOR,
-                'content' => is_string($content) ? $content : $this->substring($length),
-                'startOffset' => $this->offset,
-                'endOffset' => $this->offset + $length,
-                    ]
-            );
-            break;
+                $this->_currentToken[] = new SqlToken([
+                    'type' => SqlToken::TYPE_OPERATOR,
+                    'content' => is_string($content) ? $content : $this->substring($length),
+                    'startOffset' => $this->offset,
+                    'endOffset' => $this->offset + $length,
+                ]);
+                $this->_tokenStack->pop();
+                $this->_currentToken = $this->_tokenStack->top();
+                $this->_currentToken[] = new SqlToken(['type' => SqlToken::TYPE_STATEMENT]);
+                $this->_tokenStack->push($this->_currentToken[-1]);
+                $this->_currentToken = $this->_tokenStack->top();
+                break;
+            default:
+                $this->_currentToken[] = new SqlToken([
+                    'type' => SqlToken::TYPE_OPERATOR,
+                    'content' => is_string($content) ? $content : $this->substring($length),
+                    'startOffset' => $this->offset,
+                    'endOffset' => $this->offset + $length,
+                ]);
+                break;
         }
 
         return true;
@@ -388,21 +359,18 @@ abstract class SqlTokenizer extends Component
         }
 
         $isKeyword = $this->isKeyword($this->_buffer, $content);
-        $this->_currentToken[] = new SqlToken(
-            [
+        $this->_currentToken[] = new SqlToken([
             'type' => $isKeyword ? SqlToken::TYPE_KEYWORD : SqlToken::TYPE_TOKEN,
             'content' => is_string($content) ? $content : $this->_buffer,
             'startOffset' => $this->offset - mb_strlen($this->_buffer, 'UTF-8'),
             'endOffset' => $this->offset,
-            ]
-        );
+        ]);
         $this->_buffer = '';
     }
 
     /**
      * Adds the specified length to the current offset.
-     *
-     * @param  int $length
+     * @param int $length
      * @throws InvalidArgumentException
      */
     private function advance($length)
@@ -417,7 +385,6 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Returns whether the SQL code is completely traversed.
-     *
      * @return bool
      */
     private function isEof()

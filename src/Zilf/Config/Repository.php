@@ -40,7 +40,7 @@ class Repository implements ArrayAccess
      * Get the specified configuration value.
      *
      * @param  array|string $key
-     * @param  mixed        $default
+     * @param  mixed $default
      * @return mixed
      */
     public function get($key, $default = null)
@@ -77,7 +77,7 @@ class Repository implements ArrayAccess
      * Set a given configuration value.
      *
      * @param  array|string $key
-     * @param  mixed        $value
+     * @param  mixed $value
      * @return void
      */
     public function set($key, $value = null)
@@ -93,7 +93,7 @@ class Repository implements ArrayAccess
      * Prepend a value onto an array configuration value.
      *
      * @param  string $key
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return void
      */
     public function prepend($key, $value)
@@ -109,7 +109,7 @@ class Repository implements ArrayAccess
      * Push a value onto an array configuration value.
      *
      * @param  string $key
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return void
      */
     public function push($key, $value)
@@ -157,7 +157,7 @@ class Repository implements ArrayAccess
      * Set a configuration option.
      *
      * @param  string $key
-     * @param  mixed  $value
+     * @param  mixed $value
      * @return void
      */
     public function offsetSet($key, $value)

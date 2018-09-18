@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\pgsql;
@@ -27,7 +27,7 @@ class ColumnSchema extends \Zilf\Db\ColumnSchema
      * You can use this property to make upgrade to Zilf 2.0.14 easier.
      * Default to `false`, meaning JSON support is enabled.
      *
-     * @since      2.0.14.1
+     * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
     public $disableJsonSupport = false;
@@ -36,7 +36,7 @@ class ColumnSchema extends \Zilf\Db\ColumnSchema
      * You can use this property to make upgrade to Zilf 2.0.14 easier.
      * Default to `false`, meaning Arrays support is enabled.
      *
-     * @since      2.0.14.1
+     * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
     public $disableArraySupport = false;
@@ -45,7 +45,7 @@ class ColumnSchema extends \Zilf\Db\ColumnSchema
      * You can use this property to make upgrade to Zilf 2.0.14 easier.
      * Default to `true`, meaning arrays are unserialized to [[ArrayExpression]] objects.
      *
-     * @since      2.0.14.1
+     * @since 2.0.14.1
      * @deprecated Since 2.0.14.1 and will be removed in 2.1.
      */
     public $deserializeArrayColumnToArrayExpression = true;
@@ -89,11 +89,9 @@ class ColumnSchema extends \Zilf\Db\ColumnSchema
                 $value = $this->getArrayParser()->parse($value);
             }
             if (is_array($value)) {
-                array_walk_recursive(
-                    $value, function (&$val, $key) {
-                        $val = $this->phpTypecastValue($val);
-                    }
-                );
+                array_walk_recursive($value, function (&$val, $key) {
+                    $val = $this->phpTypecastValue($val);
+                });
             } elseif ($value === null) {
                 return null;
             }
@@ -109,7 +107,7 @@ class ColumnSchema extends \Zilf\Db\ColumnSchema
     /**
      * Casts $value after retrieving from the DBMS to PHP representation.
      *
-     * @param  string|null $value
+     * @param string|null $value
      * @return bool|mixed|null
      */
     protected function phpTypecastValue($value)
@@ -119,18 +117,18 @@ class ColumnSchema extends \Zilf\Db\ColumnSchema
         }
 
         switch ($this->type) {
-        case Schema::TYPE_BOOLEAN:
-            switch (strtolower($value)) {
-            case 't':
-            case 'true':
-                return true;
-            case 'f':
-            case 'false':
-                return false;
-            }
-            return (bool) $value;
-        case Schema::TYPE_JSON:
-            return $this->disableJsonSupport ? $value : json_decode($value, true);
+            case Schema::TYPE_BOOLEAN:
+                switch (strtolower($value)) {
+                    case 't':
+                    case 'true':
+                        return true;
+                    case 'f':
+                    case 'false':
+                        return false;
+                }
+                return (bool) $value;
+            case Schema::TYPE_JSON:
+                return $this->disableJsonSupport ? $value : json_decode($value, true);
         }
 
         return parent::phpTypecast($value);

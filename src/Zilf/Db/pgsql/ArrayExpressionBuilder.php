@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\pgsql;
@@ -18,7 +18,7 @@ use Zilf\Db\Query;
  * Class ArrayExpressionBuilder builds [[ArrayExpression]] for PostgreSQL DBMS.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since  2.0.14
+ * @since 2.0.14
  */
 class ArrayExpressionBuilder implements ExpressionBuilderInterface
 {
@@ -27,7 +27,6 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * {@inheritdoc}
-     *
      * @param ArrayExpression|ExpressionInterface $expression the expression to be built
      */
     public function build(ExpressionInterface $expression, array &$params = [])
@@ -49,9 +48,8 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 
     /**
      * Builds placeholders array out of $expression values
-     *
-     * @param  ExpressionInterface|ArrayExpression $expression
-     * @param  array                               $params     the binding parameters.
+     * @param ExpressionInterface|ArrayExpression $expression
+     * @param array $params the binding parameters.
      * @return array
      */
     protected function buildPlaceholders(ExpressionInterface $expression, &$params)
@@ -90,8 +88,8 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * @param  ArrayExpression $expression
-     * @param  mixed           $value
+     * @param ArrayExpression $expression
+     * @param mixed $value
      * @return ArrayExpression
      */
     private function unnestArrayExpression(ArrayExpression $expression, $value)
@@ -102,7 +100,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * @param  ArrayExpression $expression
+     * @param ArrayExpression $expression
      * @return string the typecast expression based on [[type]].
      */
     protected function getTypehint(ArrayExpression $expression)
@@ -120,8 +118,8 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     /**
      * Build an array expression from a subquery SQL.
      *
-     * @param  string          $sql        the subquery SQL.
-     * @param  ArrayExpression $expression
+     * @param string $sql the subquery SQL.
+     * @param ArrayExpression $expression
      * @return string the subquery array expression.
      */
     protected function buildSubqueryArray($sql, ArrayExpression $expression)
@@ -132,8 +130,8 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     /**
      * Casts $value to use in $expression
      *
-     * @param  ArrayExpression $expression
-     * @param  mixed           $value
+     * @param ArrayExpression $expression
+     * @param mixed $value
      * @return JsonExpression
      */
     protected function typecastValue(ArrayExpression $expression, $value)

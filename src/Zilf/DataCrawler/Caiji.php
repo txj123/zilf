@@ -111,8 +111,8 @@ class Caiji
     }
 
     /**
-     * @param  array  $arr
-     * @param  string $key
+     * @param array  $arr
+     * @param string $key
      * @return array
      */
     private function _get_all_urls($arr=array(),$key='url')
@@ -128,8 +128,8 @@ class Caiji
     }
 
     /**
-     * @param  $data
-     * @param  $obj
+     * @param $data
+     * @param $obj
      * @return array
      * 过滤数据
      */

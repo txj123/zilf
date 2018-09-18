@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db;
@@ -19,7 +19,7 @@ use Zilf\Db\base\InvalidConfigException;
  * ```
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since  2.0.14
+ * @since 2.0.14
  */
 class JsonExpression implements ExpressionInterface, \JsonSerializable
 {
@@ -43,12 +43,9 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     /**
      * JsonExpression constructor.
      *
-     * @param mixed       $value the value to be encoded to JSON.
-     *                           The value must be compatible
-     *                           with
-     *                           [\Zilf\Helpers\Json::encode()|Json::encode()]]
-     *                           requirements.
-     * @param string|null $type  the type of the JSON. See [[JsonExpression::type]]
+     * @param mixed $value the value to be encoded to JSON.
+     * The value must be compatible with [\Zilf\Helpers\Json::encode()|Json::encode()]] requirements.
+     * @param string|null $type the type of the JSON. See [[JsonExpression::type]]
      *
      * @see type
      */
@@ -64,7 +61,7 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
 
     /**
      * @return mixed
-     * @see    value
+     * @see value
      */
     public function getValue()
     {
@@ -73,7 +70,7 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
 
     /**
      * @return null|string the type of JSON
-     * @see    type
+     * @see type
      */
     public function getType()
     {
@@ -83,10 +80,10 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     /**
      * Specify data which should be serialized to JSON
      *
-     * @link   http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
-     * @since  2.0.14.2
+     * @since 2.0.14.2
      * @throws InvalidConfigException when JsonExpression contains QueryInterface object
      */
     public function jsonSerialize()

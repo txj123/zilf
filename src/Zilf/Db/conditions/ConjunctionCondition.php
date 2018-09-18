@@ -1,8 +1,8 @@
 <?php
 /**
- * @link      http://www.Zilfframework.com/
+ * @link http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license   http://www.Zilfframework.com/license/
+ * @license http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -11,7 +11,7 @@ namespace Zilf\Db\conditions;
  * Class ConjunctionCondition
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since  2.0.14
+ * @since 2.0.14
  */
 abstract class ConjunctionCondition implements ConditionInterface
 {
@@ -39,7 +39,6 @@ abstract class ConjunctionCondition implements ConditionInterface
 
     /**
      * Returns the operator that is represented by this condition class, e.g. `AND`, `OR`.
-     *
      * @return string
      */
     abstract public function getOperator();

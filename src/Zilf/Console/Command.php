@@ -151,8 +151,8 @@ class Command extends SymfonyCommand
     /**
      * Run the console command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface   $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return int
      */
     public function run(InputInterface $input, OutputInterface $output)
@@ -165,20 +165,20 @@ class Command extends SymfonyCommand
     /**
      * Execute the console command.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface   $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
      * @return mixed
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        return call_user_func_array([$this, 'handle'], []);
+        return call_user_func_array([$this, 'handle'],[]);
     }
 
     /**
      * Call another console command.
      *
-     * @param  string $command
-     * @param  array  $arguments
+     * @param  string  $command
+     * @param  array   $arguments
      * @return int
      */
     public function call($command, array $arguments = [])
@@ -193,8 +193,8 @@ class Command extends SymfonyCommand
     /**
      * Call another console command silently.
      *
-     * @param  string $command
-     * @param  array  $arguments
+     * @param  string  $command
+     * @param  array   $arguments
      * @return int
      */
     public function callSilent($command, array $arguments = [])
@@ -209,24 +209,22 @@ class Command extends SymfonyCommand
     /**
      * Create an input instance from the given arguments.
      *
-     * @param  array $arguments
+     * @param  array  $arguments
      * @return \Symfony\Component\Console\Input\ArrayInput
      */
     protected function createInputFromArguments(array $arguments)
     {
-        return tap(
-            new ArrayInput($arguments), function ($input) {
-                if ($input->hasParameterOption(['--no-interaction'], true)) {
-                    $input->setInteractive(false);
-                }
+        return tap(new ArrayInput($arguments), function ($input) {
+            if ($input->hasParameterOption(['--no-interaction'], true)) {
+                $input->setInteractive(false);
             }
-        );
+        });
     }
 
     /**
      * Determine if the given argument is present.
      *
-     * @param  string|int $name
+     * @param  string|int  $name
      * @return bool
      */
     public function hasArgument($name)
@@ -237,7 +235,7 @@ class Command extends SymfonyCommand
     /**
      * Get the value of a command argument.
      *
-     * @param  string|null $key
+     * @param  string|null  $key
      * @return string|array
      */
     public function argument($key = null)
@@ -262,7 +260,7 @@ class Command extends SymfonyCommand
     /**
      * Determine if the given option is present.
      *
-     * @param  string $name
+     * @param  string  $name
      * @return bool
      */
     public function hasOption($name)
@@ -273,7 +271,7 @@ class Command extends SymfonyCommand
     /**
      * Get the value of a command option.
      *
-     * @param  string|null $key
+     * @param  string|null  $key
      * @return string|array
      */
     public function option($key = null)
@@ -298,8 +296,8 @@ class Command extends SymfonyCommand
     /**
      * Confirm a question with the user.
      *
-     * @param  string $question
-     * @param  bool   $default
+     * @param  string  $question
+     * @param  bool    $default
      * @return bool
      */
     public function confirm($question, $default = false)
@@ -310,8 +308,8 @@ class Command extends SymfonyCommand
     /**
      * Prompt the user for input.
      *
-     * @param  string      $question
-     * @param  string|null $default
+     * @param  string  $question
+     * @param  string|null  $default
      * @return string
      */
     public function ask($question, $default = null)
@@ -322,9 +320,9 @@ class Command extends SymfonyCommand
     /**
      * Prompt the user for input with auto completion.
      *
-     * @param  string      $question
-     * @param  array       $choices
-     * @param  string|null $default
+     * @param  string  $question
+     * @param  array   $choices
+     * @param  string|null  $default
      * @return string
      */
     public function anticipate($question, array $choices, $default = null)
@@ -335,9 +333,9 @@ class Command extends SymfonyCommand
     /**
      * Prompt the user for input with auto completion.
      *
-     * @param  string      $question
-     * @param  array       $choices
-     * @param  string|null $default
+     * @param  string  $question
+     * @param  array   $choices
+     * @param  string|null  $default
      * @return string
      */
     public function askWithCompletion($question, array $choices, $default = null)
@@ -352,8 +350,8 @@ class Command extends SymfonyCommand
     /**
      * Prompt the user for input but hide the answer from the console.
      *
-     * @param  string $question
-     * @param  bool   $fallback
+     * @param  string  $question
+     * @param  bool    $fallback
      * @return string
      */
     public function secret($question, $fallback = true)
@@ -368,11 +366,11 @@ class Command extends SymfonyCommand
     /**
      * Give the user a single choice from an array of answers.
      *
-     * @param  string      $question
-     * @param  array       $choices
-     * @param  string|null $default
-     * @param  mixed|null  $attempts
-     * @param  bool|null   $multiple
+     * @param  string  $question
+     * @param  array   $choices
+     * @param  string|null  $default
+     * @param  mixed|null   $attempts
+     * @param  bool|null    $multiple
      * @return string
      */
     public function choice($question, array $choices, $default = null, $attempts = null, $multiple = null)
@@ -387,10 +385,10 @@ class Command extends SymfonyCommand
     /**
      * Format input to textual table.
      *
-     * @param  array                                         $headers
-     * @param  \Illuminate\Contracts\Support\Arrayable|array $rows
-     * @param  string                                        $tableStyle
-     * @param  array                                         $columnStyles
+     * @param  array   $headers
+     * @param  \Illuminate\Contracts\Support\Arrayable|array  $rows
+     * @param  string  $tableStyle
+     * @param  array   $columnStyles
      * @return void
      */
     public function table($headers, $rows, $tableStyle = 'default', array $columnStyles = [])
@@ -413,8 +411,8 @@ class Command extends SymfonyCommand
     /**
      * Write a string as information output.
      *
-     * @param  string          $string
-     * @param  null|int|string $verbosity
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
     public function info($string, $verbosity = null)
@@ -425,9 +423,9 @@ class Command extends SymfonyCommand
     /**
      * Write a string as standard output.
      *
-     * @param  string          $string
-     * @param  string          $style
-     * @param  null|int|string $verbosity
+     * @param  string  $string
+     * @param  string  $style
+     * @param  null|int|string  $verbosity
      * @return void
      */
     public function line($string, $style = null, $verbosity = null)
@@ -440,8 +438,8 @@ class Command extends SymfonyCommand
     /**
      * Write a string as comment output.
      *
-     * @param  string          $string
-     * @param  null|int|string $verbosity
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
     public function comment($string, $verbosity = null)
@@ -452,8 +450,8 @@ class Command extends SymfonyCommand
     /**
      * Write a string as question output.
      *
-     * @param  string          $string
-     * @param  null|int|string $verbosity
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
     public function question($string, $verbosity = null)
@@ -464,8 +462,8 @@ class Command extends SymfonyCommand
     /**
      * Write a string as error output.
      *
-     * @param  string          $string
-     * @param  null|int|string $verbosity
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
     public function error($string, $verbosity = null)
@@ -476,8 +474,8 @@ class Command extends SymfonyCommand
     /**
      * Write a string as warning output.
      *
-     * @param  string          $string
-     * @param  null|int|string $verbosity
+     * @param  string  $string
+     * @param  null|int|string  $verbosity
      * @return void
      */
     public function warn($string, $verbosity = null)
@@ -494,7 +492,7 @@ class Command extends SymfonyCommand
     /**
      * Write a string in an alert box.
      *
-     * @param  string $string
+     * @param  string  $string
      * @return void
      */
     public function alert($string)
@@ -511,7 +509,7 @@ class Command extends SymfonyCommand
     /**
      * Set the verbosity level.
      *
-     * @param  string|int $level
+     * @param  string|int  $level
      * @return void
      */
     protected function setVerbosity($level)
@@ -522,7 +520,7 @@ class Command extends SymfonyCommand
     /**
      * Get the verbosity level in terms of Symfony's OutputInterface level.
      *
-     * @param  string|int|null $level
+     * @param  string|int|null  $level
      * @return int
      */
     protected function parseVerbosity($level = null)
