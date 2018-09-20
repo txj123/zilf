@@ -95,7 +95,9 @@ class Application
         $this->bootstrapWith($this->bootstrappers);
 
         //设置异常信息
-        Debug::enable();
+        if (!\in_array(\PHP_SAPI, array('cli', 'phpdbg'), true)) {
+            Debug::enable();
+        }
 
         Zilf::$container->register('request', Request::createFromGlobals());
 
@@ -415,6 +417,16 @@ class Application
         return $this->environment;
     }
 
+    /**
+     * 判断是否是维护模式
+     *
+     * @return bool
+     */
+    public function isDownForMaintenance()
+    {
+        return file_exists($this->runtimePath().'/down');
+    }
+
     public function registerCoreContainerAliases()
     {
         Zilf::$container->setAlias(
@@ -433,7 +445,8 @@ class Application
             'router' => \Zilf\Routing\Route::class,
             'validator' => \Zilf\Validation\Factory::class,
             'view' => \Zilf\View\Factory::class,
-            'consoleKernel' => \App\Console\Kernel::class
+            'consoleKernel' => \App\Console\Kernel::class,
+            'queue' => \Zilf\Queue\QueueManager::class,
             ]
         );
     }

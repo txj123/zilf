@@ -13,7 +13,7 @@ use Illuminate\Cache\Console\CacheTableCommand;
 use Illuminate\Foundation\Console\PresetCommand;
 use Illuminate\Queue\Console\FailedTableCommand;
 use Illuminate\Foundation\Console\AppNameCommand;
-use Illuminate\Foundation\Console\JobMakeCommand;
+use Zilf\Console\Commands\JobMakeCommand;
 use Illuminate\Database\Console\Seeds\SeedCommand;
 use Illuminate\Foundation\Console\MailMakeCommand;
 use Illuminate\Foundation\Console\OptimizeCommand;
@@ -50,17 +50,19 @@ use Illuminate\Foundation\Console\PackageDiscoverCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Foundation\Console\NotificationMakeCommand;
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
-use Illuminate\Queue\Console\WorkCommand as QueueWorkCommand;
+use Zilf\Queue\Console\WorkCommand as QueueWorkCommand;
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 use Illuminate\Notifications\Console\NotificationTableCommand;
 use Zilf\Cache\Console\ClearCommand as CacheClearCommand;
-use Illuminate\Queue\Console\RetryCommand as QueueRetryCommand;
-use Illuminate\Cache\Console\ForgetCommand as CacheForgetCommand;
-use Illuminate\Queue\Console\ListenCommand as QueueListenCommand;
-use Illuminate\Queue\Console\RestartCommand as QueueRestartCommand;
-use Illuminate\Queue\Console\ListFailedCommand as ListFailedQueueCommand;
-use Illuminate\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
-use Illuminate\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
+use Zilf\Cache\Console\ForgetCommand as CacheForgetCommand;
+
+use Zilf\Queue\Console\RetryCommand as QueueRetryCommand;
+use Zilf\Queue\Console\ListenCommand as QueueListenCommand;
+use Zilf\Queue\Console\RestartCommand as QueueRestartCommand;
+use Zilf\Queue\Console\ListFailedCommand as ListFailedQueueCommand;
+use Zilf\Queue\Console\FlushFailedCommand as FlushFailedQueueCommand;
+use Zilf\Queue\Console\ForgetFailedCommand as ForgetFailedQueueCommand;
+
 use Illuminate\Database\Console\Migrations\FreshCommand as MigrateFreshCommand;
 use Illuminate\Database\Console\Migrations\ResetCommand as MigrateResetCommand;
 use Illuminate\Database\Console\Migrations\StatusCommand as MigrateStatusCommand;
@@ -84,8 +86,16 @@ class ArtisanServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
-        'CacheClear' =>  'Zilf\Cache\Console\ClearCommand',
-        'serve' =>  'Zilf\Console\Commands\ServeCommand',
+        'serve' =>  'command.serve',
+        'CacheClear' =>  'command.cache.clear',
+        'JobMake' => 'command.job.make',
+        'QueueFailed' => 'command.queue.failed',
+        'QueueFlush' => 'command.queue.flush',
+        'QueueForget' => 'command.queue.forget',
+        'QueueListen' => 'command.queue.listen',
+        'QueueRestart' => 'command.queue.restart',
+        'QueueRetry' => 'command.queue.retry',
+        'QueueWork' => 'command.queue.work',
         /*'CacheForget' => 'command.cache.forget',
         'ClearCompiled' => 'command.clear-compiled',
         'ClearResets' => 'command.auth.resets.clear',
@@ -128,6 +138,7 @@ class ArtisanServiceProvider extends ServiceProvider
      * @var array
      */
     protected $devCommands = [
+
         /*'AppName' => 'command.app.name',
         'AuthMake' => 'command.auth.make',
         'CacheTable' => 'command.cache.table',
@@ -137,7 +148,6 @@ class ArtisanServiceProvider extends ServiceProvider
         'EventMake' => 'command.event.make',
         'ExceptionMake' => 'command.exception.make',
         'FactoryMake' => 'command.factory.make',
-        'JobMake' => 'command.job.make',
         'ListenerMake' => 'command.listener.make',
         'MailMake' => 'command.mail.make',
         'MiddlewareMake' => 'command.middleware.make',
@@ -184,7 +194,7 @@ class ArtisanServiceProvider extends ServiceProvider
         foreach (array_keys($commands) as $command) {
             call_user_func_array([$this, "register{$command}Command"], []);
         }
-        
+
         $this->commands(array_values($commands));
     }
 
@@ -225,7 +235,7 @@ class ArtisanServiceProvider extends ServiceProvider
     {
         Zilf::$container->register(
             'command.cache.clear', function ($app) {
-                return new CacheClearCommand($app['cache'], $app['files']);
+                return new CacheClearCommand(Zilf::$container['cache'], Zilf::$container['files']);
             }
         );
     }
@@ -434,8 +444,8 @@ class ArtisanServiceProvider extends ServiceProvider
     protected function registerJobMakeCommand()
     {
         Zilf::$container->register(
-            'command.job.make', function ($app) {
-                return new JobMakeCommand($app['files']);
+            'command.job.make', function () {
+                return new JobMakeCommand(Zilf::$container['files']);
             }
         );
     }
@@ -750,7 +760,7 @@ class ArtisanServiceProvider extends ServiceProvider
     {
         Zilf::$container->register(
             'command.queue.listen', function ($app) {
-                return new QueueListenCommand($app['queue.listener']);
+                return new QueueListenCommand(Zilf::$container['queue.listener']);
             }
         );
     }
@@ -792,7 +802,7 @@ class ArtisanServiceProvider extends ServiceProvider
     {
         Zilf::$container->register(
             'command.queue.work', function ($app) {
-                return new QueueWorkCommand($app['queue.worker']);
+                return new QueueWorkCommand(Zilf::$container['queue.worker']);
             }
         );
     }

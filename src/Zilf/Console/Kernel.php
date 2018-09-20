@@ -173,6 +173,9 @@ class Kernel
             if (is_subclass_of($command, Command::class) 
                 && !(new ReflectionClass($command))->isAbstract()
             ) {
+
+                Zilf::$container->register($command, $command);
+
                 Artisan::starting(
                     function ($artisan) use ($command) {
                         $artisan->resolve($command);

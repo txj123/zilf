@@ -124,7 +124,44 @@ class Container implements ArrayAccess, ContainerInterface
         } elseif (!isset($this->_definitions[$id])) {
             throw new \Exception('You have requested a non-existent id: ' . $id);
         } else {
-            return $this->get($id, $params);
+            if ($this->has($id)) {
+                $definition = $this->_definitions[$id];
+            } else {
+                throw new \Exception('获取的' . $id . '不存在');
+            }
+
+            $object = null;
+            if (!empty($params)) {
+                $definition['params'] = (array)$params;
+            }
+            if(is_string($definition)) {
+                $class = $definition;
+                $type = self::TYPE_DEFINITION_STRING;
+            }else{
+                $class = $definition['class'];
+                $params = empty($definition['params']) ? [] : $definition['params'];
+                $type = $definition['type'];
+            }
+
+            if ($type == self::TYPE_DEFINITION_CALLBACK) {
+                $object = call_user_func($class, $params);
+
+            } elseif ($type == self::TYPE_DEFINITION_OBJ) {
+                $object = $class;
+
+            } elseif ($type == self::TYPE_DEFINITION_STRING) {
+                if (!class_exists($class)) {
+                    throw new \Exception('类：' . $class . '不存在!');
+                }
+
+                $object = $this->build($class, $params);
+
+            } else {
+                throw new \Exception('Unexpected object definition type: ' . gettype($class));
+            }
+            $this->_objects[$id] = $object;
+            return $object;
+            //            return $this->get($id, $params);
         }
     }
 
@@ -158,7 +195,7 @@ class Container implements ArrayAccess, ContainerInterface
      */
     public function register(string $id, $definition, $params = [])
     {
-        $this->_id = strtolower($id);
+        $this->_id = $id;
 
         //清除已经存在的对象信息
         unset($this->_objects[$id]);

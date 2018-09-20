@@ -55,8 +55,6 @@ class Application extends SymfonyApplication
         $this->setAutoExit(false);
         $this->setCatchExceptions(false);
 
-        //        $this->events->dispatch(new Events\ArtisanStarting($this));
-
         $this->bootstrap();
     }
 
@@ -120,7 +118,11 @@ class Application extends SymfonyApplication
     protected function bootstrap()
     {
         foreach (static::$bootstrappers as $bootstrapper) {
-            $bootstrapper($this);
+            try{
+                $bootstrapper($this);
+            }catch (\Exception $e){
+                echo $e->getMessage();
+            }
         }
     }
 
@@ -207,7 +209,7 @@ class Application extends SymfonyApplication
      */
     public function resolve($command)
     {
-        return $this->add(new $command);
+        return $this->add(Zilf::$container->getShare($command));
     }
 
     /**
