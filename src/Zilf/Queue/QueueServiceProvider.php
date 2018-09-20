@@ -216,7 +216,7 @@ class QueueServiceProvider
     {
         Zilf::$container->register(
             'queue.failer', function () {
-                $config = $this->app['config']['queue.failed'];
+                $config = config('queue.failed');
 
                 return isset($config['table'])
                         ? $this->databaseFailedJobProvider($config)
@@ -234,7 +234,7 @@ class QueueServiceProvider
     protected function databaseFailedJobProvider($config)
     {
         return new DatabaseFailedJobProvider(
-            $this->app['db'], $config['database'], $config['table']
+            Zilf::$container->getShare('db.default'), $config['database'], $config['table']
         );
     }
 

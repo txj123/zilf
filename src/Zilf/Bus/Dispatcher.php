@@ -13,16 +13,9 @@ use Illuminate\Contracts\Bus\QueueingDispatcher;
 class Dispatcher
 {
     /**
-     * The container implementation.
-     *
-     * @var \Illuminate\Contracts\Container\Container
-     */
-    protected $container;
-
-    /**
      * The pipeline instance for the bus.
      *
-     * @var \Illuminate\Pipeline\Pipeline
+     * @var \Zilf\Pipeline\Pipeline
      */
     protected $pipeline;
 
@@ -50,13 +43,11 @@ class Dispatcher
     /**
      * Create a new command dispatcher instance.
      *
-     * @param  \Illuminate\Contracts\Container\Container $container
-     * @param  \Closure|null                             $queueResolver
+     * @param  \Closure|null $queueResolver
      * @return void
      */
     public function __construct(Closure $queueResolver = null)
     {
-        //        $this->container = $container;
         $this->queueResolver = $queueResolver;
         $this->pipeline = new Pipeline();
     }

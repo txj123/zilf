@@ -5,11 +5,9 @@ namespace Zilf\Queue;
 use Exception;
 use Throwable;
 use Zilf\Queue\Jobs\SyncJob;
-use Illuminate\Contracts\Queue\Job;
-use Illuminate\Contracts\Queue\Queue as QueueContract;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 
-class SyncQueue extends Queue implements QueueContract
+class SyncQueue extends Queue
 {
     /**
      * Get the size of the queue.
@@ -60,20 +58,19 @@ class SyncQueue extends Queue implements QueueContract
      */
     protected function resolveJob($payload, $queue)
     {
-        return new SyncJob($this->container, $payload, $this->connectionName, $queue);
+        return new SyncJob($payload, $this->connectionName, $queue);
     }
 
     /**
      * Raise the before queue job event.
      *
-     * @param  \Illuminate\Contracts\Queue\Job $job
      * @return void
      */
-    protected function raiseBeforeJobEvent(Job $job)
+    protected function raiseBeforeJobEvent($job)
     {
-        if ($this->container->bound('events')) {
+        /*if ($this->container->bound('events')) {
             $this->container['events']->dispatch(new Events\JobProcessing($this->connectionName, $job));
-        }
+        }*/
     }
 
     /**
@@ -82,32 +79,31 @@ class SyncQueue extends Queue implements QueueContract
      * @param  \Illuminate\Contracts\Queue\Job $job
      * @return void
      */
-    protected function raiseAfterJobEvent(Job $job)
+    protected function raiseAfterJobEvent($job)
     {
-        if ($this->container->bound('events')) {
+        /*if ($this->container->bound('events')) {
             $this->container['events']->dispatch(new Events\JobProcessed($this->connectionName, $job));
-        }
+        }*/
     }
 
     /**
      * Raise the exception occurred queue job event.
      *
-     * @param  \Illuminate\Contracts\Queue\Job $job
-     * @param  \Exception                      $e
+     * @param  \Exception $e
      * @return void
      */
-    protected function raiseExceptionOccurredJobEvent(Job $job, $e)
+    protected function raiseExceptionOccurredJobEvent($job, $e)
     {
-        if ($this->container->bound('events')) {
+        /*if ($this->container->bound('events')) {
             $this->container['events']->dispatch(new Events\JobExceptionOccurred($this->connectionName, $job, $e));
-        }
+        }*/
     }
 
     /**
      * Handle an exception that occurred while processing a job.
      *
-     * @param  \Illuminate\Queue\Jobs\Job $queueJob
-     * @param  \Exception                 $e
+     * @param  \Zilf\Queue\Jobs\Job $queueJob
+     * @param  \Exception           $e
      * @return void
      *
      * @throws \Exception

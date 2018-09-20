@@ -3,8 +3,9 @@
 namespace Zilf\Queue;
 
 use Illuminate\Container\Container;
+use Zilf\Bus\Dispatcher;
 use Zilf\Queue\Events\JobFailed;
-use Illuminate\Contracts\Events\Dispatcher;
+use Zilf\System\Zilf;
 
 class FailingJob
 {
@@ -31,12 +32,8 @@ class FailingJob
             $job->delete();
 
             $job->failed($e);
+
         } finally {
-            static::events()->dispatch(
-                new JobFailed(
-                    $connectionName, $job, $e ?: new ManuallyFailedException
-                )
-            );
         }
     }
 
@@ -47,6 +44,6 @@ class FailingJob
      */
     protected static function events()
     {
-        return Container::getInstance()->make(Dispatcher::class);
+        return Zilf::$container->getShare(Dispatcher::class);
     }
 }

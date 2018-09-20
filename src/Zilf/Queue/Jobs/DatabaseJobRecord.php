@@ -2,7 +2,7 @@
 
 namespace Zilf\Queue\Jobs;
 
-use Illuminate\Support\InteractsWithTime;
+use Zilf\Support\InteractsWithTime;
 
 class DatabaseJobRecord
 {

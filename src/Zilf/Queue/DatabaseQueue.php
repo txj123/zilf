@@ -2,13 +2,13 @@
 
 namespace Zilf\Queue;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Database\Connection;
+use Zilf\Db\Connection;
+use Zilf\Support\Carbon;
+
 use Zilf\Queue\Jobs\DatabaseJob;
 use Zilf\Queue\Jobs\DatabaseJobRecord;
-use Illuminate\Contracts\Queue\Queue as QueueContract;
 
-class DatabaseQueue extends Queue implements QueueContract
+class DatabaseQueue extends Queue
 {
     /**
      * The database connection instance.
@@ -41,10 +41,10 @@ class DatabaseQueue extends Queue implements QueueContract
     /**
      * Create a new database queue instance.
      *
-     * @param  \Illuminate\Database\Connection $database
-     * @param  string                          $table
-     * @param  string                          $default
-     * @param  int                             $retryAfter
+     * @param  \Zilf\Db\Connection $database
+     * @param  string              $table
+     * @param  string              $default
+     * @param  int                 $retryAfter
      * @return void
      */
     public function __construct(Connection $database, $table, $default = 'default', $retryAfter = 60)
@@ -123,7 +123,7 @@ class DatabaseQueue extends Queue implements QueueContract
         $availableAt = $this->availableAt();
 
         return $this->database->table($this->table)->insert(
-            collect((array) $jobs)->map(
+            collect((array)$jobs)->map(
                 function ($job) use ($queue, $data, $availableAt) {
                     return $this->buildDatabaseRecord($queue, $this->createPayload($job, $data), $availableAt);
                 }
@@ -155,11 +155,12 @@ class DatabaseQueue extends Queue implements QueueContract
      */
     protected function pushToDatabase($queue, $payload, $delay = 0, $attempts = 0)
     {
-        return $this->database->table($this->table)->insertGetId(
+        return $this->database->createCommand()->insert(
+            $this->table,
             $this->buildDatabaseRecord(
                 $this->getQueue($queue), $payload, $this->availableAt($delay), $attempts
             )
-        );
+        )->execute();
     }
 
     /**
@@ -213,19 +214,18 @@ class DatabaseQueue extends Queue implements QueueContract
      */
     protected function getNextAvailableJob($queue)
     {
-        $job = $this->database->table($this->table)
-            ->lockForUpdate()
-            ->where('queue', $this->getQueue($queue))
-            ->where(
-                function ($query) {
-                            $this->isAvailable($query);
-                            $this->isReservedButExpired($query);
-                }
-            )
-                    ->orderBy('id', 'asc')
-                    ->first();
+        $expiration = Carbon::now()->subSeconds($this->retryAfter)->getTimestamp();
+        $sql = 'SELECT * FROM ' . $this->table . ' WHERE queue =\'' . $this->getQueue($queue) . '\' 
+                AND (
+                        (reserved_at is NULL AND available_at <=' . $this->currentTime() . ')
+                        OR 
+                        (reserved_at <= ' . $expiration . ')
+                    ) 
+                order by id asc limit 1 ';
 
-        return $job ? new DatabaseJobRecord((object) $job) : null;
+        $job = $this->database->createCommand($sql)->queryOne();
+
+        return $job ? new DatabaseJobRecord((object)$job) : null;
     }
 
     /**
@@ -273,7 +273,7 @@ class DatabaseQueue extends Queue implements QueueContract
         $job = $this->markJobAsReserved($job);
 
         return new DatabaseJob(
-            $this->container, $this, $job, $this->connectionName, $queue
+            $this, $job, $this->connectionName, $queue
         );
     }
 
@@ -285,12 +285,14 @@ class DatabaseQueue extends Queue implements QueueContract
      */
     protected function markJobAsReserved($job)
     {
-        $this->database->table($this->table)->where('id', $job->id)->update(
-            [
+        $this->database->createCommand()->update(
+            $this->table, [
             'reserved_at' => $job->touch(),
             'attempts' => $job->increment(),
+            ], [
+            'id' => $job->id
             ]
-        );
+        )->execute();
 
         return $job;
     }
@@ -307,9 +309,7 @@ class DatabaseQueue extends Queue implements QueueContract
     {
         $this->database->transaction(
             function () use ($id) {
-                if ($this->database->table($this->table)->lockForUpdate()->find($id)) {
-                    $this->database->table($this->table)->where('id', $id)->delete();
-                }
+                $this->database->createCommand()->delete($this->table, ['id' => $id])->execute();
             }
         );
     }

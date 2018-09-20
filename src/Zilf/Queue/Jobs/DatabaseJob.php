@@ -4,9 +4,8 @@ namespace Zilf\Queue\Jobs;
 
 use Illuminate\Container\Container;
 use Zilf\Queue\DatabaseQueue;
-use Illuminate\Contracts\Queue\Job as JobContract;
 
-class DatabaseJob extends Job implements JobContract
+class DatabaseJob extends Job
 {
     /**
      * The database queue instance.
@@ -32,12 +31,11 @@ class DatabaseJob extends Job implements JobContract
      * @param  string                          $queue
      * @return void
      */
-    public function __construct(Container $container, DatabaseQueue $database, $job, $connectionName, $queue)
+    public function __construct(DatabaseQueue $database, $job, $connectionName, $queue)
     {
         $this->job = $job;
         $this->queue = $queue;
         $this->database = $database;
-        $this->container = $container;
         $this->connectionName = $connectionName;
     }
 

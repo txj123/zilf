@@ -20,7 +20,7 @@ class DatabaseConnector implements ConnectorInterface
      * @param  \Illuminate\Database\ConnectionResolverInterface $connections
      * @return void
      */
-    public function __construct(ConnectionResolverInterface $connections)
+    public function __construct($connections)
     {
         $this->connections = $connections;
     }
@@ -34,7 +34,7 @@ class DatabaseConnector implements ConnectorInterface
     public function connect(array $config)
     {
         return new DatabaseQueue(
-            $this->connections->connection($config['connection'] ?? null),
+            $this->connections,
             $config['table'],
             $config['queue'],
             $config['retry_after'] ?? 60

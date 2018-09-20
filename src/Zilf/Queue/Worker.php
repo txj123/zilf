@@ -4,12 +4,14 @@ namespace Zilf\Queue;
 
 use Exception;
 use Throwable;
-use Illuminate\Support\Carbon;
+use Zilf\Queue\Events\JobFailed;
+use Zilf\Support\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Zilf\Cache\Repository as CacheContract;
 use Zilf\Helpers\Str;
+use Zilf\System\Zilf;
 
 class Worker
 {
@@ -55,6 +57,8 @@ class Worker
      */
     public $paused = false;
 
+    protected $jobs = [];
+
     /**
      * Create a new queue worker.
      *
@@ -78,7 +82,7 @@ class Worker
      * @param  \Illuminate\Queue\WorkerOptions $options
      * @return void
      */
-    public function daemon($connectionName, $queue, WorkerOptions $options)
+    public function daemon($workCommand, $connectionName, $queue, WorkerOptions $options)
     {
         if ($this->supportsAsyncSignals()) {
             $this->listenForSignals();
@@ -111,7 +115,7 @@ class Worker
             // fire off this job for processing. Otherwise, we will need to sleep the
             // worker so no more jobs are processed until they should be processed.
             if ($job) {
-                $this->runJob($job, $connectionName, $options);
+                $this->runJob($workCommand, $job, $connectionName, $options);
             } else {
                 $this->sleep($options->sleep);
             }
@@ -214,7 +218,7 @@ class Worker
      * @param  \Illuminate\Queue\WorkerOptions $options
      * @return void
      */
-    public function runNextJob($connectionName, $queue, WorkerOptions $options)
+    public function runNextJob($workCommand, $connectionName, $queue, WorkerOptions $options)
     {
         $job = $this->getNextJob(
             $this->manager->connection($connectionName), $queue
@@ -224,7 +228,7 @@ class Worker
         // from this method. If there is no job on the queue, we will "sleep" the worker
         // for the specified number of seconds, then keep processing jobs after sleep.
         if ($job) {
-            return $this->runJob($job, $connectionName, $options);
+            return $this->runJob($workCommand, $job, $connectionName, $options);
         }
 
         $this->sleep($options->sleep);
@@ -246,15 +250,14 @@ class Worker
                 }
             }
         } catch (Exception $e) {
-            echo $e->getMessage() . $e->getTraceAsString();
-            //            $this->exceptions->report($e);
+            $this->report($e);
 
             $this->stopWorkerIfLostConnection($e);
 
             $this->sleep(1);
         } catch (Throwable $e) {
-            echo $e->getMessage() . $e->getTraceAsString();
-            //            $this->exceptions->report($e = new FatalThrowableError($e));
+            $e = new FatalThrowableError($e);
+            $this->report($e);
 
             $this->stopWorkerIfLostConnection($e);
 
@@ -270,21 +273,39 @@ class Worker
      * @param  \Illuminate\Queue\WorkerOptions $options
      * @return void
      */
-    protected function runJob($job, $connectionName, WorkerOptions $options)
+    protected function runJob($workCommand, $job, $connectionName, WorkerOptions $options)
     {
         try {
-            return $this->process($connectionName, $job, $options);
+            return $this->process($workCommand, $connectionName, $job, $options);
         } catch (Exception $e) {
-            echo $e->getMessage() . $e->getTraceAsString();
-            //            $this->exceptions->report($e);
+            $this->report($e);
 
             $this->stopWorkerIfLostConnection($e);
         } catch (Throwable $e) {
-            echo $e->getMessage() . $e->getTraceAsString();
-            //            $this->exceptions->report($e = new FatalThrowableError($e));
+            $e = new FatalThrowableError($e);
+            $this->report($e);
 
             $this->stopWorkerIfLostConnection($e);
         }
+    }
+
+    /**
+     * Report or log an exception.
+     *
+     * @param  \Exception $e
+     * @return mixed
+     *
+     * @throws \Exception
+     */
+    public function report(Exception $e)
+    {
+        try {
+            $logger = Zilf::$container->getShare('log');
+        } catch (Exception $ex) {
+            throw $e;
+        }
+
+        $logger->error($e->getMessage(), ['exception' => $e]);
     }
 
     /**
@@ -310,13 +331,13 @@ class Worker
      *
      * @throws \Throwable
      */
-    public function process($connectionName, $job, WorkerOptions $options)
+    public function process($workCommand, $connectionName, $job, WorkerOptions $options)
     {
         try {
             // First we will raise the before job event and determine if the job has already ran
             // over its maximum attempt limits, which could primarily happen when this job is
             // continually timing out and not actually throwing any exceptions from itself.
-            //            $this->raiseBeforeJobEvent($connectionName, $job);
+            $this->raiseBeforeJobEvent($workCommand, $connectionName, $job);
 
             $this->markJobAsFailedIfAlreadyExceedsMaxAttempts(
                 $connectionName, $job, (int)$options->maxTries
@@ -327,12 +348,12 @@ class Worker
             // proper events will be fired to let any listeners know this job has finished.
             $job->fire();
 
-            //            $this->raiseAfterJobEvent($connectionName, $job);
+            $this->raiseAfterJobEvent($workCommand, $connectionName, $job);
         } catch (Exception $e) {
-            $this->handleJobException($connectionName, $job, $options, $e);
+            $this->handleJobException($workCommand, $connectionName, $job, $options, $e);
         } catch (Throwable $e) {
             $this->handleJobException(
-                $connectionName, $job, $options, new FatalThrowableError($e)
+                $workCommand, $connectionName, $job, $options, new FatalThrowableError($e)
             );
         }
     }
@@ -348,7 +369,7 @@ class Worker
      *
      * @throws \Exception
      */
-    protected function handleJobException($connectionName, $job, WorkerOptions $options, $e)
+    protected function handleJobException($workCommand, $connectionName, $job, WorkerOptions $options, $e)
     {
         try {
             // First, we will go ahead and mark the job as failed if it will exceed the maximum
@@ -360,9 +381,15 @@ class Worker
                 );
             }
 
-            $this->raiseExceptionOccurredJobEvent(
-                $connectionName, $job, $e
-            );
+            if (!isset($this->jobs[$job->resolveName()])) {
+
+                $this->jobs[$job->resolveName()] = true;
+
+                $this->raiseExceptionOccurredJobEvent(
+                    $workCommand, $connectionName, $job, $e
+                );
+            }
+
         } finally {
             // If we catch an exception, we will attempt to release the job back onto the queue
             // so it is not lost entirely. This'll let the job be retried at a later time by
@@ -450,13 +477,9 @@ class Worker
      * @param  \Illuminate\Contracts\Queue\Job $job
      * @return void
      */
-    protected function raiseBeforeJobEvent($connectionName, $job)
+    protected function raiseBeforeJobEvent($workCommand, $connectionName, $job)
     {
-        $this->events->dispatch(
-            new Events\JobProcessing(
-                $connectionName, $job
-            )
-        );
+        $workCommand->writeOutput($job, 'starting');
     }
 
     /**
@@ -466,13 +489,9 @@ class Worker
      * @param  \Illuminate\Contracts\Queue\Job $job
      * @return void
      */
-    protected function raiseAfterJobEvent($connectionName, $job)
+    protected function raiseAfterJobEvent($workCommand, $connectionName, $job)
     {
-        $this->events->dispatch(
-            new Events\JobProcessed(
-                $connectionName, $job
-            )
-        );
+        $workCommand->writeOutput($job, 'success');
     }
 
     /**
@@ -483,11 +502,11 @@ class Worker
      * @param  \Exception                      $e
      * @return void
      */
-    protected function raiseExceptionOccurredJobEvent($connectionName, $job, $e)
+    protected function raiseExceptionOccurredJobEvent($workCommand, $connectionName, $job, $e)
     {
-        /*$this->events->dispatch(new Events\JobExceptionOccurred(
-            $connectionName, $job, $e
-        ));*/
+        $workCommand->writeOutput($job, 'failed');
+
+        $workCommand->logFailedJob(new JobFailed($connectionName, $job, $e));
     }
 
     /**

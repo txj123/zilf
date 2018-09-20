@@ -3,7 +3,7 @@
 namespace Zilf\Queue\Console;
 
 use Zilf\Queue\Worker;
-use Illuminate\Support\Carbon;
+use Zilf\Support\Carbon;
 use Zilf\Console\Command;
 use Illuminate\Contracts\Queue\Job;
 use Zilf\Queue\WorkerOptions;
@@ -73,7 +73,7 @@ class WorkCommand extends Command
         // We'll listen to the processed and failed events so we can write information
         // to the console as jobs are processed, which will let the developer watch
         // which jobs are coming through a queue and be informed on its progress.
-        $this->listenForEvents();
+        //        $this->listenForEvents();
 
         $connection = $this->argument('connection')
                         ?: config('queue.default');
@@ -100,6 +100,7 @@ class WorkCommand extends Command
         $this->worker->setCache(Zilf::$container->getShare('cache')->driver());
 
         return $this->worker->{$this->option('once') ? 'runNextJob' : 'daemon'}(
+            $this,
             $connection, $queue, $this->gatherWorkerOptions()
         );
     }
@@ -144,11 +145,10 @@ class WorkCommand extends Command
     /**
      * Write the status output for the queue worker.
      *
-     * @param  \Illuminate\Contracts\Queue\Job $job
-     * @param  string                          $status
+     * @param  string $status
      * @return void
      */
-    protected function writeOutput(Job $job, $status)
+    public function writeOutput($job, $status)
     {
         switch ($status) {
         case 'starting':
@@ -163,12 +163,12 @@ class WorkCommand extends Command
     /**
      * Format the status output for the queue worker.
      *
-     * @param  \Illuminate\Contracts\Queue\Job $job
-     * @param  string                          $status
-     * @param  string                          $type
+     * @param  $job
+     * @param  string $status
+     * @param  string $type
      * @return void
      */
-    protected function writeStatus(Job $job, $status, $type)
+    protected function writeStatus($job, $status, $type)
     {
         $this->output->writeln(
             sprintf(
@@ -183,12 +183,12 @@ class WorkCommand extends Command
     /**
      * Store a failed job event.
      *
-     * @param  \Illuminate\Queue\Events\JobFailed $event
+     * @param  \Zilf\Queue\Events\JobFailed $event
      * @return void
      */
-    protected function logFailedJob(JobFailed $event)
+    public function logFailedJob(JobFailed $event)
     {
-        $this->laravel['queue.failer']->log(
+        Zilf::$container->getShare('queue.failer')->log(
             $event->connectionName, $event->job->getQueue(),
             $event->job->getRawBody(), $event->exception
         );

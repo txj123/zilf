@@ -2,10 +2,7 @@
 
 namespace Zilf\Queue\Jobs;
 
-use Illuminate\Container\Container;
-use Illuminate\Contracts\Queue\Job as JobContract;
-
-class SyncJob extends Job implements JobContract
+class SyncJob extends Job
 {
     /**
      * The class name of the job.
@@ -24,17 +21,15 @@ class SyncJob extends Job implements JobContract
     /**
      * Create a new job instance.
      *
-     * @param  \Illuminate\Container\Container $container
-     * @param  string                          $payload
-     * @param  string                          $connectionName
-     * @param  string                          $queue
+     * @param  string $payload
+     * @param  string $connectionName
+     * @param  string $queue
      * @return void
      */
-    public function __construct(Container $container, $payload, $connectionName, $queue)
+    public function __construct($payload, $connectionName, $queue)
     {
         $this->queue = $queue;
         $this->payload = $payload;
-        $this->container = $container;
         $this->connectionName = $connectionName;
     }
 

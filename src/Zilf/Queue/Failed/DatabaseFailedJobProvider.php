@@ -2,7 +2,8 @@
 
 namespace Zilf\Queue\Failed;
 
-use Illuminate\Support\Carbon;
+use Zilf\Db\Connection;
+use Zilf\Support\Carbon;
 use Illuminate\Database\ConnectionResolverInterface;
 
 class DatabaseFailedJobProvider implements FailedJobProviderInterface
@@ -31,12 +32,12 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
     /**
      * Create a new database failed job provider.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface $resolver
-     * @param  string                                           $database
-     * @param  string                                           $table
+     * @param  $resolver
+     * @param  string   $database
+     * @param  string   $table
      * @return void
      */
-    public function __construct(ConnectionResolverInterface $resolver, $database, $table)
+    public function __construct(Connection $resolver, $database, $table)
     {
         $this->table = $table;
         $this->resolver = $resolver;
@@ -56,13 +57,13 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
     {
         $failed_at = Carbon::now();
 
-        $exception = (string) $exception;
+        $exception = (string)$exception;
 
-        return $this->getTable()->insertGetId(
-            compact(
+        return $this->resolver->createCommand()->insert(
+            $this->table, compact(
                 'connection', 'queue', 'payload', 'exception', 'failed_at'
             )
-        );
+        )->execute();
     }
 
     /**
@@ -72,7 +73,7 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
      */
     public function all()
     {
-        return $this->getTable()->orderBy('id', 'desc')->get()->all();
+        return $this->resolver->createCommand('SELECT * FROM ' . $this->table . ' order by id desc')->queryAll();
     }
 
     /**
@@ -83,7 +84,7 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
      */
     public function find($id)
     {
-        return $this->getTable()->find($id);
+        return $this->resolver->createCommand("SELECT * FROM " . $this->table . ' WHERE id=' . $id)->queryOne();
     }
 
     /**
@@ -94,7 +95,7 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
      */
     public function forget($id)
     {
-        return $this->getTable()->where('id', $id)->delete() > 0;
+        return $this->resolver->createCommand()->delete($this->table, ['id' => $id])->execute();
     }
 
     /**
@@ -104,16 +105,6 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
      */
     public function flush()
     {
-        $this->getTable()->delete();
-    }
-
-    /**
-     * Get a new query builder instance for the table.
-     *
-     * @return \Illuminate\Database\Query\Builder
-     */
-    protected function getTable()
-    {
-        return $this->resolver->connection($this->database)->table($this->table);
+        $this->resolver->createCommand()->truncateTable($this->table)->execute();
     }
 }
