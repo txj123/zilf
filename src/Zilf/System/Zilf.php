@@ -82,14 +82,14 @@ class Zilf
     {
         if (is_string($type)) {
             static::$container->set($type, $type, $params);
-            return static::$container->get($type, $params);
+            return static::$container->getShare($type, $params);
 
         } elseif (is_array($type) && isset($type['class'])) {
             $class = $type['class'];
             unset($type['class']);
 
             static::$container->set($class, $class, ['config'=>$type]);
-            return static::$container->get($class);
+            return static::$container->getShare($class);
 
         } elseif (is_array($type)) {
 
