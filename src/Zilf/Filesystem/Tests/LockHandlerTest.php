@@ -17,7 +17,7 @@ use Zilf\Filesystem\LockHandler;
 class LockHandlerTest extends TestCase
 {
     /**
-     * @expectedException \Zilf\Filesystem\Exception\IOException
+     * @expectedException        \Zilf\Filesystem\Exception\IOException
      * @expectedExceptionMessage Failed to create "/a/b/c/d/e": mkdir(): Permission denied.
      */
     public function testConstructWhenRepositoryDoesNotExist()
@@ -29,7 +29,7 @@ class LockHandlerTest extends TestCase
     }
 
     /**
-     * @expectedException \Zilf\Filesystem\Exception\IOException
+     * @expectedException        \Zilf\Filesystem\Exception\IOException
      * @expectedExceptionMessage The directory "/" is not writable.
      */
     public function testConstructWhenRepositoryIsNotWriteable()

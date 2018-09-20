@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -13,7 +13,7 @@ use Zilf\Db\base\InvalidArgumentException;
  * Class BetweenCondition represents a `BETWEEN` condition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class BetweenCondition implements ConditionInterface
 {
@@ -38,10 +38,10 @@ class BetweenCondition implements ConditionInterface
     /**
      * Creates a condition with the `BETWEEN` operator.
      *
-     * @param mixed $column the literal to the left of $operator
-     * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param mixed $intervalStart beginning of the interval
-     * @param mixed $intervalEnd end of the interval
+     * @param mixed  $column        the literal to the left of $operator
+     * @param string $operator      the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
+     * @param mixed  $intervalStart beginning of the interval
+     * @param mixed  $intervalEnd   end of the interval
      */
     public function __construct($column, $operator, $intervalStart, $intervalEnd)
     {
@@ -85,6 +85,7 @@ class BetweenCondition implements ConditionInterface
 
     /**
      * {@inheritdoc}
+     *
      * @throws InvalidArgumentException if wrong number of operands have been given.
      */
     public static function fromArrayDefinition($operator, $operands)

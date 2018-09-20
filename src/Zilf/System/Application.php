@@ -50,10 +50,10 @@ class Application
     protected $bootstrappers = [
         \Zilf\System\Bootstrap\LoadEnvironmentVariables::class,
         \Zilf\System\Bootstrap\LoadConfiguration::class,
-//        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
-//        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
+    //        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
+    //        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
         \Zilf\System\Bootstrap\RegisterProviders::class,
-//        \Illuminate\Foundation\Bootstrap\BootProviders::class,
+    //        \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
 
     public $charset = 'UTF-8';
@@ -95,7 +95,9 @@ class Application
         $this->bootstrapWith($this->bootstrappers);
 
         //设置异常信息
-        Debug::enable();
+        if (!\in_array(\PHP_SAPI, array('cli', 'phpdbg'), true)) {
+            Debug::enable();
+        }
 
         Zilf::$container->register('request', Request::createFromGlobals());
 
@@ -144,19 +146,19 @@ class Application
         return $this->basePath . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
-    public function langPath()
+    public function langPath($path = '')
     {
-        return $this->resourcePath() . DIRECTORY_SEPARATOR . 'lang';
+        return $this->resourcePath() . DIRECTORY_SEPARATOR . 'lang' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
-    public function publicPath()
+    public function publicPath($path = '')
     {
-        return $this->basePath . DIRECTORY_SEPARATOR . 'public';
+        return $this->basePath . DIRECTORY_SEPARATOR . 'public' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
-    public function runtimePath()
+    public function runtimePath($path = '')
     {
-        return $this->runtimePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'runtime';
+        return $this->runtimePath ?: $this->basePath . DIRECTORY_SEPARATOR . 'runtime' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     public function configPath($path = '')
@@ -203,7 +205,7 @@ class Application
     }
 
     /**
-     * @param string $pathInfo
+     * @param  string $pathInfo
      * @throws \Exception
      */
     public function setRoute($pathInfo = '')
@@ -415,9 +417,20 @@ class Application
         return $this->environment;
     }
 
+    /**
+     * 判断是否是维护模式
+     *
+     * @return bool
+     */
+    public function isDownForMaintenance()
+    {
+        return file_exists($this->runtimePath().'/down');
+    }
+
     public function registerCoreContainerAliases()
     {
-        Zilf::$container->setAlias([
+        Zilf::$container->setAlias(
+            [
             'app' => \Zilf\System\Application::class,
             'blade.compiler' => \Zilf\View\Compilers\BladeCompiler::class,
             'cache' => \Zilf\Cache\CacheManager::class,
@@ -432,7 +445,9 @@ class Application
             'router' => \Zilf\Routing\Route::class,
             'validator' => \Zilf\Validation\Factory::class,
             'view' => \Zilf\View\Factory::class,
-            'consoleKernel' => \App\Console\Kernel::class
-        ]);
+            'consoleKernel' => \App\Console\Kernel::class,
+            'queue' => \Zilf\Queue\QueueManager::class,
+            ]
+        );
     }
 }

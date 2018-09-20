@@ -962,7 +962,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \Zilf\HttpFoundation\Exception\ConflictingHeadersException
-     * @dataProvider testGetClientIpsWithConflictingHeadersProvider
+     * @dataProvider      testGetClientIpsWithConflictingHeadersProvider
      */
     public function testGetClientIpsWithConflictingHeaders($httpForwarded, $httpXForwardedFor)
     {
@@ -1066,7 +1066,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \LogicException
-     * @dataProvider getContentCantBeCalledTwiceWithResourcesProvider
+     * @dataProvider      getContentCantBeCalledTwiceWithResourcesProvider
      */
     public function testGetContentCantBeCalledTwiceWithResources($first, $second)
     {
@@ -1081,7 +1081,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider getContentCantBeCalledTwiceWithResourcesProvider
-     * @requires PHP 5.6
+     * @requires     PHP 5.6
      */
     public function testGetContentCanBeCalledTwiceWithResources($first, $second)
     {

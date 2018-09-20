@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.Zilfframework.com/
+ * @link      http://www.Zilfframework.com/
  * @copyright Copyright (c) 2008 Zilf Software LLC
- * @license http://www.Zilfframework.com/license/
+ * @license   http://www.Zilfframework.com/license/
  */
 
 namespace Zilf\Db\conditions;
@@ -16,7 +16,7 @@ use Zilf\Db\Query;
  * Class BetweenColumnsConditionBuilder builds objects of [[BetweenColumnsCondition]]
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0.14
+ * @since  2.0.14
  */
 class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
 {
@@ -27,8 +27,8 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.
      *
-     * @param ExpressionInterface|BetweenColumnsCondition $expression the expression to be built.
-     * @param array $params the binding parameters.
+     * @param  ExpressionInterface|BetweenColumnsCondition $expression the expression to be built.
+     * @param  array                                       $params     the binding parameters.
      * @return string the raw SQL that will not be additionally escaped or quoted.
      */
     public function build(ExpressionInterface $expression, array &$params = [])
@@ -45,8 +45,8 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
     /**
      * Prepares column name to be used in SQL statement.
      *
-     * @param Query|ExpressionInterface|string $columnName
-     * @param array $params the binding parameters.
+     * @param  Query|ExpressionInterface|string $columnName
+     * @param  array                            $params     the binding parameters.
      * @return string
      */
     protected function escapeColumnName($columnName, &$params = [])
@@ -66,8 +66,8 @@ class BetweenColumnsConditionBuilder implements ExpressionBuilderInterface
     /**
      * Attaches $value to $params array and returns placeholder.
      *
-     * @param mixed $value
-     * @param array $params passed by reference
+     * @param  mixed $value
+     * @param  array $params passed by reference
      * @return string
      */
     protected function createPlaceholder($value, &$params)
