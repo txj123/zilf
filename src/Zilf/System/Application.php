@@ -254,16 +254,29 @@ class Application
     }
 
     /**
+     * 初始化默认路由
+     */
+    public function initDefaultRoute(){
+        $this->bundle = 'Index';
+        $this->controller = 'Index';
+        $this->action = 'index';
+        $this->params = [];
+    }
+
+    /**
      * 执行类
      *
      * @throws \Exception
      */
-    function run()
+    public function run()
     {
         $class = $this->getUnBundleUrl();
         if (!class_exists($class)) {
 
+            $this->initDefaultRoute();
+
             $class = $this->getBundleUrl();
+
             if (!class_exists($class)) {
                 $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
 
