@@ -2,19 +2,18 @@
 
 namespace Zilf\Queue;
 
-use Illuminate\Support\ServiceProvider;
+use Zilf\Support\ServiceProvider;
 use Zilf\Queue\Connectors\SqsConnector;
 use Zilf\Queue\Connectors\NullConnector;
 use Zilf\Queue\Connectors\SyncConnector;
 use Zilf\Queue\Connectors\RedisConnector;
-use Illuminate\Contracts\Debug\ExceptionHandler;
 use Zilf\Queue\Connectors\DatabaseConnector;
 use Zilf\Queue\Failed\NullFailedJobProvider;
 use Zilf\Queue\Connectors\BeanstalkdConnector;
 use Zilf\Queue\Failed\DatabaseFailedJobProvider;
 use Zilf\System\Zilf;
 
-class QueueServiceProvider
+class QueueServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.

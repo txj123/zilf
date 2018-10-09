@@ -2,8 +2,8 @@
 
 namespace DummyNamespace;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Foundation\Bus\Dispatchable;
+use Zilf\Bus\Queueable;
+use Zilf\System\Bus\Dispatchable;
 
 class DummyClass
 {

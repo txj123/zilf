@@ -2,14 +2,15 @@
 
 namespace Zilf\System\Bus;
 
-use Illuminate\Contracts\Bus\Dispatcher;
+use Zilf\Bus\Dispatcher;
+use Zilf\System\Zilf;
 
 trait Dispatchable
 {
     /**
      * Dispatch the job with the given arguments.
      *
-     * @return \Illuminate\Foundation\Bus\PendingDispatch
+     * @return \Zilf\System\Bus\PendingDispatch
      */
     public static function dispatch()
     {
@@ -23,14 +24,14 @@ trait Dispatchable
      */
     public static function dispatchNow()
     {
-        return app(Dispatcher::class)->dispatchNow(new static(...func_get_args()));
+        return Zilf::$container->getShare(Dispatcher::class)->dispatchNow(new static(...func_get_args()));
     }
 
     /**
      * Set the jobs that should run if this job is successful.
      *
      * @param  array $chain
-     * @return \Illuminate\Foundation\Bus\PendingChain
+     * @return \Zilf\System\Bus\PendingChain
      */
     public static function withChain($chain)
     {

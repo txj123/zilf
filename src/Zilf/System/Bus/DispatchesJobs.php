@@ -26,6 +26,6 @@ trait DispatchesJobs
      */
     public function dispatchNow($job)
     {
-        return app(Dispatcher::class)->dispatchNow($job);
+        return Zilf::$container->getShare(Dispatcher::class)->dispatchNow($job);
     }
 }

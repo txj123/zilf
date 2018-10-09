@@ -2,8 +2,8 @@
 
 namespace Zilf\Console\Scheduling;
 
-use Illuminate\Support\Carbon;
-use Illuminate\Console\Command;
+use Zilf\Support\Carbon;
+use Zilf\Console\Command;
 
 class ScheduleRunCommand extends Command
 {
@@ -24,14 +24,14 @@ class ScheduleRunCommand extends Command
     /**
      * The schedule instance.
      *
-     * @var \Illuminate\Console\Scheduling\Schedule
+     * @var \Zilf\Console\Scheduling\Schedule
      */
     protected $schedule;
 
     /**
      * The 24 hour timestamp this scheduler command started running.
      *
-     * @var \Illuminate\Support\Carbon;
+     * @var \Zilf\Support\Carbon;
      */
     protected $startedAt;
 
@@ -45,7 +45,7 @@ class ScheduleRunCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
+     * @param  \Zilf\Console\Scheduling\Schedule $schedule
      * @return void
      */
     public function __construct(Schedule $schedule)
@@ -64,7 +64,7 @@ class ScheduleRunCommand extends Command
      */
     public function handle()
     {
-        foreach ($this->schedule->dueEvents($this->laravel) as $event) {
+        foreach ($this->schedule->dueEvents() as $event) {
             if (! $event->filtersPass($this->laravel)) {
                 continue;
             }
@@ -86,7 +86,7 @@ class ScheduleRunCommand extends Command
     /**
      * Run the given single server event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event $event
+     * @param  \Zilf\Console\Scheduling\Event $event
      * @return void
      */
     protected function runSingleServerEvent($event)
@@ -101,7 +101,7 @@ class ScheduleRunCommand extends Command
     /**
      * Run the given event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event $event
+     * @param  \Zilf\Console\Scheduling\Event $event
      * @return void
      */
     protected function runEvent($event)

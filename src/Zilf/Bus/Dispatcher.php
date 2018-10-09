@@ -9,6 +9,7 @@ use Zilf\Queue\Queue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Bus\QueueingDispatcher;
+use Zilf\System\Zilf;
 
 class Dispatcher
 {
@@ -82,7 +83,7 @@ class Dispatcher
             };
         } else {
             $callback = function ($command) {
-                return call_user_func_array([$command, 'handle'], []);
+                return call_user_func_array([$command, 'handle'], ['kernel'=>Zilf::$container->getShare('consoleKernel')]);
             };
         }
 

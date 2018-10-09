@@ -8,6 +8,7 @@
 
 namespace Zilf\System;
 
+use App\Console\Kernel;
 use Zilf\Debug\Debug;
 use Zilf\Di\Container;
 use Zilf\Debug\Exceptions\NotFoundHttpException;
@@ -211,7 +212,7 @@ class Application
     public function setRoute($pathInfo = '')
     {
         //自定义路由
-        $route = Zilf::$container->get('router');
+        $route = Zilf::$container->getShare('router');
         $routes_config = $this->routesPath() . '/routes.php';
 
         if (file_exists($routes_config)) {
@@ -254,16 +255,29 @@ class Application
     }
 
     /**
+     * 初始化默认路由
+     */
+    public function initDefaultRoute(){
+        $this->bundle = 'Index';
+        $this->controller = 'Index';
+        $this->action = 'index';
+        $this->params = [];
+    }
+
+    /**
      * 执行类
      *
      * @throws \Exception
      */
-    function run()
+    public function run()
     {
         $class = $this->getUnBundleUrl();
         if (!class_exists($class)) {
 
+            $this->initDefaultRoute();
+
             $class = $this->getBundleUrl();
+
             if (!class_exists($class)) {
                 $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
 
@@ -431,23 +445,27 @@ class Application
     {
         Zilf::$container->setAlias(
             [
-            'app' => \Zilf\System\Application::class,
-            'blade.compiler' => \Zilf\View\Compilers\BladeCompiler::class,
-            'cache' => \Zilf\Cache\CacheManager::class,
-            'cache.store' => \Zilf\Cache\Repository::class,
+//            'app' => \Zilf\System\Application::class,
+//            'blade.compiler' => \Zilf\View\Compilers\BladeCompiler::class,
+//            'cache' => \Zilf\Cache\CacheManager::class,
+//            'cache.store' => \Zilf\Cache\Repository::class,
             'config' => \Zilf\Config\Repository::class,
-            'encrypter' => \Zilf\Security\Encrypt\Encrypter::class,
-            'db' => \Zilf\Db\Connection::class,
+//            'encrypter' => \Zilf\Security\Encrypt\Encrypter::class,
+//            'db' => \Zilf\Db\Connection::class,
             'files' => \Zilf\Filesystem\Filesystem::class,
-            'log' => \Zilf\Log\LogManager::class,
-            'redis' => \Zilf\Redis\RedisManager::class,
-            'request' => \Zilf\Support\Request::class,
+//            'log' => \Zilf\Log\LogManager::class,
+//            'redis' => \Zilf\Redis\RedisManager::class,
+//            'request' => \Zilf\Support\Request::class,
             'router' => \Zilf\Routing\Route::class,
-            'validator' => \Zilf\Validation\Factory::class,
-            'view' => \Zilf\View\Factory::class,
-            'consoleKernel' => \App\Console\Kernel::class,
-            'queue' => \Zilf\Queue\QueueManager::class,
+//            'validator' => \Zilf\Validation\Factory::class,
+//            'view' => \Zilf\View\Factory::class,
+//            'consoleKernel' => \App\Console\Kernel::class,
+//            'queue' => \Zilf\Queue\QueueManager::class,
             ]
         );
+
+        Zilf::$container->register('consoleKernel',function (){
+            return new Kernel($this->publicPath());
+        });
     }
 }

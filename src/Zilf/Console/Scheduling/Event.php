@@ -4,17 +4,17 @@ namespace Zilf\Console\Scheduling;
 
 use Closure;
 use Cron\CronExpression;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Carbon;
+use ZIlf\Helpers\Arr;
+use Zilf\Support\Carbon;
 use GuzzleHttp\Client as HttpClient;
 use Illuminate\Contracts\Mail\Mailer;
 use Symfony\Component\Process\Process;
-use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Container\Container;
+use Zilf\System\Zilf;
 
 class Event
 {
-    use Macroable, ManagesFrequencies;
+    use ManagesFrequencies;
 
     /**
      * The command string.
@@ -138,14 +138,14 @@ class Event
     /**
      * The event mutex implementation.
      *
-     * @var \Illuminate\Console\Scheduling\EventMutex
+     * @var \Zilf\Console\Scheduling\EventMutex
      */
     public $mutex;
 
     /**
      * Create a new event instance.
      *
-     * @param  \Illuminate\Console\Scheduling\Mutex $mutex
+     * @param  \Zilf\Console\Scheduling\EventMutex $mutex
      * @param  string                               $command
      * @return void
      */
@@ -266,17 +266,16 @@ class Event
     /**
      * Determine if the given event should run based on the Cron expression.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application $app
      * @return bool
      */
-    public function isDue($app)
+    public function isDue()
     {
-        if (! $this->runsInMaintenanceMode() && $app->isDownForMaintenance()) {
+        if (! $this->runsInMaintenanceMode() && Zilf::$app->isDownForMaintenance()) {
             return false;
         }
 
         return $this->expressionPasses() &&
-               $this->runsInEnvironment($app->environment());
+               $this->runsInEnvironment(Zilf::$app->getEnvironment());
     }
 
     /**

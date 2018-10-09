@@ -3,31 +3,31 @@
 namespace Zilf\Console\Scheduling;
 
 use DateTimeInterface;
-use Illuminate\Console\Application;
+use Zilf\Console\Application;
 use Illuminate\Container\Container;
-use Illuminate\Support\ProcessUtils;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Zilf\Support\ProcessUtils;
+use Zilf\System\Zilf;
 
 class Schedule
 {
     /**
      * All of the events on the schedule.
      *
-     * @var \Illuminate\Console\Scheduling\Event[]
+     * @var \Zilf\Console\Scheduling\Event[]
      */
     protected $events = [];
 
     /**
      * The event mutex implementation.
      *
-     * @var \Illuminate\Console\Scheduling\EventMutex
+     * @var \Zilf\Console\Scheduling\EventMutex
      */
     protected $eventMutex;
 
     /**
      * The scheduling mutex implementation.
      *
-     * @var \Illuminate\Console\Scheduling\SchedulingMutex
+     * @var \Zilf\Console\Scheduling\SchedulingMutex
      */
     protected $schedulingMutex;
 
@@ -38,15 +38,16 @@ class Schedule
      */
     public function __construct()
     {
-        $container = Container::getInstance();
+        Zilf::$container->register(CacheEventMutex::class,function (){
+            return new CacheEventMutex(Zilf::$container->getShare('cache'));
+        });
+        Zilf::$container->register(CacheSchedulingMutex::class,function (){
+            return new CacheSchedulingMutex(Zilf::$container->getShare('cache'));
+        });
 
-        $this->eventMutex = $container->bound(EventMutex::class)
-                                ? $container->make(EventMutex::class)
-                                : $container->make(CacheEventMutex::class);
+        $this->eventMutex = Zilf::$container->getShare(CacheEventMutex::class);
 
-        $this->schedulingMutex = $container->bound(SchedulingMutex::class)
-                                ? $container->make(SchedulingMutex::class)
-                                : $container->make(CacheSchedulingMutex::class);
+        $this->schedulingMutex =  Zilf::$container->getShare(CacheSchedulingMutex::class);
     }
 
     /**
@@ -54,7 +55,7 @@ class Schedule
      *
      * @param  string|callable $callback
      * @param  array           $parameters
-     * @return \Illuminate\Console\Scheduling\CallbackEvent
+     * @return \Zilf\Console\Scheduling\CallbackEvent
      */
     public function call($callback, array $parameters = [])
     {
@@ -75,7 +76,7 @@ class Schedule
     public function command($command, array $parameters = [])
     {
         if (class_exists($command)) {
-            $command = Container::getInstance()->make($command)->getName();
+            $command = (new $command)->getName();
         }
 
         return $this->exec(
@@ -88,7 +89,7 @@ class Schedule
      *
      * @param  object|string $job
      * @param  string|null   $queue
-     * @return \Illuminate\Console\Scheduling\CallbackEvent
+     * @return \Zilf\Console\Scheduling\CallbackEvent
      */
     public function job($job, $queue = null)
     {
@@ -110,7 +111,7 @@ class Schedule
      *
      * @param  string $command
      * @param  array  $parameters
-     * @return \Illuminate\Console\Scheduling\Event
+     * @return \Zilf\Console\Scheduling\Event
      */
     public function exec($command, array $parameters = [])
     {
@@ -151,7 +152,7 @@ class Schedule
     /**
      * Determine if the server is allowed to run this event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event $event
+     * @param  \Zilf\Console\Scheduling\Event $event
      * @param  \DateTimeInterface                   $time
      * @return bool
      */
@@ -163,18 +164,17 @@ class Schedule
     /**
      * Get all of the events on the schedule that are due.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application $app
-     * @return \Illuminate\Support\Collection
+     * @return \Zilf\Support\Collection
      */
-    public function dueEvents($app)
+    public function dueEvents()
     {
-        return collect($this->events)->filter->isDue($app);
+        return collect($this->events)->filter->isDue();
     }
 
     /**
      * Get all of the events on the schedule.
      *
-     * @return \Illuminate\Console\Scheduling\Event[]
+     * @return \Zilf\Console\Scheduling\Event[]
      */
     public function events()
     {

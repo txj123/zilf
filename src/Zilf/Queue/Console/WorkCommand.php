@@ -42,14 +42,14 @@ class WorkCommand extends Command
     /**
      * The queue worker instance.
      *
-     * @var \Illuminate\Queue\Worker
+     * @var \Zilf\Queue\Worker
      */
     protected $worker;
 
     /**
      * Create a new queue work command.
      *
-     * @param  \Illuminate\Queue\Worker $worker
+     * @param  \Zilf\Queue\Worker $worker
      * @return void
      */
     public function __construct(Worker $worker)
@@ -108,7 +108,7 @@ class WorkCommand extends Command
     /**
      * Gather all of the queue worker options as a single object.
      *
-     * @return \Illuminate\Queue\WorkerOptions
+     * @return \Zilf\Queue\WorkerOptions
      */
     protected function gatherWorkerOptions()
     {
