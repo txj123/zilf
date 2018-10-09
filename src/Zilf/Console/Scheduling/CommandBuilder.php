@@ -2,8 +2,8 @@
 
 namespace Zilf\Console\Scheduling;
 
-use Illuminate\Console\Application;
-use Illuminate\Support\ProcessUtils;
+use Zilf\Console\Application;
+use Zilf\Support\ProcessUtils;
 
 class CommandBuilder
 {
