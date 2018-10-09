@@ -2,7 +2,7 @@
 
 namespace Zilf\Console\Scheduling;
 
-use Illuminate\Console\Command;
+use Zilf\Console\Command;
 
 class ScheduleFinishCommand extends Command
 {
@@ -30,14 +30,14 @@ class ScheduleFinishCommand extends Command
     /**
      * The schedule instance.
      *
-     * @var \Illuminate\Console\Scheduling\Schedule
+     * @var \Zilf\Console\Scheduling\Schedule
      */
     protected $schedule;
 
     /**
      * Create a new command instance.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
+     * @param  \Zilf\Console\Scheduling\Schedule $schedule
      * @return void
      */
     public function __construct(Schedule $schedule)

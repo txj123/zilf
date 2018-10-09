@@ -3,7 +3,7 @@
 namespace Zilf\Console;
 
 use Closure;
-use Illuminate\Support\ProcessUtils;
+use Zilf\Support\ProcessUtils;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Container\Container;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -85,7 +85,7 @@ class Application extends SymfonyApplication
      */
     public static function artisanBinary()
     {
-        return defined('ARTISAN_BINARY') ? ProcessUtils::escapeArgument(ARTISAN_BINARY) : 'artisan';
+        return defined('ARTISAN_BINARY') ? ProcessUtils::escapeArgument(ARTISAN_BINARY) : 'txj';
     }
 
     /**

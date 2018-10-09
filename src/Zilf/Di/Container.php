@@ -386,8 +386,9 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取类文件的绝对路径
      *
-     * @param  string $class
+     * @param $class
      * @return string
+     * @throws \ReflectionException
      */
     public function getClassFilePath($class)
     {
@@ -452,8 +453,9 @@ class Container implements ArrayAccess, ContainerInterface
     /**
      * 获取类的构造函数的参数，以及reflections对象
      *
-     * @param  $class
+     * @param $class
      * @return array
+     * @throws \ReflectionException
      */
     private function getDependencies($class)
     {

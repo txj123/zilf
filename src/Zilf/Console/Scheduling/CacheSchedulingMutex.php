@@ -3,14 +3,14 @@
 namespace Zilf\Console\Scheduling;
 
 use DateTimeInterface;
-use Illuminate\Contracts\Cache\Factory as Cache;
+use Zilf\Cache\CacheManager as Cache;
 
 class CacheSchedulingMutex implements SchedulingMutex
 {
     /**
      * The cache factory implementation.
      *
-     * @var \Illuminate\Contracts\Cache\Factory
+     * @var \Zilf\Cache\CacheManager
      */
     public $cache;
 
@@ -24,7 +24,7 @@ class CacheSchedulingMutex implements SchedulingMutex
     /**
      * Create a new scheduling strategy.
      *
-     * @param  \Illuminate\Contracts\Cache\Factory $cache
+     * @param  \Zilf\Cache\CacheManager $cache
      * @return void
      */
     public function __construct(Cache $cache)
@@ -35,7 +35,7 @@ class CacheSchedulingMutex implements SchedulingMutex
     /**
      * Attempt to obtain a scheduling mutex for the given event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event $event
+     * @param  \Zilf\Console\Scheduling\Event $event
      * @param  \DateTimeInterface                   $time
      * @return bool
      */
@@ -49,7 +49,7 @@ class CacheSchedulingMutex implements SchedulingMutex
     /**
      * Determine if a scheduling mutex exists for the given event.
      *
-     * @param  \Illuminate\Console\Scheduling\Event $event
+     * @param  \Zilf\Console\Scheduling\Event $event
      * @param  \DateTimeInterface                   $time
      * @return bool
      */

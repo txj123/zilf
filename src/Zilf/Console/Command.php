@@ -2,7 +2,7 @@
 
 namespace Zilf\Console;
 
-use Illuminate\Support\Str;
+use Zilf\Helpers\Str;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -26,7 +26,7 @@ class Command extends SymfonyCommand
     /**
      * The output interface implementation.
      *
-     * @var \Illuminate\Console\OutputStyle
+     * @var \Zilf\Console\OutputStyle
      */
     protected $output;
 

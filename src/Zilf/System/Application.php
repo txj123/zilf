@@ -8,6 +8,7 @@
 
 namespace Zilf\System;
 
+use App\Console\Kernel;
 use Zilf\Debug\Debug;
 use Zilf\Di\Container;
 use Zilf\Debug\Exceptions\NotFoundHttpException;
@@ -462,5 +463,9 @@ class Application
 //            'queue' => \Zilf\Queue\QueueManager::class,
             ]
         );
+
+        Zilf::$container->register('consoleKernel',function (){
+            return new Kernel($this->publicPath());
+        });
     }
 }

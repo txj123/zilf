@@ -8,12 +8,13 @@ use Throwable;
 use ReflectionClass;
 use Zilf\Console\Command;
 use Symfony\Component\Finder\Finder;
-use Illuminate\Console\Scheduling\Schedule;
+use Zilf\Console\Scheduling\Schedule;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application;
 use Zilf\Console\Application as Artisan;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Zilf\Console\Commands\QueuedCommand;
 use Zilf\Di\Container;
 use Zilf\Helpers\Arr;
 use Zilf\Helpers\Str;
@@ -67,6 +68,23 @@ class Kernel
     public function __construct($publicPath)
     {
         new \Zilf\System\Application($publicPath);
+        $this->defineConsoleSchedule();
+    }
+
+    /**
+     * Define the application's command schedule.
+     *
+     * @return void
+     */
+    protected function defineConsoleSchedule()
+    {
+        Zilf::$container->register(Schedule::class,function (){
+            return new Schedule();
+        });
+
+        $schedule = Zilf::$container->getShare(Schedule::class);
+
+        $this->schedule($schedule);
     }
 
     /**
@@ -209,6 +227,18 @@ class Kernel
         $this->bootstrap();
 
         return $this->getArtisan()->call($command, $parameters, $outputBuffer);
+    }
+
+    /**
+     * Queue the given console command.
+     *
+     * @param  string  $command
+     * @param  array   $parameters
+     * @return \Zilf\system\Bus\PendingDispatch
+     */
+    public function queue($command, array $parameters = [])
+    {
+        return QueuedCommand::dispatch(func_get_args());
     }
 
     /**

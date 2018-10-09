@@ -3,6 +3,7 @@
 namespace Zilf\System\Providers;
 
 use Zilf\Console\Commands\ServeCommand;
+use Zilf\Console\Scheduling\Schedule;
 use Zilf\Support\ServiceProvider;
 use Illuminate\Queue\Console\TableCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
@@ -27,7 +28,7 @@ use Illuminate\Session\Console\SessionTableCommand;
 use Illuminate\Foundation\Console\PolicyMakeCommand;
 use Illuminate\Foundation\Console\RouteCacheCommand;
 use Illuminate\Foundation\Console\RouteClearCommand;
-use Illuminate\Console\Scheduling\ScheduleRunCommand;
+use Zilf\Console\Scheduling\ScheduleRunCommand;
 use Illuminate\Foundation\Console\ConfigCacheCommand;
 use Illuminate\Foundation\Console\ConfigClearCommand;
 use Illuminate\Foundation\Console\ConsoleMakeCommand;
@@ -44,7 +45,7 @@ use Illuminate\Foundation\Console\ClearCompiledCommand;
 use Illuminate\Foundation\Console\EventGenerateCommand;
 use Illuminate\Foundation\Console\ExceptionMakeCommand;
 use Illuminate\Foundation\Console\VendorPublishCommand;
-use Illuminate\Console\Scheduling\ScheduleFinishCommand;
+use Zilf\Console\Scheduling\ScheduleFinishCommand;
 use Illuminate\Database\Console\Seeds\SeederMakeCommand;
 use Illuminate\Foundation\Console\PackageDiscoverCommand;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
@@ -96,6 +97,8 @@ class ArtisanServiceProvider extends ServiceProvider
         'QueueRestart' => 'command.queue.restart',
         'QueueRetry' => 'command.queue.retry',
         'QueueWork' => 'command.queue.work',
+        'ScheduleFinish' => ScheduleFinishCommand::class,
+        'ScheduleRun' => ScheduleRunCommand::class,
         /*'CacheForget' => 'command.cache.forget',
         'ClearCompiled' => 'command.clear-compiled',
         'ClearResets' => 'command.auth.resets.clear',
@@ -125,8 +128,6 @@ class ArtisanServiceProvider extends ServiceProvider
         'RouteClear' => 'command.route.clear',
         'RouteList' => 'command.route.list',
         'Seed' => 'command.seed',
-        'ScheduleFinish' => ScheduleFinishCommand::class,
-        'ScheduleRun' => ScheduleRunCommand::class,
         'StorageLink' => 'command.storage.link',
         'Up' => 'command.up',
         'ViewClear' => 'command.view.clear',*/
@@ -982,7 +983,9 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerScheduleFinishCommand()
     {
-        Zilf::$container->register(ScheduleFinishCommand::class, ScheduleFinishCommand::class);
+        Zilf::$container->register(ScheduleFinishCommand::class, function (){
+            return new ScheduleFinishCommand(new Schedule());
+        });
     }
 
     /**
@@ -992,7 +995,10 @@ class ArtisanServiceProvider extends ServiceProvider
      */
     protected function registerScheduleRunCommand()
     {
-        Zilf::$container->register(ScheduleRunCommand::class, ScheduleRunCommand::class);
+        Zilf::$container->register(ScheduleRunCommand::class, function (){
+            $schedule = Zilf::$container->getShare(Schedule::class);
+            return new ScheduleRunCommand($schedule);
+        });
     }
 
     /**
