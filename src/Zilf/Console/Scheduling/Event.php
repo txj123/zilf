@@ -169,10 +169,9 @@ class Event
     /**
      * Run the given event.
      *
-     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
-    public function run(Container $container)
+    public function run()
     {
         if ($this->withoutOverlapping 
             && ! $this->mutex->create($this)
@@ -181,8 +180,8 @@ class Event
         }
 
         $this->runInBackground
-                    ? $this->runCommandInBackground($container)
-                    : $this->runCommandInForeground($container);
+                    ? $this->runCommandInBackground()
+                    : $this->runCommandInForeground();
     }
 
     /**
@@ -198,29 +197,27 @@ class Event
     /**
      * Run the command in the foreground.
      *
-     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
-    protected function runCommandInForeground(Container $container)
+    protected function runCommandInForeground()
     {
-        $this->callBeforeCallbacks($container);
+        $this->callBeforeCallbacks();
 
         (new Process(
             $this->buildCommand(), base_path(), null, null, null
         ))->run();
 
-        $this->callAfterCallbacks($container);
+        $this->callAfterCallbacks();
     }
 
     /**
      * Run the command in the background.
      *
-     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
-    protected function runCommandInBackground(Container $container)
+    protected function runCommandInBackground()
     {
-        $this->callBeforeCallbacks($container);
+        $this->callBeforeCallbacks();
 
         (new Process(
             $this->buildCommand(), base_path(), null, null, null
@@ -230,26 +227,24 @@ class Event
     /**
      * Call all of the "before" callbacks for the event.
      *
-     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
-    public function callBeforeCallbacks(Container $container)
+    public function callBeforeCallbacks()
     {
         foreach ($this->beforeCallbacks as $callback) {
-            $container->call($callback);
+            call_user_func_array($callback,[]);
         }
     }
 
     /**
      * Call all of the "after" callbacks for the event.
      *
-     * @param  \Illuminate\Contracts\Container\Container $container
      * @return void
      */
-    public function callAfterCallbacks(Container $container)
+    public function callAfterCallbacks()
     {
         foreach ($this->afterCallbacks as $callback) {
-            $container->call($callback);
+            call_user_func_array($callback,[]);
         }
     }
 

@@ -65,9 +65,9 @@ class ScheduleRunCommand extends Command
     public function handle()
     {
         foreach ($this->schedule->dueEvents() as $event) {
-            if (! $event->filtersPass($this->laravel)) {
+           /* if (! $event->filtersPass($this->laravel)) {
                 continue;
-            }
+            }*/
 
             if ($event->onOneServer) {
                 $this->runSingleServerEvent($event);
@@ -108,7 +108,7 @@ class ScheduleRunCommand extends Command
     {
         $this->line('<info>Running scheduled command:</info> '.$event->getSummaryForDisplay());
 
-        $event->run($this->laravel);
+        $event->run();
 
         $this->eventsRan = true;
     }
