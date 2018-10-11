@@ -19,11 +19,6 @@ use Zilf\Support\Request;
 class Application
 {
     /**
-     * Zilf 框架的版本号
-     */
-    const VERSION = '5.6.24';
-
-    /**
      * web服务器根目录的路径
      */
     protected $basePath;
@@ -78,6 +73,7 @@ class Application
      * @var Route
      */
     public $route;
+    protected $is_route = false;
 
     public $database = 'db.default';
 
@@ -221,15 +217,16 @@ class Application
 
             $class_exec = $route->dispatch($pathInfo);
             if ($class_exec) {
+                $this->is_route = true;
 
                 list($pcre, $pattern, $cb, $options) = $class_exec;
-                $segments = explode('\\', $cb[0]);
-
-                $this->bundle = $segments[2];
-                $this->controller = rtrim($segments[4], $this->controller_suffix);
-                $this->action = $cb[1] . $this->action_suffix;
-                $this->params = isset($options['vars']) ? $options['vars'] : [];
-
+                $this->segments = $cb[0];
+                $this->action = $cb[1];
+                if(isset($options['variables'])){
+                    foreach ($options['variables'] as $r_name){
+                        $this->params[$r_name] = $options['vars'][$r_name];
+                    }
+                }
             } else {
                 $pathInfo = trim($pathInfo, '/');
 
@@ -271,21 +268,25 @@ class Application
      */
     public function run()
     {
-        $class = $this->getUnBundleUrl();
-        if (!class_exists($class)) {
-
-            $this->initDefaultRoute();
-
-            $class = $this->getBundleUrl();
-
+        if($this->is_route){
+            $class = $this->segments;
+        }else{
+            $class = $this->getUnBundleUrl();
             if (!class_exists($class)) {
-                $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
 
-                if ($referer = Zilf::$container['request']->headers->get('referer')) {
-                    $message .= sprintf(' (from "%s")', $referer);
-                }
-                throw new NotFoundHttpException($message);
+                $this->initDefaultRoute();
+
+                $class = $this->getBundleUrl();
             }
+        }
+
+        if (!class_exists($class)) {
+            $message = sprintf('No route found for "%s %s"', Zilf::$container['request']->getMethod(), Zilf::$container['request']->getPathInfo());
+
+            if ($referer = Zilf::$container['request']->headers->get('referer')) {
+                $message .= sprintf(' (from "%s")', $referer);
+            }
+            throw new NotFoundHttpException($message);
         }
 
         unset($this->segments);
@@ -298,7 +299,7 @@ class Application
                     $_GET['zget' . $key] = $row;
                 }
             }
-            Zilf::$container->get('request')->query->add($_GET);
+            Zilf::$container->getShare('request')->query->add($_GET);
         }
 
         $object = Zilf::$container->build($class, []);
@@ -431,6 +432,10 @@ class Application
         return $this->environment;
     }
 
+    public function isDebug(){
+        return $this->is_debug;
+    }
+
     /**
      * 判断是否是维护模式
      *
@@ -445,22 +450,9 @@ class Application
     {
         Zilf::$container->setAlias(
             [
-//            'app' => \Zilf\System\Application::class,
-//            'blade.compiler' => \Zilf\View\Compilers\BladeCompiler::class,
-//            'cache' => \Zilf\Cache\CacheManager::class,
-//            'cache.store' => \Zilf\Cache\Repository::class,
             'config' => \Zilf\Config\Repository::class,
-//            'encrypter' => \Zilf\Security\Encrypt\Encrypter::class,
-//            'db' => \Zilf\Db\Connection::class,
             'files' => \Zilf\Filesystem\Filesystem::class,
-//            'log' => \Zilf\Log\LogManager::class,
-//            'redis' => \Zilf\Redis\RedisManager::class,
-//            'request' => \Zilf\Support\Request::class,
             'router' => \Zilf\Routing\Route::class,
-//            'validator' => \Zilf\Validation\Factory::class,
-//            'view' => \Zilf\View\Factory::class,
-//            'consoleKernel' => \App\Console\Kernel::class,
-//            'queue' => \Zilf\Queue\QueueManager::class,
             ]
         );
 
