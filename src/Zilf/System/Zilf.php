@@ -23,7 +23,7 @@ class Zilf
     /**
      * Zilf 框架的版本号
      */
-    const VERSION = '1.1.6';
+    const VERSION = '1.1.6.1';
 
     /**
      * 框架名称
