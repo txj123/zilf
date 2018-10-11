@@ -288,7 +288,7 @@ class Kernel
     protected function getArtisan()
     {
         if (is_null($this->artisan)) {
-            return $this->artisan = (new Artisan(Zilf::$version))
+            return $this->artisan = (new Artisan(Zilf::VERSION))
                 ->resolveCommands($this->commands);
         }
 
