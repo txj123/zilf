@@ -20,7 +20,15 @@ class Zilf
      */
     public static $app;
 
-    public static $version = '1.0';
+    /**
+     * Zilf 框架的版本号
+     */
+    const VERSION = '1.1.5';
+
+    /**
+     * 框架名称
+     */
+    const NAME = 'Zilf';
 
     /**
      * @var Container 容器类
@@ -33,7 +41,7 @@ class Zilf
      */
     public static function getVersion()
     {
-        return self::$version;
+        return self::VERSION;
     }
 
     /**
