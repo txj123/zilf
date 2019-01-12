@@ -90,11 +90,70 @@ namespace Zilf\Facades;
  * Class Request
  * @package Zilf\Facades
  */
-
 class Request extends Facade
 {
+    static $route = [];
+    static $routeInfo = [];
+
+    /**
+     * 泛域名
+     * @var string
+     */
+    static $panDomain = '';
+
     protected static function getFacadeAccessor()
     {
         return 'request';
+    }
+
+    /**
+     * 当前URL的访问后缀
+     * @access public
+     * @return string
+     */
+    public static function ext()
+    {
+        return pathinfo(self::getPathInfo(), PATHINFO_EXTENSION);
+    }
+
+    public static function setRouteVars(array $route)
+    {
+        self::$route = array_merge(self::$route, $route);
+    }
+
+    /**
+     * 获取当前请求的路由信息
+     * @access public
+     * @param  array $route 路由名称
+     * @return array
+     */
+    public static function routeInfo(array $route = [])
+    {
+        if (!empty($route)) {
+            self::$routeInfo = $route;
+        }
+
+        return self::$routeInfo;
+    }
+
+    /**
+     * 设置当前泛域名的值
+     * @access public
+     * @param  string $domain 域名
+     * @return $this
+     */
+    public static function setPanDomain($domain)
+    {
+        self::$panDomain = $domain;
+    }
+
+    /**
+     * 获取当前泛域名的值
+     * @access public
+     * @return string
+     */
+    public static function panDomain()
+    {
+        return self::$panDomain;
     }
 }

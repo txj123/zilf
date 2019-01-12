@@ -12,8 +12,10 @@ use App\Console\Kernel;
 use Zilf\Debug\Debug;
 use Zilf\Di\Container;
 use Zilf\Debug\Exceptions\NotFoundHttpException;
+use Zilf\Facades\Router;
 use Zilf\HttpFoundation\Response;
 use Zilf\Routing\Route;
+
 use Zilf\Support\Request;
 
 class Application
@@ -43,13 +45,19 @@ class Application
      */
     protected $environmentFile;
 
+    /**
+     * pathinfo（不含后缀）
+     * @var string
+     */
+    protected $pathInfo;
+
     protected $bootstrappers = [
         \Zilf\System\Bootstrap\LoadEnvironmentVariables::class,
         \Zilf\System\Bootstrap\LoadConfiguration::class,
-    //        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
-    //        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
+        //        \Illuminate\Foundation\Bootstrap\HandleExceptions::class,
+        //        \Illuminate\Foundation\Bootstrap\RegisterFacades::class,
         \Zilf\System\Bootstrap\RegisterProviders::class,
-    //        \Illuminate\Foundation\Bootstrap\BootProviders::class,
+        //        \Illuminate\Foundation\Bootstrap\BootProviders::class,
     ];
 
     public $charset = 'UTF-8';
@@ -74,6 +82,7 @@ class Application
      */
     public $route;
     protected $is_route = false;
+    protected $is_console = false;
 
     public $database = 'db.default';
 
@@ -100,6 +109,7 @@ class Application
 
         //终端访问
         if ($this->runningInConsole()) {
+            $this->is_console = true;
 
             $argv = $_SERVER['argv'];
             $this->setRoute(isset($argv[1]) ? $argv[1] : '');
@@ -112,10 +122,8 @@ class Application
             unset($argv);
 
         } else {
-
             $pathInfo = Zilf::$container->get('request')->getPathInfo();
             $this->setRoute($pathInfo);
-
         }
     }
 
@@ -207,54 +215,86 @@ class Application
      */
     public function setRoute($pathInfo = '')
     {
-        //自定义路由
-        $route = Zilf::$container->getShare('router');
-        $routes_config = $this->routesPath() . '/routes.php';
+        $this->updatePathInfo($pathInfo);
 
-        if (file_exists($routes_config)) {
+        //获取默认的配置
+        $this->initDefaultRoute();
+
+        /**
+         * @var Router $router
+         */
+        $router = Zilf::$container->getShare('router');
+        $routes_config = $this->routesPath() . '/routes.php';   //自定义路由
+
+        if (!$this->is_console && file_exists($routes_config)) {
             //加载路由的配置文件
             include $routes_config;
 
-            $class_exec = $route->dispatch($pathInfo);
-            if ($class_exec) {
+            $dispatch = $router->check($this->pathInfo, false);
+            if ($dispatch['is_route'] === true) {
                 $this->is_route = true;
 
-                list($pcre, $pattern, $cb, $options) = $class_exec;
-                $this->segments = $cb[0];
-                $this->action = $cb[1];
-                if(isset($options['variables'])){
-                    foreach ($options['variables'] as $r_name){
-                        $this->params[$r_name] = $options['vars'][$r_name];
-                    }
-                }
-            } else {
-                $pathInfo = trim($pathInfo, '/');
-
-                //设置路由
-                if ($pathInfo) {
-
-                    $this->segments = explode('/', $pathInfo);
-
+                //路由匹配成功
+                if ($dispatch['route'] instanceof \Closure) {
+                    $this->segments = $dispatch['route'];
                 } else {
-                    //获取默认的配置
-                    $framework = Zilf::$container->getShare('config')->get('app.framework');
-                    if (!empty($framework)) {
-                        foreach ($framework as $key => $value) {
-                            if ($value) {
-                                $this->$key = $value;
-                            }
-                        }
-                    }
+                    $this->segments = explode('/', $dispatch['route']);
                 }
 
+                $this->option = $dispatch['option'];
+                $this->params = $dispatch['param'];
+            } else {
+                unset($dispatch['is_route']);
+                $this->segments = $dispatch;
             }
+        } else {
+            $this->segments = explode('/', $pathInfo);
         }
     }
 
     /**
+     * 获取当前请求URL的pathinfo信息(不含URL后缀)
+     * @access public
+     * @return string
+     */
+    public function updatePathInfo($pathinfo)
+    {
+        if (is_null($this->pathInfo)) {
+            $suffix = Zilf::$container->getShare('config')->get('app.url_html_suffix');
+
+            if (false === $suffix) {
+                // 禁止伪静态访问
+                $this->pathInfo = $pathinfo;
+            } elseif ($suffix) {
+                // 去除正常的URL后缀
+                $this->pathInfo = preg_replace('/\.(' . ltrim($suffix, '.') . ')$/i', '', $pathinfo);
+            } else {
+                // 允许任何后缀访问
+                $this->pathInfo = preg_replace('/\.' . $this->ext($pathinfo) . '$/i', '', $pathinfo);
+            }
+        }
+
+        $this->pathInfo = empty($pathinfo) || '/' == $pathinfo ? '' : ltrim($pathinfo, '/');
+
+        return $this->pathInfo;
+    }
+
+    /**
+     * 当前URL的访问后缀
+     * @access public
+     * @return string
+     */
+    public function ext($pathInfo)
+    {
+        return pathinfo($pathInfo, PATHINFO_EXTENSION);
+    }
+
+
+    /**
      * 初始化默认路由
      */
-    public function initDefaultRoute(){
+    public function initDefaultRoute()
+    {
         $this->bundle = 'Index';
         $this->controller = 'Index';
         $this->action = 'index';
@@ -268,10 +308,16 @@ class Application
      */
     public function run()
     {
-        if($this->is_route){
-            $class = $this->segments;
-        }else{
+        if ($this->is_route == true) {
+            if ($this->segments instanceof \Closure) {
+                echo call_user_func($this->segments);
+                die();
+            } else {
+                $class = $this->getBundleUrl();
+            }
+        } else {
             $class = $this->getUnBundleUrl();
+
             if (!class_exists($class)) {
 
                 $this->initDefaultRoute();
@@ -294,7 +340,8 @@ class Application
         //将参数追加到GET里面
         if (!empty($this->params)) {
             foreach ($this->params as $key => $row) {
-                if ($row === '') {
+                if (is_string($key)) {
+                    $_GET[$key] = $row;
                 } else {
                     $_GET['zget' . $key] = $row;
                 }
@@ -432,7 +479,8 @@ class Application
         return $this->environment;
     }
 
-    public function isDebug(){
+    public function isDebug()
+    {
         return $this->is_debug;
     }
 
@@ -443,20 +491,19 @@ class Application
      */
     public function isDownForMaintenance()
     {
-        return file_exists($this->runtimePath().'/down');
+        return file_exists($this->runtimePath() . '/down');
     }
 
     public function registerCoreContainerAliases()
     {
         Zilf::$container->setAlias(
             [
-            'config' => \Zilf\Config\Repository::class,
-            'files' => \Zilf\Filesystem\Filesystem::class,
-            'router' => \Zilf\Routing\Route::class,
+                'config' => \Zilf\Config\Repository::class,
+                'files' => \Zilf\Filesystem\Filesystem::class
             ]
         );
 
-        Zilf::$container->register('consoleKernel',function (){
+        Zilf::$container->register('consoleKernel', function () {
             return new Kernel($this->publicPath());
         });
     }
