@@ -363,6 +363,7 @@ class Application extends Container implements ApplicationContract
             }
 
             $class = $this->getUnBundleUrl();
+
             if (!class_exists($class)) {
                 $class = $this->getBundleUrl();
                 if (!class_exists($class)) {
