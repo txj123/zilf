@@ -137,7 +137,7 @@ class Application extends Container implements ApplicationContract
     protected $bootstrappers = [
         \Zilf\System\Bootstrap\LoadEnvironmentVariables::class,
         \Zilf\System\Bootstrap\LoadConfiguration::class,
-//        \Zilf\System\Bootstrap\HandleExceptions::class,
+        \Zilf\System\Bootstrap\HandleExceptions::class,
         \Zilf\System\Bootstrap\RegisterFacades::class,
         \Zilf\System\Bootstrap\RegisterProviders::class
     ];
@@ -159,9 +159,7 @@ class Application extends Container implements ApplicationContract
 
     public $environment;  //开发环境
     public $is_debug = false;  //调试模式是否开启
-    /**
-     * @var Route
-     */
+
     public $route;
     protected $is_route = false;
     protected $is_console = false;
@@ -572,7 +570,7 @@ class Application extends Container implements ApplicationContract
     public function registerCoreContainerAliases()
     {
         foreach ([
-                     'auth.driver' => [\Illuminate\Contracts\Auth\Guard::class],
+                     'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Illuminate\Contracts\Foundation\Application::class, \Psr\Container\ContainerInterface::class],
                      'blade.compiler' => [\Illuminate\View\Compilers\BladeCompiler::class],
                      'cache' => [\Illuminate\Cache\CacheManager::class, \Illuminate\Contracts\Cache\Factory::class],
                      'cache.store' => [\Illuminate\Cache\Repository::class, \Illuminate\Contracts\Cache\Repository::class, \Psr\SimpleCache\CacheInterface::class],
@@ -907,12 +905,12 @@ class Application extends Container implements ApplicationContract
     /**
      * Load the provider for a deferred service.
      *
-     * @param  string  $service
+     * @param string $service
      * @return void
      */
     public function loadDeferredProvider($service)
     {
-        if (! $this->isDeferredService($service)) {
+        if (!$this->isDeferredService($service)) {
             return;
         }
 
@@ -921,7 +919,7 @@ class Application extends Container implements ApplicationContract
         // If the service provider has not already been loaded and registered we can
         // register it with the application and remove the service from this list
         // of deferred services, since it will already be loaded on subsequent.
-        if (! isset($this->loadedProviders[$provider])) {
+        if (!isset($this->loadedProviders[$provider])) {
             $this->registerDeferredProvider($provider, $service);
         }
     }
@@ -944,7 +942,7 @@ class Application extends Container implements ApplicationContract
 
         $this->register($instance = new $provider($this));
 
-        if (! $this->isBooted()) {
+        if (!$this->isBooted()) {
             $this->booting(function () use ($instance) {
                 $this->bootProvider($instance);
             });

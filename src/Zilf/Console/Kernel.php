@@ -274,7 +274,7 @@ class Kernel implements KernelContract
      *
      * @param  string  $command
      * @param  array  $parameters
-     * @return \Zilf\Bus\PendingDispatch
+     * @return \Zilf\System\Bus\PendingDispatch
      */
     public function queue($command, array $parameters = [])
     {

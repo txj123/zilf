@@ -5,7 +5,7 @@ namespace Zilf\Console;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Console\Kernel as KernelContract;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Zilf\Bus\Dispatchable;
+use Zilf\System\Bus\Dispatchable;
 
 class QueuedCommand implements ShouldQueue
 {

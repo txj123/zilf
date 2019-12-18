@@ -4,8 +4,8 @@ namespace Zilf\Console;
 
 use Closure;
 use Illuminate\Console\Command;
-use Illuminate\Routing\Route;
-use Illuminate\Routing\Router;
+use Zilf\Routing\Route;
+use Zilf\Routing\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,7 +29,7 @@ class RouteListCommand extends Command
     /**
      * The router instance.
      *
-     * @var \Illuminate\Routing\Router
+     * @var \Zilf\Routing\Router
      */
     protected $router;
 
@@ -50,7 +50,7 @@ class RouteListCommand extends Command
     /**
      * Create a new route command instance.
      *
-     * @param  \Illuminate\Routing\Router  $router
+     * @param  \Zilf\Routing\Router  $router
      * @return void
      */
     public function __construct(Router $router)
