@@ -2,18 +2,12 @@
 
 namespace Zilf\System\Providers;
 
-use Zilf\Support\AggregateServiceProvider;
-//use Zilf\Database\MigrationServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\Database\MigrationServiceProvider;
+use Illuminate\Support\AggregateServiceProvider;
 
-class ConsoleSupportServiceProvider extends AggregateServiceProvider
+class ConsoleSupportServiceProvider extends AggregateServiceProvider implements DeferrableProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * The provider class names.
      *
@@ -21,6 +15,7 @@ class ConsoleSupportServiceProvider extends AggregateServiceProvider
      */
     protected $providers = [
         ArtisanServiceProvider::class,
-    //        MigrationServiceProvider::class,
+        MigrationServiceProvider::class,
+        ComposerServiceProvider::class,
     ];
 }

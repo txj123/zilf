@@ -1,4 +1,10 @@
 <?php
+use Zilf\System\Zilf;
+use Illuminate\Container\Container;
+use Zilf\System\Bus\PendingDispatch;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Queue\CallQueuedClosure;
+use Illuminate\Queue\SerializableClosure;
 
 if (! function_exists('base_path')) {
     /**
@@ -9,7 +15,7 @@ if (! function_exists('base_path')) {
      */
     function base_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->basePath($path);
+        return Zilf::$app->basePath($path);
     }
 }
 
@@ -22,7 +28,7 @@ if (! function_exists('app_path')) {
      */
     function app_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->path($path);
+        return Zilf::$app->path($path);
     }
 }
 
@@ -30,7 +36,7 @@ if (! function_exists('public_path')) {
 
     function public_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->publicPath($path);
+        return Zilf::$app->publicPath($path);
     }
 }
 
@@ -38,7 +44,7 @@ if (! function_exists('database_path')) {
 
     function database_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->databasePath($path);
+        return Zilf::$app->databasePath($path);
     }
 }
 
@@ -46,7 +52,7 @@ if (! function_exists('lang_path')) {
 
     function lang_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->langPath($path);
+        return Zilf::$app->langPath($path);
     }
 }
 
@@ -54,7 +60,7 @@ if (! function_exists('runtime_path')) {
 
     function runtime_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->runtimePath($path);
+        return Zilf::$app->runtimePath($path);
     }
 }
 
@@ -62,7 +68,7 @@ if (! function_exists('config_path')) {
 
     function config_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->configPath($path);
+        return Zilf::$app->configPath($path);
     }
 }
 
@@ -70,7 +76,7 @@ if (! function_exists('resource_path')) {
 
     function resource_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->resourcePath($path);
+        return Zilf::$app->resourcePath($path);
     }
 }
 
@@ -78,7 +84,7 @@ if (! function_exists('routes_path')) {
 
     function routes_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->routesPath($path);
+        return Zilf::$app->routesPath($path);
     }
 }
 
@@ -110,7 +116,7 @@ if (!function_exists('cookie_helper')) {
     function cookie_helper($name = '', $value = '', $option = null)
     {
         // 默认设置
-        $cookie = \Zilf\System\Zilf::$app->get('config')->get('app.cookie');
+        $cookie = Zilf::$app->get('config')->get('app.cookie');
         $config = array(
             'prefix' => $cookie['cookie_prefix'], // cookie 名称前缀
             'expire' => $cookie['cookie_expire'], // cookie 保存时间
@@ -200,7 +206,7 @@ if (!function_exists('config_helper')) {
      */
     function config_helper($name, $default = null)
     {
-        return \Zilf\System\Zilf::$app->get('config')->get($name, $default);
+        return Zilf::$app->get('config')->get($name, $default);
     }
 }
 
@@ -243,17 +249,38 @@ if (!function_exists('route_info')) {
     }
 }
 
+if (! function_exists('app')) {
+    /**
+     * Get the available container instance.
+     *
+     * @param  string|null  $abstract
+     * @param  array  $parameters
+     * @return mixed|\Illuminate\Contracts\Foundation\Application
+     */
+    function app($abstract = null, array $parameters = [])
+    {
+        if (is_null($abstract)) {
+            return Container::getInstance();
+        }
+
+        return Container::getInstance()->make($abstract, $parameters);
+    }
+}
 
 if (! function_exists('dispatch')) {
     /**
      * Dispatch a job to its appropriate handler.
      *
-     * @param  mixed $job
-     * @return \Zilf\System\Bus\PendingDispatch
+     * @param  mixed  $job
+     * @return PendingDispatch
      */
     function dispatch($job)
     {
-        return new \Zilf\System\Bus\PendingDispatch($job);
+        if ($job instanceof Closure) {
+            $job = new CallQueuedClosure(new SerializableClosure($job));
+        }
+
+        return new PendingDispatch($job);
     }
 }
 
@@ -261,13 +288,13 @@ if (! function_exists('dispatch_now')) {
     /**
      * Dispatch a command to its appropriate handler in the current process.
      *
-     * @param  mixed $job
-     * @param  mixed $handler
+     * @param  mixed  $job
+     * @param  mixed  $handler
      * @return mixed
      */
     function dispatch_now($job, $handler = null)
     {
-        return (new \Zilf\Bus\Dispatcher())->dispatchNow($job, $handler);
+        return Zilf::$app[Dispatcher::class]->dispatchNow($job, $handler);
     }
 }
 
@@ -478,7 +505,7 @@ if (!function_exists('hashids_encode')) {
         /**
          * @var $hashid \Zilf\Security\Hashids\Hashids
          */
-        $hashid = \Zilf\System\Zilf::$container->get('hashids');
+        $hashid = Zilf::$container->get('hashids');
         return $hashid->encode($args);
     }
 }
@@ -493,7 +520,7 @@ if (!function_exists('hashids_decode')) {
         /**
          * @var $hashid \Zilf\Security\Hashids\Hashids
          */
-        $hashId = \Zilf\System\Zilf::$container->get('hashids');
+        $hashId = Zilf::$container->get('hashids');
         $arr = $hashId->decode($hash);
         if (!empty($arr)) {
             return count($arr) == 1 ? $arr[0] : $arr;
@@ -520,7 +547,7 @@ if (!function_exists('password_make')) {
         /**
          * @var $hashing \Zilf\Security\Hashing\PasswordHashing
          */
-        $hashing = \Zilf\System\Zilf::$container->get('hashing');
+        $hashing = Zilf::$container->get('hashing');
         return $hashing->make($value, $options);
     }
 }
@@ -539,7 +566,7 @@ if (!function_exists('password_check')) {
         /**
          * @var $hashing \Zilf\Security\Hashing\PasswordHashing
          */
-        $hashing = \Zilf\System\Zilf::$app->get('hashing');
+        $hashing = Zilf::$app->get('hashing');
         return $hashing->check($value, $hashedValue, $options);
     }
 }
@@ -670,7 +697,7 @@ if (! function_exists('storage_path')) {
      */
     function storage_path($path = '')
     {
-        return \Zilf\System\Zilf::$app->runtimePath().($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return Zilf::$app->runtimePath().($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 }
 

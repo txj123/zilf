@@ -21,7 +21,7 @@ class PendingChain
     /**
      * Create a new PendingChain instance.
      *
-     * @param  string $class
+     * @param  string  $class
      * @param  array  $chain
      * @return void
      */
@@ -34,7 +34,7 @@ class PendingChain
     /**
      * Dispatch the job with the given arguments.
      *
-     * @return \Illuminate\Foundation\Bus\PendingDispatch
+     * @return \Zilf\System\Bus\PendingDispatch
      */
     public function dispatch()
     {
