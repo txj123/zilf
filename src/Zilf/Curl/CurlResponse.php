@@ -59,7 +59,7 @@ class CurlResponse
     /**
      * CurlResponse constructor.
      */
-    function __construct($client,$curl_init,$async_content='')
+    function __construct($client,$curl_init,$async_content=false)
     {
         $this->client = $client;
 

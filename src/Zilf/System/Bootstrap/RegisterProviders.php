@@ -2,7 +2,7 @@
 
 namespace Zilf\System\Bootstrap;
 
-use Zilf\System\Zilf;
+use Zilf\System\Application;
 
 class RegisterProviders
 {
@@ -11,24 +11,8 @@ class RegisterProviders
      *
      * @return void
      */
-    public function bootstrap()
+    public function bootstrap(Application $app)
     {
-        $providers = Zilf::$container->getShare('config')->get('services');
-
-        foreach ($providers as $provider) {
-            $instance = $this->createProvider($provider);
-            $instance->register();
-        }
-    }
-
-    /**
-     * Create a new provider instance.
-     *
-     * @param  string $provider
-     * @return \Zilf\Support\ServiceProvider
-     */
-    public function createProvider($provider)
-    {
-        return new $provider();
+        $app->registerConfiguredProviders();
     }
 }

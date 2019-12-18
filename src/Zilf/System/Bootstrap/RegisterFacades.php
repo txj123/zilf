@@ -1,10 +1,10 @@
 <?php
 
-namespace Illuminate\Foundation\Bootstrap;
+namespace Zilf\System\Bootstrap;
 
-use Illuminate\Foundation\AliasLoader;
+use Zilf\System\AliasLoader;
 use Illuminate\Support\Facades\Facade;
-use Illuminate\Foundation\PackageManifest;
+use Zilf\System\PackageManifest;
 use Illuminate\Contracts\Foundation\Application;
 
 class RegisterFacades
@@ -12,7 +12,7 @@ class RegisterFacades
     /**
      * Bootstrap the given application.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application $app
+     * @param  \Zilf\System\Application  $app
      * @return void
      */
     public function bootstrap(Application $app)
@@ -21,11 +21,9 @@ class RegisterFacades
 
         Facade::setFacadeApplication($app);
 
-        AliasLoader::getInstance(
-            array_merge(
-                $app->make('config')->get('app.aliases', []),
-                $app->make(PackageManifest::class)->aliases()
-            )
-        )->register();
+        AliasLoader::getInstance(array_merge(
+            $app->make('config')->get('app.aliases', []),
+            $app->make(PackageManifest::class)->aliases()
+        ))->register();
     }
 }

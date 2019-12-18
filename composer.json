@@ -19,18 +19,29 @@
 		"psr/simple-cache": "^1.0",
 		"dragonmantank/cron-expression": "~2.2",
 		"monolog/monolog": "~1.21",
-		"symfony/finder": "~4.0",
-		"symfony/debug": "^4.1",
-		"symfony/console": "~4.0",
-		"symfony/process": "~4.0",
-		"vlucas/phpdotenv": "~2.5",
-		"nesbot/carbon": "^2.1"
+		"nesbot/carbon": "^2.1",
+        "symfony/console": "^4.3.4",
+        "symfony/debug": "^4.3.4",
+        "symfony/finder": "^4.3.4",
+        "symfony/http-foundation": "^4.3.4",
+        "symfony/http-kernel": "^4.3.4",
+        "symfony/process": "^4.3.4",
+        "symfony/routing": "^4.3.4",
+        "symfony/var-dumper": "^4.3.4",
+
+		"vlucas/phpdotenv": "^3.6",
+        "illuminate/cache": "^6.7",
+        "illuminate/redis": "^6.7",
+        "illuminate/view": "^6.7",
+        "illuminate/validation": "^6.7",
+        "illuminate/log": "^6.7",
+        "illuminate/bus": "^6.7",
+        "illuminate/http": "^6.7",
+        "illuminate/queue": "^6.7"
 	},
 	"autoload": {
 		"files":[
-		    "src/Zilf/Support/helpers.php",
-		    "src/Zilf/DataCrawler/PhpQuery/phpQuery.php",
-		    "src/Zilf/Validation/helpers.php"
+		    "src/Zilf/Support/helpers.php"
 		],
 		"psr-4": {
 		    "Zilf\\": "src/Zilf"

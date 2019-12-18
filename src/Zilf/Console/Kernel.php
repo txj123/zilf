@@ -4,23 +4,22 @@ namespace Zilf\Console;
 
 use Closure;
 use Exception;
-use Throwable;
-use ReflectionClass;
-use Zilf\Console\Command;
-use Symfony\Component\Finder\Finder;
-use Zilf\Console\Scheduling\Schedule;
-use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Console\Application as Artisan;
+use Illuminate\Console\Command;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Contracts\Console\Kernel as KernelContract;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\Application;
-use Zilf\Console\Application as Artisan;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Env;
+use Illuminate\Support\Str;
+use ReflectionClass;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
-use Zilf\Console\Commands\QueuedCommand;
-use Zilf\Di\Container;
-use Zilf\Helpers\Arr;
-use Zilf\Helpers\Str;
-use Zilf\System\Zilf;
+use Symfony\Component\Finder\Finder;
+use Throwable;
 
-class Kernel
+class Kernel implements KernelContract
 {
     /**
      * The application implementation.
@@ -39,7 +38,7 @@ class Kernel
     /**
      * The Artisan application instance.
      *
-     * @var \Zilf\Console\Application
+     * @var \Illuminate\Console\Application
      */
     protected $artisan;
 
@@ -57,18 +56,36 @@ class Kernel
      */
     protected $commandsLoaded = false;
 
+    /**
+     * The bootstrap classes for the application.
+     *
+     * @var array
+     */
+    protected $bootstrappers = [
+        \Zilf\System\Bootstrap\LoadEnvironmentVariables::class,
+        \Zilf\System\Bootstrap\LoadConfiguration::class,
+        \Zilf\System\Bootstrap\RegisterProviders::class
+    ];
 
     /**
      * Create a new console kernel instance.
      *
-     * Kernel constructor.
-     *
-     * @param $publicPath
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @return void
      */
-    public function __construct($publicPath)
+    public function __construct(Application $app, Dispatcher $events)
     {
-        new \Zilf\System\Application($publicPath);
-        $this->defineConsoleSchedule();
+        if (! defined('ARTISAN_BINARY')) {
+            define('ARTISAN_BINARY', 'artisan');
+        }
+
+        $this->app = $app;
+        $this->events = $events;
+
+        $this->app->booted(function () {
+            $this->defineConsoleSchedule();
+        });
     }
 
     /**
@@ -78,20 +95,28 @@ class Kernel
      */
     protected function defineConsoleSchedule()
     {
-        Zilf::$container->register(Schedule::class,function (){
-            return new Schedule();
+        $this->app->singleton(Schedule::class, function ($app) {
+            return tap(new Schedule($this->scheduleTimezone()), function ($schedule) {
+                $this->schedule($schedule->useCache($this->scheduleCache()));
+            });
         });
+    }
 
-        $schedule = Zilf::$container->getShare(Schedule::class);
-
-        $this->schedule($schedule);
+    /**
+     * Get the name of the cache store that should manage scheduling mutexes.
+     *
+     * @return string
+     */
+    protected function scheduleCache()
+    {
+        return Env::get('SCHEDULE_CACHE_DRIVER');
     }
 
     /**
      * Run the console application.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface   $input
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  \Symfony\Component\Console\Output\OutputInterface|null  $output
      * @return int
      */
     public function handle($input, $output = null)
@@ -120,13 +145,36 @@ class Kernel
     /**
      * Terminate the application.
      *
-     * @param  \Symfony\Component\Console\Input\InputInterface $input
-     * @param  int                                             $status
+     * @param  \Symfony\Component\Console\Input\InputInterface  $input
+     * @param  int  $status
      * @return void
      */
     public function terminate($input, $status)
     {
-        //$this->app->terminate();
+        $this->app->terminate();
+    }
+
+    /**
+     * Define the application's command schedule.
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        //
+    }
+
+    /**
+     * Get the timezone that should be used by default for scheduled events.
+     *
+     * @return \DateTimeZone|string|null
+     */
+    protected function scheduleTimezone()
+    {
+        $config = $this->app['config'];
+
+        return $config->get('app.schedule_timezone', $config->get('app.timezone'));
     }
 
     /**
@@ -142,19 +190,17 @@ class Kernel
     /**
      * Register a Closure based command with the application.
      *
-     * @param  string   $signature
-     * @param  \Closure $callback
-     * @return \Illuminate\Foundation\Console\ClosureCommand
+     * @param  string  $signature
+     * @param  \Closure  $callback
+     * @return \Zilf\Console\ClosureCommand
      */
     public function command($signature, Closure $callback)
     {
         $command = new ClosureCommand($signature, $callback);
 
-        Artisan::starting(
-            function ($artisan) use ($command) {
-                $artisan->add($command);
-            }
-        );
+        Artisan::starting(function ($artisan) use ($command) {
+            $artisan->add($command);
+        });
 
         return $command;
     }
@@ -162,43 +208,35 @@ class Kernel
     /**
      * Register all of the commands in the given directory.
      *
-     * @param  array|string $paths
+     * @param  array|string  $paths
      * @return void
      */
     protected function load($paths)
     {
         $paths = array_unique(Arr::wrap($paths));
 
-        $paths = array_filter(
-            $paths, function ($path) {
-                return is_dir($path);
-            }
-        );
+        $paths = array_filter($paths, function ($path) {
+            return is_dir($path);
+        });
 
         if (empty($paths)) {
             return;
         }
 
-        $namespace = 'App\\';
+        $namespace = $this->app->getNamespace();
 
         foreach ((new Finder)->in($paths)->files() as $command) {
-            $command = $namespace . str_replace(
+            $command = $namespace.str_replace(
                 ['/', '.php'],
                 ['\\', ''],
-                Str::after($command->getPathname(), app_path() . DIRECTORY_SEPARATOR)
+                Str::after($command->getPathname(), realpath(app_path()).DIRECTORY_SEPARATOR)
             );
 
-            if (is_subclass_of($command, Command::class) 
-                && !(new ReflectionClass($command))->isAbstract()
-            ) {
-
-                Zilf::$container->register($command, $command);
-
-                Artisan::starting(
-                    function ($artisan) use ($command) {
-                        $artisan->resolve($command);
-                    }
-                );
+            if (is_subclass_of($command, Command::class) &&
+                ! (new ReflectionClass($command))->isAbstract()) {
+                Artisan::starting(function ($artisan) use ($command) {
+                    $artisan->resolve($command);
+                });
             }
         }
     }
@@ -206,7 +244,7 @@ class Kernel
     /**
      * Register the given command with the console application.
      *
-     * @param  \Symfony\Component\Console\Command\Command $command
+     * @param  \Symfony\Component\Console\Command\Command  $command
      * @return void
      */
     public function registerCommand($command)
@@ -217,10 +255,12 @@ class Kernel
     /**
      * Run an Artisan console command by name.
      *
-     * @param  string                                            $command
-     * @param  array                                             $parameters
-     * @param  \Symfony\Component\Console\Output\OutputInterface $outputBuffer
+     * @param  string  $command
+     * @param  array  $parameters
+     * @param  \Symfony\Component\Console\Output\OutputInterface|null  $outputBuffer
      * @return int
+     *
+     * @throws \Symfony\Component\Console\Exception\CommandNotFoundException
      */
     public function call($command, array $parameters = [], $outputBuffer = null)
     {
@@ -233,8 +273,8 @@ class Kernel
      * Queue the given console command.
      *
      * @param  string  $command
-     * @param  array   $parameters
-     * @return \Zilf\system\Bus\PendingDispatch
+     * @param  array  $parameters
+     * @return \Zilf\Bus\PendingDispatch
      */
     public function queue($command, array $parameters = [])
     {
@@ -272,8 +312,13 @@ class Kernel
      */
     public function bootstrap()
     {
-        if (!$this->commandsLoaded) {
+        if (! $this->app->hasBeenBootstrapped()) {
+            $this->app->bootstrapWith($this->bootstrappers());
+        }
 
+        $this->app->loadDeferredProviders();
+
+        if (! $this->commandsLoaded) {
             $this->commands();
 
             $this->commandsLoaded = true;
@@ -283,13 +328,13 @@ class Kernel
     /**
      * Get the Artisan application instance.
      *
-     * @return \Zilf\Console\Application
+     * @return \Illuminate\Console\Application
      */
     protected function getArtisan()
     {
         if (is_null($this->artisan)) {
-            return $this->artisan = (new Artisan(Zilf::VERSION))
-                ->resolveCommands($this->commands);
+            return $this->artisan = (new Artisan($this->app, $this->events, $this->app->version()))
+                                ->resolveCommands($this->commands);
         }
 
         return $this->artisan;
@@ -298,7 +343,7 @@ class Kernel
     /**
      * Set the Artisan application instance.
      *
-     * @param  \Zilf\Console\Application $artisan
+     * @param  \Illuminate\Console\Application  $artisan
      * @return void
      */
     public function setArtisan($artisan)
@@ -307,22 +352,31 @@ class Kernel
     }
 
     /**
-     * Report the exception to the exception handler.
+     * Get the bootstrap classes for the application.
      *
-     * @param  \Exception $e
-     * @return void
+     * @return array
      */
-    protected function reportException(Exception $e)
+    protected function bootstrappers()
     {
-        throw $e;
-        // $this->app[ExceptionHandler::class]->report($e);
+        return $this->bootstrappers;
     }
 
     /**
      * Report the exception to the exception handler.
      *
-     * @param  \Symfony\Component\Console\Output\OutputInterface $output
-     * @param  \Exception                                        $e
+     * @param  \Exception  $e
+     * @return void
+     */
+    protected function reportException(Exception $e)
+    {
+        $this->app[ExceptionHandler::class]->report($e);
+    }
+
+    /**
+     * Render the given exception.
+     *
+     * @param  \Symfony\Component\Console\Output\OutputInterface  $output
+     * @param  \Exception  $e
      * @return void
      */
     protected function renderException($output, Exception $e)

@@ -129,7 +129,11 @@ class Transaction extends \Zilf\Db\base\BaseObject
             if ($isolationLevel !== null) {
                 $this->db->getSchema()->setTransactionIsolationLevel($isolationLevel);
             }
-            Log::debug('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : '') . __METHOD__);
+
+            if(Zilf::$app->is_debug){
+                Log::debug('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : '') . __METHOD__);
+            }
+
 
             $this->db->trigger(Connection::EVENT_BEGIN_TRANSACTION);
             $this->db->pdo->beginTransaction();
@@ -140,7 +144,10 @@ class Transaction extends \Zilf\Db\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            Log::debug('Set savepoint ' . $this->_level . __METHOD__);
+            if(Zilf::$app->is_debug) {
+                Log::debug('Set savepoint ' . $this->_level . __METHOD__);
+            }
+
             $schema->createSavepoint('LEVEL' . $this->_level);
         } else {
             Log::info('Transaction not started: nested transaction not supported' . __METHOD__);

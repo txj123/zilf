@@ -996,7 +996,7 @@ class ArtisanServiceProvider extends ServiceProvider
     protected function registerScheduleRunCommand()
     {
         Zilf::$container->register(ScheduleRunCommand::class, function (){
-            $schedule = Zilf::$container->getShare(Schedule::class);
+            $schedule = Zilf::$app->get(Schedule::class);
             return new ScheduleRunCommand($schedule);
         });
     }

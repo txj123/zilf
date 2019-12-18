@@ -313,7 +313,7 @@ abstract class Schema extends BaseObject
         unset($this->_tableMetadata[$rawName]);
         $this->_tableNames = [];
         /* @var $cache CacheInterface */
-        $cache = is_string($this->db->schemaCache) ? Zilf::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
+        $cache = is_string($this->db->schemaCache) ? Zilf::$container->get($this->db->schemaCache) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             $cache->delete($this->getCacheKey($rawName));
         }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\Foundation\Bootstrap;
+namespace Zilf\System\Bootstrap;
 
 use Illuminate\Contracts\Foundation\Application;
 

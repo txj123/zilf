@@ -30,8 +30,8 @@ class AggregateServiceProvider extends ServiceProvider
         $this->instances = [];
 
         foreach ($this->providers as $provider) {
-            Zilf::$container->register($provider, $provider);
-            $this->instances[] = Zilf::$container->get($provider)->register();
+            Zilf::$app->instance($provider, $provider);
+            $this->instances[] = Zilf::$app->get($provider);
         }
     }
 

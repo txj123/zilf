@@ -24,7 +24,7 @@ trait Dispatchable
      */
     public static function dispatchNow()
     {
-        return Zilf::$container->getShare(Dispatcher::class)->dispatchNow(new static(...func_get_args()));
+        return Zilf::$app->get(Dispatcher::class)->dispatchNow(new static(...func_get_args()));
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace Zilf\Db;
 
-use Zilf\Helpers\Arr;
+use Illuminate\Support\ServiceProvider;
 use Zilf\System\Zilf;
 
-class DbServiceProvider
+class DbServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -21,9 +21,9 @@ class DbServiceProvider
      */
     public function register()
     {
-        $params = Zilf::$container->getShare('config')->get('databases');
+        $params = Zilf::$app->get('config')->get('databases');
         foreach ($params as $key => $row) {
-            Zilf::$container->register(
+            Zilf::$app->bind(
                 'db.' . $key, function () use ($row) {
                     $connect = new Connection($row);
                     $connect->open();

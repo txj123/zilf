@@ -96,7 +96,7 @@ class Zilf
             $class = $type['class'];
             unset($type['class']);
 
-            static::$container->set($class, $class, ['config'=>$type]);
+            Zilf::$container->set($class, $class, ['config'=>$type]);
             return static::$container->getShare($class);
 
         } elseif (is_array($type)) {

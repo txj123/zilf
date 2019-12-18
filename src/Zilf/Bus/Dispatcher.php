@@ -83,7 +83,7 @@ class Dispatcher
             };
         } else {
             $callback = function ($command) {
-                return call_user_func_array([$command, 'handle'], ['kernel'=>Zilf::$container->getShare('consoleKernel')]);
+                return call_user_func_array([$command, 'handle'], ['kernel'=>Zilf::$app->get('consoleKernel')]);
             };
         }
 

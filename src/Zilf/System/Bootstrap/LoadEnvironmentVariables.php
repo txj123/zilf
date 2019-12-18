@@ -5,7 +5,10 @@ namespace Zilf\System\Bootstrap;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidFileException;
 use Dotenv\Exception\InvalidPathException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Env;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Zilf\System\Zilf;
 
 class LoadEnvironmentVariables
@@ -13,63 +16,95 @@ class LoadEnvironmentVariables
     /**
      * Bootstrap the given application.
      *
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @return void
      */
-    public function bootstrap()
+    public function bootstrap(Application $app)
     {
-        $app = Zilf::$app;
+        if ($app->configurationIsCached()) {
+            return;
+        }
+
         $this->checkForSpecificEnvironmentFile($app);
 
         try {
-            (new Dotenv($app->environmentPath(), $app->environmentFile()))->load();
-        } catch (InvalidPathException $e) {
-            //
+            $this->createDotenv($app)->safeLoad();
         } catch (InvalidFileException $e) {
-            die('The environment file is invalid: ' . $e->getMessage());
+            $this->writeErrorAndDie($e);
         }
     }
 
     /**
      * Detect if a custom environment file matching the APP_ENV exists.
      *
-     * @param  \Zilf\System\Application $app
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @return void
      */
     protected function checkForSpecificEnvironmentFile($app)
     {
         if ($app->runningInConsole() && ($input = new ArgvInput)->hasParameterOption('--env')) {
             if ($this->setEnvironmentFilePath(
-                $app, $app->environmentFile() . '.' . $input->getParameterOption('--env')
-            )
-            ) {
+                $app, $app->environmentFile().'.'.$input->getParameterOption('--env')
+            )) {
                 return;
             }
         }
 
-        if (!env('APP_ENV')) {
+        if (! env('APP_ENV')) {
             return;
         }
 
         $this->setEnvironmentFilePath(
-            $app, $app->environmentFile() . '.' . env('APP_ENV')
+            $app, $app->environmentFile().'.'.env('APP_ENV')
         );
     }
 
     /**
      * Load a custom environment file.
      *
-     * @param  \Zilf\System\Application $app
-     * @param  string                   $file
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  string  $file
      * @return bool
      */
     protected function setEnvironmentFilePath($app, $file)
     {
-        if (file_exists($app->environmentPath() . '/' . $file)) {
+        if (file_exists($app->environmentPath().'/'.$file)) {
             $app->loadEnvironmentFrom($file);
 
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Create a Dotenv instance.
+     *
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @return \Dotenv\Dotenv
+     */
+    protected function createDotenv($app)
+    {
+        return Dotenv::create(
+            $app->environmentPath(),
+            $app->environmentFile(),
+            Env::getFactory()
+        );
+    }
+
+    /**
+     * Write the error information to the screen and exit.
+     *
+     * @param  \Dotenv\Exception\InvalidFileException  $e
+     * @return void
+     */
+    protected function writeErrorAndDie(InvalidFileException $e)
+    {
+        $output = (new ConsoleOutput)->getErrorOutput();
+
+        $output->writeln('The environment file is invalid!');
+        $output->writeln($e->getMessage());
+
+        die(1);
     }
 }

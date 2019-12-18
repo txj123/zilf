@@ -3,6 +3,8 @@
 namespace Zilf\System\Bootstrap;
 
 use Exception;
+use Illuminate\Contracts\Config\Repository as RepositoryContract;
+use Illuminate\Contracts\Foundation\Application;
 use SplFileInfo;
 use Zilf\Config\Repository;
 use Symfony\Component\Finder\Finder;
@@ -13,15 +15,37 @@ class LoadConfiguration
     /**
      * Bootstrap the given application.
      *
+     * @param \Illuminate\Contracts\Foundation\Application $app
      * @return void
      */
-    public function bootstrap()
+    public function bootstrap(Application $app)
     {
-        $config = Zilf::$container->getShare('config');
+        $items = [];
 
-        $this->loadConfigurationFiles($config);
+        // First we will see if we have a cache configuration file. If we do, we'll load
+        // the configuration items from that file so that it is very quick. Otherwise
+        // we will need to spin through every configuration file and load them all.
+        if (file_exists($cached = $app->getCachedConfigPath())) {
+            $items = require $cached;
 
-        Zilf::$app->environment = $config->get('app.app_env');
+            $loadedFromCache = true;
+        }
+
+        // Next we will spin through all of the configuration files in the configuration
+        // directory and load each one into the repository. This will make all of the
+        // options available to the developer for use in various parts of this app.
+        $app->instance('config', $config = new Repository($items));
+
+        if (!isset($loadedFromCache)) {
+            $this->loadConfigurationFiles($app, $config);
+        }
+
+        // Finally, we will set the application's environment based on the configuration
+        // values that were loaded. We will pass a callback which will be used to get
+        // the environment in a web context where an "--env" switch is not present.
+        $app->detectEnvironment(function () use ($config) {
+            return $config->get('app.env', 'production');
+        });
 
         date_default_timezone_set($config->get('app.timezone', 'UTC'));
 
@@ -31,33 +55,36 @@ class LoadConfiguration
     /**
      * Load the configuration items from all of the files.
      *
-     * @param  \Zilf\Config\Repository $repository
+     * @param \Illuminate\Contracts\Foundation\Application $app
+     * @param \Zilf\Config\Repository $repository
      * @return void
+     *
      * @throws \Exception
      */
-    protected function loadConfigurationFiles(Repository $repository)
+    protected function loadConfigurationFiles(Application $app, RepositoryContract $repository)
     {
-        $files = $this->getConfigurationFiles();
+        $files = $this->getConfigurationFiles($app);
 
         if (!isset($files['app'])) {
             throw new Exception('Unable to load the "app" configuration file.');
         }
 
         foreach ($files as $key => $path) {
-            $repository->set($key, include $path);
+            $repository->set($key, require $path);
         }
     }
 
     /**
      * Get all of the configuration files for the application.
      *
+     * @param \Illuminate\Contracts\Foundation\Application $app
      * @return array
      */
-    protected function getConfigurationFiles()
+    protected function getConfigurationFiles(Application $app)
     {
         $files = [];
 
-        $configPath = realpath(Zilf::$app->configPath());
+        $configPath = realpath($app->configPath());
 
         foreach (Finder::create()->files()->name('*.php')->in($configPath) as $file) {
             $directory = $this->getNestedDirectory($file, $configPath);
@@ -73,8 +100,8 @@ class LoadConfiguration
     /**
      * Get the configuration file nesting path.
      *
-     * @param  \SplFileInfo $file
-     * @param  string       $configPath
+     * @param \SplFileInfo $file
+     * @param string $configPath
      * @return string
      */
     protected function getNestedDirectory(SplFileInfo $file, $configPath)

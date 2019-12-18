@@ -110,6 +110,6 @@ class PendingDispatch
      */
     public function __destruct()
     {
-        Zilf::$container->getShare(Dispatcher::class)->dispatch($this->job);
+        Zilf::$app->get(Dispatcher::class)->dispatch($this->job);
     }
 }

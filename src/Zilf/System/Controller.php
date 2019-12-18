@@ -2,10 +2,9 @@
 
 namespace Zilf\System;
 
-use Zilf\HttpFoundation\JsonResponse;
-use Zilf\HttpFoundation\RedirectResponse;
-use Zilf\HttpFoundation\Request;
-use Zilf\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 use Zilf\System\Bus\DispatchesJobs;
 use Zilf\View\Factory;
@@ -94,7 +93,7 @@ abstract class Controller
         /**
          * @var $viewFactory Factory
          */
-        $viewFactory = Zilf::$container->get('view');
+        $viewFactory = Zilf::$app->get('view');
         if(!isset($parameters['app'])) {
             $parameters['app'] = $this;
         }

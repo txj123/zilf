@@ -58,7 +58,7 @@ class Facade
             return static::$resolvedInstance[$name];
         }
 
-        return static::$resolvedInstance[$name] = Zilf::$container->getShare($name);
+        return static::$resolvedInstance[$name] = Zilf::$app->get($name);
     }
 
     /**

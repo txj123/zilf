@@ -2,11 +2,12 @@
 
 namespace Zilf\Security\Hashing;
 
+use Illuminate\Support\ServiceProvider;
 use RuntimeException;
 use Zilf\Helpers\Str;
 use Zilf\System\Zilf;
 
-class HashingServiceProvider
+class HashingServiceProvider extends ServiceProvider
 {
     /**
      * Register the service provider.
@@ -15,6 +16,6 @@ class HashingServiceProvider
      */
     public function register()
     {
-        Zilf::$container->register('hashing', 'Zilf\Security\Hashing\PasswordHashing');
+        Zilf::$app->instance('hashing', new PasswordHashing());
     }
 }

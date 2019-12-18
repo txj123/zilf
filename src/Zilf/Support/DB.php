@@ -28,7 +28,7 @@ class DB
             Zilf::$app->setDb($database);
         }
 
-        return Zilf::$container->getShare($database);
+        return Zilf::$app->get($database);
     }
 
     /**
@@ -38,7 +38,7 @@ class DB
      */
     public static function createCommand($sql = null, $params = [])
     {
-        return Zilf::$container->getShare(Zilf::$app->database)->createCommand($sql, $params);
+        return Zilf::$app->get(Zilf::$app->database)->createCommand($sql, $params);
     }
 
     /**

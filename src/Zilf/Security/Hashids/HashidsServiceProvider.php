@@ -2,9 +2,10 @@
 
 namespace Zilf\Security\Hashids;
 
+use Illuminate\Support\ServiceProvider;
 use Zilf\System\Zilf;
 
-class HashidsServiceProvider
+class HashidsServiceProvider extends ServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
@@ -20,7 +21,7 @@ class HashidsServiceProvider
      */
     public function register()
     {
-        Zilf::$container->register('hashids', 'Zilf\Security\Hashids\Hashids');
+        Zilf::$app->instance('hashids', new Hashids());
     }
 
     /**

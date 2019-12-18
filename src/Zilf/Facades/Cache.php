@@ -16,7 +16,7 @@ namespace Zilf\Facades;
  * @method  static \Zilf\Cache\Repository repository(Store $store)
  * @method  static string getDefaultDriver()
  * @method  static void setDefaultDriver($name)
- * @method  static $this extend($driver, Closure $callback)
+ * @method  static $this extend($driver, \Closure $callback)
  * @method  static mixed __call($method, $parameters)
  *
  * #Store
@@ -35,9 +35,9 @@ namespace Zilf\Facades;
  * @method  static bool has($key)
  * @method  static mixed pull($key, $default = null)
  * @method  static bool add($key, $value, $minutes)
- * @method  static mixed remember($key, $minutes, Closure $callback)
- * @method  static mixed sear($key, Closure $callback)
- * @method  static mixed rememberForever($key, Closure $callback)
+ * @method  static mixed remember($key, $minutes, \Closure $callback)
+ * @method  static mixed sear($key, \Closure $callback)
+ * @method  static mixed rememberForever($key, \Closure $callback)
  * @method  static \Zilf\Cache\TaggedCache tags($names)
  * @method  static float|int getDefaultCacheTime()
  * @method  static $this setDefaultCacheTime($minutes)

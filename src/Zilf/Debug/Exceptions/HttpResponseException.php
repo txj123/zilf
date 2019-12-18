@@ -3,21 +3,21 @@
 namespace Zilf\Debug\Exceptions;
 
 use RuntimeException;
-use Zilf\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class HttpResponseException extends RuntimeException
 {
     /**
      * The underlying response instance.
      *
-     * @var \Zilf\HttpFoundation\Response
+     * @var \Symfony\Component\HttpFoundation\Response
      */
     protected $response;
 
     /**
      * Create a new HTTP response exception instance.
      *
-     * @param  \Zilf\HttpFoundation\Response $response
+     * @param  \Symfony\Component\HttpFoundation\Response $response
      * @return void
      */
     public function __construct(Response $response)
@@ -28,7 +28,7 @@ class HttpResponseException extends RuntimeException
     /**
      * Get the underlying response instance.
      *
-     * @return \Zilf\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getResponse()
     {

@@ -3,9 +3,10 @@
 namespace Zilf\Config;
 
 use ArrayAccess;
+use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Zilf\Helpers\Arr;
 
-class Repository implements ArrayAccess
+class Repository implements ArrayAccess, ConfigContract
 {
     /**
      * All of the configuration items.

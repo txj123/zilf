@@ -29,7 +29,7 @@ class CacheServiceProvider extends ServiceProvider
 
         Zilf::$container->register(
             'cache.store', function ($app) {
-                return Zilf::$container->getShare('cache')->driver();
+                return Zilf::$app->get('cache')->driver();
             }
         );
 

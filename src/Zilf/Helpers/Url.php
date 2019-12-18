@@ -2,7 +2,7 @@
 
 namespace Zilf\Helpers;
 
-use Zilf\Facades\Request;
+use Illuminate\Support\Facades\Request;
 use Zilf\System\Zilf;
 
 
@@ -20,6 +20,11 @@ class Url
 
         //获取设置的url信息，如果不存在，则使用当前默认地址
         $staticUrl = config('assets.' . $urlName, Request::getSchemeAndHttpHost());
+        if (strncmp($staticUrl, '//', 2) === 0) {
+            if ($protocol) {
+                $staticUrl = $protocol . ':' . $staticUrl;
+            }
+        }
 
         // 版本号
         $strVersion = (stripos($url, '?') == 0) ? $version ? '?' . $version : '' : '&' . $version;
@@ -30,19 +35,17 @@ class Url
             }
 
             return $url . $strVersion;
+        } elseif (strncmp($url, 'http:', 5) === 0 || strncmp($url, 'https:', 6) === 0) {
+            return $url . $strVersion;
         } else {
-            if ($protocol) {
-                $pos = strpos($staticUrl, '://');
-                $staticUrl = $protocol . substr($staticUrl, $pos);
-            }
-            return $staticUrl . '/' . ltrim($url, '/') . $strVersion;
+            return rtrim($staticUrl, '/') . '/' . ltrim($url, '/') . $strVersion;
         }
     }
 
     /**
-     * @param  string $url
-     * @param  string $params
-     * @param  bool   $scheme
+     * @param string $url
+     * @param string $params
+     * @param bool $scheme
      * @return string
      */
     public static function toRoute($url = '', $params = '', $scheme = true)
@@ -56,7 +59,7 @@ class Url
             // e.g. /path/to/resource
             $url = ltrim($url, '/');
             $bundle = '';
-        }elseif ($bundle == 'Index') {
+        } elseif ($bundle == 'Index') {
             $bundle = '';
         }
 
@@ -99,15 +102,15 @@ class Url
     public static function routeInfo($key)
     {
         switch (strtolower($key)) {
-        case 'bundle':
-            return Zilf::$app->bundle;
-        case 'controller':
-            return Zilf::$app->controller;
-        case 'method':
-        case 'action':
-            return Zilf::$app->action;
-        default:
-            return (Zilf::$app->params[$key]) ?? '';
+            case 'bundle':
+                return Zilf::$app->bundle;
+            case 'controller':
+                return Zilf::$app->controller;
+            case 'method':
+            case 'action':
+                return Zilf::$app->action;
+            default:
+                return (Zilf::$app->params[$key]) ?? '';
         }
     }
 }
