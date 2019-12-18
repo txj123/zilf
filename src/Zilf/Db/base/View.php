@@ -7,7 +7,7 @@
 
 namespace Zilf\Db\base;
 
-use Zilf\Facades\Log;
+use Illuminate\Support\Facades\Log;;
 use Zilf\System\Zilf;
 use Zilf\Helpers\FileHelper;
 use Zilf\widgets\Block;

@@ -12,7 +12,7 @@ use ArrayIterator;
 use ArrayObject;
 use IteratorAggregate;
 use ReflectionClass;
-use Zilf\Facades\Log;
+use Illuminate\Support\Facades\Log;;
 use Zilf\System\Zilf;
 use Zilf\Helpers\Inflector;
 use Zilf\validators\RequiredValidator;
