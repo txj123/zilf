@@ -58,8 +58,6 @@ class Handler implements ExceptionHandlerContract
      * @var array
      */
     protected $internalDontReport = [
-        AuthenticationException::class,
-        AuthorizationException::class,
         HttpException::class,
         HttpResponseException::class,
         ModelNotFoundException::class,

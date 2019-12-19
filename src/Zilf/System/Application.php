@@ -12,6 +12,7 @@ use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Events\EventServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Env;
@@ -23,6 +24,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Zilf\Config\Repository;
@@ -139,7 +141,8 @@ class Application extends Container implements ApplicationContract
         \Zilf\System\Bootstrap\LoadConfiguration::class,
         \Zilf\System\Bootstrap\HandleExceptions::class,
         \Zilf\System\Bootstrap\RegisterFacades::class,
-        \Zilf\System\Bootstrap\RegisterProviders::class
+        \Zilf\System\Bootstrap\RegisterProviders::class,
+        \Zilf\System\Bootstrap\BootProviders::class,
     ];
 
     public $charset = 'UTF-8';
@@ -1016,7 +1019,32 @@ class Application extends Container implements ApplicationContract
      */
     public function booted($callback)
     {
-        // TODO: Implement booted() method.
+        $this->bootedCallbacks[] = $callback;
+
+        if ($this->isBooted()) {
+            $this->fireAppCallbacks([$callback]);
+        }
+    }
+
+    /**
+     * Call the booting callbacks for the application.
+     *
+     * @param callable[] $callbacks
+     * @return void
+     */
+    protected function fireAppCallbacks(array $callbacks)
+    {
+        foreach ($callbacks as $callback) {
+            $callback($this);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(SymfonyRequest $request, $type = 1, $catch = true)
+    {
+        return $this[HttpKernelContract::class]->handle(Request::createFromBase($request));
     }
 
     /**

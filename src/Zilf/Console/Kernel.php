@@ -77,7 +77,7 @@ class Kernel implements KernelContract
     public function __construct(Application $app, Dispatcher $events)
     {
         if (! defined('ARTISAN_BINARY')) {
-            define('ARTISAN_BINARY', 'artisan');
+            define('ARTISAN_BINARY', 'txj');
         }
 
         $this->app = $app;
@@ -121,6 +121,8 @@ class Kernel implements KernelContract
      */
     public function handle($input, $output = null)
     {
+        $this->app->make(ExceptionHandler::class);
+
         try {
             $this->bootstrap();
 

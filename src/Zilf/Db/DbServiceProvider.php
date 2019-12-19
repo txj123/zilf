@@ -40,6 +40,6 @@ class DbServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['db'];
+        return ['db.default'];
     }
 }

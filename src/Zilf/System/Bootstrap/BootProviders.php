@@ -2,14 +2,14 @@
 
 namespace Zilf\System\Bootstrap;
 
-use Illuminate\Contracts\Foundation\Application;
+use Zilf\System\Application;
 
 class BootProviders
 {
     /**
      * Bootstrap the given application.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application $app
+     * @param  \Zilf\System\Application $app
      * @return void
      */
     public function bootstrap(Application $app)
