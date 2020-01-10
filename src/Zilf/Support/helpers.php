@@ -5,6 +5,8 @@ use Zilf\System\Bus\PendingDispatch;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Queue\CallQueuedClosure;
 use Illuminate\Queue\SerializableClosure;
+use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Contracts\Routing\ResponseFactory;
 
 if (! function_exists('base_path')) {
     /**
@@ -246,6 +248,48 @@ if (!function_exists('route_info')) {
     function route_info($key)
     {
         return \Zilf\Helpers\Url::routeInfo($key);
+    }
+}
+
+if (! function_exists('response')) {
+    /**
+     * Return a new response from the application.
+     *
+     * @param  \Illuminate\View\View|string|array|null  $content
+     * @param  int  $status
+     * @param  array  $headers
+     * @return \Illuminate\Http\Response|\Illuminate\Contracts\Routing\ResponseFactory
+     */
+    function response($content = '', $status = 200, array $headers = [])
+    {
+        $factory = app(ResponseFactory::class);
+
+        if (func_num_args() === 0) {
+            return $factory;
+        }
+
+        return $factory->make($content, $status, $headers);
+    }
+}
+
+if (! function_exists('view')) {
+    /**
+     * Get the evaluated view contents for the given view.
+     *
+     * @param  string|null  $view
+     * @param  \Illuminate\Contracts\Support\Arrayable|array  $data
+     * @param  array  $mergeData
+     * @return \Illuminate\View\View|\Illuminate\Contracts\View\Factory
+     */
+    function view($view = null, $data = [], $mergeData = [])
+    {
+        $factory = app(ViewFactory::class);
+
+        if (func_num_args() === 0) {
+            return $factory;
+        }
+
+        return $factory->make($view, $data, $mergeData);
     }
 }
 
@@ -547,7 +591,7 @@ if (!function_exists('password_make')) {
         /**
          * @var $hashing \Zilf\Security\Hashing\PasswordHashing
          */
-        $hashing = Zilf::$container->get('hashing');
+        $hashing = Zilf::$app->get('hashing');
         return $hashing->make($value, $options);
     }
 }

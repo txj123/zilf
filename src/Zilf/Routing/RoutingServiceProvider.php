@@ -2,8 +2,7 @@
 
 namespace Zilf\Routing;
 
-
-use Zilf\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use Zilf\System\Zilf;
 
 class RoutingServiceProvider extends ServiceProvider
