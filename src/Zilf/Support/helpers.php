@@ -591,7 +591,7 @@ if (!function_exists('password_make')) {
         /**
          * @var $hashing \Zilf\Security\Hashing\PasswordHashing
          */
-        $hashing = Zilf::$container->get('hashing');
+        $hashing = Zilf::$app->get('hashing');
         return $hashing->make($value, $options);
     }
 }
