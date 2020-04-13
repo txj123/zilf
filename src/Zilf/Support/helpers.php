@@ -549,7 +549,7 @@ if (!function_exists('hashids_encode')) {
         /**
          * @var $hashid \Zilf\Security\Hashids\Hashids
          */
-        $hashid = Zilf::$container->get('hashids');
+        $hashid = Zilf::$app->get('hashids');
         return $hashid->encode($args);
     }
 }
@@ -564,7 +564,7 @@ if (!function_exists('hashids_decode')) {
         /**
          * @var $hashid \Zilf\Security\Hashids\Hashids
          */
-        $hashId = Zilf::$container->get('hashids');
+        $hashId = Zilf::$app->get('hashids');
         $arr = $hashId->decode($hash);
         if (!empty($arr)) {
             return count($arr) == 1 ? $arr[0] : $arr;
@@ -591,7 +591,7 @@ if (!function_exists('password_make')) {
         /**
          * @var $hashing \Zilf\Security\Hashing\PasswordHashing
          */
-        $hashing = Zilf::$container->get('hashing');
+        $hashing = Zilf::$app->get('hashing');
         return $hashing->make($value, $options);
     }
 }

@@ -21,7 +21,9 @@ class HashidsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        Zilf::$app->instance('hashids', new Hashids());
+        Zilf::$app->singleton('hashids', function (){
+            return new Hashids();
+        });
     }
 
     /**
