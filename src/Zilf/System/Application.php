@@ -185,6 +185,8 @@ class Application extends Container implements ApplicationContract
 
         $this->registerCoreContainerAliases();
 
+		$this->singleton(\Illuminate\Contracts\Console\Kernel::class, \App\Console\Kernel::class);
+
         $this->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, function () {
             return new \Zilf\System\Exceptions\Handler(Zilf::$app);
         });
