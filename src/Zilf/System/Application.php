@@ -368,7 +368,9 @@ class Application extends Container implements ApplicationContract
             $class = $this->getUnBundleUrl();
 
             if (!class_exists($class)) {
+                $this->initDefaultRoute();
                 $class = $this->getBundleUrl();
+
                 if (!class_exists($class)) {
                     $this->initDefaultRoute();
                     $class = $this->getBundleUrl();
