@@ -95,7 +95,7 @@ class Handler implements ExceptionHandlerContract
      *
      * @throws \Exception
      */
-    public function report(Exception $e)
+    public function report($e)
     {
         if ($this->shouldntReport($e)) {
             return;
@@ -127,7 +127,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return bool
      */
-    public function shouldReport(Exception $e)
+    public function shouldReport($e)
     {
         return ! $this->shouldntReport($e);
     }
@@ -138,7 +138,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return bool
      */
-    protected function shouldntReport(Exception $e)
+    protected function shouldntReport($e)
     {
         $dontReport = array_merge($this->dontReport, $this->internalDontReport);
 
@@ -153,7 +153,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return array
      */
-    protected function exceptionContext(Exception $e)
+    protected function exceptionContext($e)
     {
         return [];
     }
@@ -182,7 +182,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, $e)
     {
         if (method_exists($e, 'render') && $response = $e->render($request)) {
             return Router::toResponse($request, $response);
@@ -211,7 +211,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return \Exception
      */
-    protected function prepareException(Exception $e)
+    protected function prepareException($e)
     {
         if ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
@@ -294,7 +294,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function prepareResponse($request, Exception $e)
+    protected function prepareResponse($request, $e)
     {
         if (! $this->isHttpException($e) && config('app.debug')) {
             return $this->toIlluminateResponse($this->convertExceptionToResponse($e), $e);
@@ -315,7 +315,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    protected function convertExceptionToResponse(Exception $e)
+    protected function convertExceptionToResponse($e)
     {
         return SymfonyResponse::create(
             $this->renderExceptionContent($e),
@@ -330,7 +330,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return string
      */
-    protected function renderExceptionContent(Exception $e)
+    protected function renderExceptionContent($e)
     {
         try {
             return config('app.debug') && class_exists(Whoops::class)
@@ -347,7 +347,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return string
      */
-    protected function renderExceptionWithWhoops(Exception $e)
+    protected function renderExceptionWithWhoops($e)
     {
         return tap(new Whoops, function ($whoops) {
             $whoops->appendHandler($this->whoopsHandler());
@@ -367,7 +367,7 @@ class Handler implements ExceptionHandlerContract
     {
         try {
             return app(HandlerInterface::class);
-        } catch (BindingResolutionException $e) {
+        } catch (BindingResolution$e) {
             return (new WhoopsHandler)->forDebug();
         }
     }
@@ -427,7 +427,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return \Illuminate\Http\Response
      */
-    protected function toIlluminateResponse($response, Exception $e)
+    protected function toIlluminateResponse($response, $e)
     {
         if ($response instanceof SymfonyRedirectResponse) {
             $response = new RedirectResponse(
@@ -449,7 +449,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function prepareJsonResponse($request, Exception $e)
+    protected function prepareJsonResponse($request, $e)
     {
         return new JsonResponse(
             $this->convertExceptionToArray($e),
@@ -465,7 +465,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return array
      */
-    protected function convertExceptionToArray(Exception $e)
+    protected function convertExceptionToArray($e)
     {
         return config('app.debug') ? [
             'message' => $e->getMessage(),
@@ -487,9 +487,9 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return void
      */
-    public function renderForConsole($output, Exception $e)
+    public function renderForConsole($output, $e)
     {
-        (new ConsoleApplication)->renderException($e, $output);
+        (new ConsoleApplication)->renderThrowable($e, $output);
     }
 
     /**
@@ -498,7 +498,7 @@ class Handler implements ExceptionHandlerContract
      * @param  \Exception  $e
      * @return bool
      */
-    protected function isHttpException(Exception $e)
+    protected function isHttpException($e)
     {
         return $e instanceof HttpExceptionInterface;
     }

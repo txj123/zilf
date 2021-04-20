@@ -3,19 +3,18 @@
 namespace Zilf\System\Bootstrap;
 
 use Exception;
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Config\Repository as RepositoryContract;
-use Illuminate\Contracts\Foundation\Application;
+use Zilf\System\Application;
 use SplFileInfo;
-use Zilf\Config\Repository;
 use Symfony\Component\Finder\Finder;
-use Zilf\System\Zilf;
 
 class LoadConfiguration
 {
     /**
      * Bootstrap the given application.
      *
-     * @param \Illuminate\Contracts\Foundation\Application $app
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @return void
      */
     public function bootstrap(Application $app)
@@ -25,7 +24,7 @@ class LoadConfiguration
         // First we will see if we have a cache configuration file. If we do, we'll load
         // the configuration items from that file so that it is very quick. Otherwise
         // we will need to spin through every configuration file and load them all.
-        if (file_exists($cached = $app->getCachedConfigPath())) {
+        if (is_file($cached = $app->getCachedConfigPath())) {
             $items = require $cached;
 
             $loadedFromCache = true;
@@ -36,7 +35,7 @@ class LoadConfiguration
         // options available to the developer for use in various parts of this app.
         $app->instance('config', $config = new Repository($items));
 
-        if (!isset($loadedFromCache)) {
+        if (! isset($loadedFromCache)) {
             $this->loadConfigurationFiles($app, $config);
         }
 
@@ -55,8 +54,8 @@ class LoadConfiguration
     /**
      * Load the configuration items from all of the files.
      *
-     * @param \Illuminate\Contracts\Foundation\Application $app
-     * @param \Zilf\Config\Repository $repository
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Illuminate\Contracts\Config\Repository  $repository
      * @return void
      *
      * @throws \Exception
@@ -65,7 +64,7 @@ class LoadConfiguration
     {
         $files = $this->getConfigurationFiles($app);
 
-        if (!isset($files['app'])) {
+        if (! isset($files['app'])) {
             throw new Exception('Unable to load the "app" configuration file.');
         }
 
@@ -77,7 +76,7 @@ class LoadConfiguration
     /**
      * Get all of the configuration files for the application.
      *
-     * @param \Illuminate\Contracts\Foundation\Application $app
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @return array
      */
     protected function getConfigurationFiles(Application $app)
@@ -89,7 +88,7 @@ class LoadConfiguration
         foreach (Finder::create()->files()->name('*.php')->in($configPath) as $file) {
             $directory = $this->getNestedDirectory($file, $configPath);
 
-            $files[$directory . basename($file->getRealPath(), '.php')] = $file->getRealPath();
+            $files[$directory.basename($file->getRealPath(), '.php')] = $file->getRealPath();
         }
 
         ksort($files, SORT_NATURAL);
@@ -100,8 +99,8 @@ class LoadConfiguration
     /**
      * Get the configuration file nesting path.
      *
-     * @param \SplFileInfo $file
-     * @param string $configPath
+     * @param  \SplFileInfo  $file
+     * @param  string  $configPath
      * @return string
      */
     protected function getNestedDirectory(SplFileInfo $file, $configPath)
@@ -109,7 +108,7 @@ class LoadConfiguration
         $directory = $file->getPath();
 
         if ($nested = trim(str_replace($configPath, '', $directory), DIRECTORY_SEPARATOR)) {
-            $nested = str_replace(DIRECTORY_SEPARATOR, '.', $nested) . '.';
+            $nested = str_replace(DIRECTORY_SEPARATOR, '.', $nested).'.';
         }
 
         return $nested;
